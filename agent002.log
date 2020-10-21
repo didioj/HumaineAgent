@@ -1,0 +1,66 @@
+C:\Users\lingc\OneDrive\Documents\RPI\Fall_2020\CognitiveComputing\Project_1\agent-py>flask run --port 14008
+ * Serving Flask app "agent-py.py"
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://127.0.0.1:14008/ (Press CTRL+C to quit)
+Entering setUtility
+Info received: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.35}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.71}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.83}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.32}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.25}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.43}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.35}}}, 'name': 'Celia'}
+Message sending: {'status': 'Acknowledged', 'utility': {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.35}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.71}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.83}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.32}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.25}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.43}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.35}}}, 'name': 'Celia'}}
+127.0.0.1 - - [21/Oct/2020 15:52:09] "[37mPOST /setUtility HTTP/1.1[0m" 200 -
+Entering startRound
+Info received: {'roundDuration': 300, 'roundNumber': 1, 'timestamp': '2020-10-21T19:52:19.592Z'}
+Returning message: {'status': 'Acknowledged'}
+127.0.0.1 - - [21/Oct/2020 15:52:19] "[37mPOST /startRound HTTP/1.1[0m" 200 -
+Entering receiveMessage
+Remaining Time: 298.19805029296873
+Info received: {'speaker': 'Human', 'addressee': '', 'text': 'I want 1 cup of milk', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1603309941390}
+Entering processMessage
+Received message: {'speaker': 'Human', 'addressee': '', 'text': 'I want 1 cup of milk', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1603309941390}
+Entering receiveMessage
+Remaining Time: 297.876912109375
+Info received: {'text': 'How about if I sell you 1 milk for 0.78 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timeStamp': '2020-10-21T19:52:21.701Z'}
+Entering processMessage
+Received message: {'text': 'How about if I sell you 1 milk for 0.78 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timeStamp': '2020-10-21T19:52:21.701Z'}
+Entering translateWatsonResponse
+Returning Watson response: {'intents': [{'intent': 'Offer', 'confidence': 0.4660452689359375}], 'entities': [{'entity': 'sys-number', 'location': [7, 8], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [9, 20], 'value': 'milk', 'confidence': 0.91}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'speaker': 'Human', 'addressee': '', 'text': 'I want 1 cup of milk', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1603309941390}, 'addressee': '', 'speaker': 'Human'}
+Received message classification: {'intents': [{'intent': 'Offer', 'confidence': 0.4660452689359375}], 'entities': [{'entity': 'sys-number', 'location': [7, 8], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [9, 20], 'value': 'milk', 'confidence': 0.91}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'speaker': 'Human', 'addressee': '', 'text': 'I want 1 cup of milk', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1603309941390}, 'addressee': '', 'speaker': 'Human'}
+entered interpretMessage
+Received watsonResponse: {'intents': [{'intent': 'Offer', 'confidence': 0.4660452689359375}], 'entities': [{'entity': 'sys-number', 'location': [7, 8], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [9, 20], 'value': 'milk', 'confidence': 0.91}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'speaker': 'Human', 'addressee': '', 'text': 'I want 1 cup of milk', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1603309941390}, 'addressee': '', 'speaker': 'Human', 'environmentUUID': 'abcdefg'}
+entered extractOfferFromEntities
+Received entityList: [{'entity': 'sys-number', 'location': [7, 8], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [9, 20], 'value': 'milk', 'confidence': 0.91}]
+Found entities: []
+entered extractPrice
+entities given: []
+Returning price: {'value': 0, 'unit': 'USD'}
+Received price: {'value': 0, 'unit': 'USD'}
+Returning offer: {'quantity': {'milk': 1}, 'price': {'value': 0, 'unit': 'USD'}}
+entered extractAddressee
+Received entities: [{'entity': 'sys-number', 'location': [7, 8], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [9, 20], 'value': 'milk', 'confidence': 0.91}]
+Returning addressee: None
+cmd leaving interpretMessage: {'quantity': {'milk': 1}, 'price': {'value': 0, 'unit': 'USD'}, 'type': 'BuyOffer', 'metadata': {'speaker': 'Human', 'addressee': None, 'text': 'I want 1 cup of milk', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1603309941390, 'timeStamp': 1603309942.4791093}}
+Received interpretation: {'quantity': {'milk': 1}, 'price': {'value': 0, 'unit': 'USD'}, 'type': 'BuyOffer', 'metadata': {'speaker': 'Human', 'addressee': None, 'text': 'I want 1 cup of milk', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1603309941390, 'timeStamp': 1603309942.4791093}}
+Message from buyer not addressed to me. Need to make an offer!
+Bid message from processMessage: None
+Returning response: {'status': 'Acknowledged', 'interpretation': {'speaker': 'Human', 'addressee': None, 'text': 'I want 1 cup of milk', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1603309941390, 'timeStamp': 1603309942.4791093}}
+127.0.0.1 - - [21/Oct/2020 15:52:22] "[37mPOST /receiveMessage HTTP/1.1[0m" 200 -
+Entering translateWatsonResponse
+Returning Watson response: {'intents': [{'intent': 'Offer', 'confidence': 0.8470988273620605}], 'entities': [{'entity': 'sys-number', 'location': [24, 25], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [26, 30], 'value': 'milk', 'confidence': 1}, {'entity': 'sys-number', 'location': [35, 39], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78}, 'interpretation': {'numeric_value': 0.78, 'subtype': 'rational'}}, {'entity': 'sys-currency', 'location': [35, 43], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.78, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'How about if I sell you 1 milk for 0.78 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timeStamp': '2020-10-21T19:52:21.701Z'}, 'addressee': 'Human', 'speaker': 'Watson'}
+Received message classification: {'intents': [{'intent': 'Offer', 'confidence': 0.8470988273620605}], 'entities': [{'entity': 'sys-number', 'location': [24, 25], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [26, 30], 'value': 'milk', 'confidence': 1}, {'entity': 'sys-number', 'location': [35, 39], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78}, 'interpretation': {'numeric_value': 0.78, 'subtype': 'rational'}}, {'entity': 'sys-currency', 'location': [35, 43], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.78, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'How about if I sell you 1 milk for 0.78 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timeStamp': '2020-10-21T19:52:21.701Z'}, 'addressee': 'Human', 'speaker': 'Watson'}
+entered interpretMessage
+Received watsonResponse: {'intents': [{'intent': 'Offer', 'confidence': 0.8470988273620605}], 'entities': [{'entity': 'sys-number', 'location': [24, 25], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [26, 30], 'value': 'milk', 'confidence': 1}, {'entity': 'sys-number', 'location': [35, 39], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78}, 'interpretation': {'numeric_value': 0.78, 'subtype': 'rational'}}, {'entity': 'sys-currency', 'location': [35, 43], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.78, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'How about if I sell you 1 milk for 0.78 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timeStamp': '2020-10-21T19:52:21.701Z'}, 'addressee': 'Human', 'speaker': 'Watson', 'environmentUUID': 'abcdefg'}
+entered extractOfferFromEntities
+Received entityList: [{'entity': 'sys-number', 'location': [24, 25], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [26, 30], 'value': 'milk', 'confidence': 1}, {'entity': 'sys-number', 'location': [35, 39], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78}, 'interpretation': {'numeric_value': 0.78, 'subtype': 'rational'}}, {'entity': 'sys-currency', 'location': [35, 43], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.78, 'unit': 'USD'}}]
+Found entities: [{'entity': 'sys-number', 'location': [35, 39], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78}, 'interpretation': {'numeric_value': 0.78, 'subtype': 'rational'}, 'index': 2}, {'entity': 'sys-currency', 'location': [35, 43], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.78, 'unit': 'USD'}, 'index': 3}]
+entered extractPrice
+entities given: [{'entity': 'sys-number', 'location': [35, 39], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78}, 'interpretation': {'numeric_value': 0.78, 'subtype': 'rational'}, 'index': 2}, {'entity': 'sys-currency', 'location': [35, 43], 'value': '0.78', 'confidence': 1, 'metadata': {'numeric_value': 0.78, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.78, 'unit': 'USD'}, 'index': 3}]
+Returning price: {'value': 0.78, 'unit': 'USD'}
+Received price: {'value': 0.78, 'unit': 'USD'}
+Returning offer: {'quantity': {'milk': 1}, 'price': {'value': 0.78, 'unit': 'USD'}}
+cmd leaving interpretMessage: {'quantity': {'milk': 1}, 'price': {'value': 0.78, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'How about if I sell you 1 milk for 0.78 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timeStamp': 1603309942.6982107}}
+Received interpretation: {'quantity': {'milk': 1}, 'price': {'value': 0.78, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'How about if I sell you 1 milk for 0.78 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timeStamp': 1603309942.6982107}}
+Message from another seller. Need to make an offer!
+Bid message from processMessage: None
+Returning response: {'status': 'Acknowledged', 'interpretation': {'text': 'How about if I sell you 1 milk for 0.78 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timeStamp': 1603309942.6982107}}
+127.0.0.1 - - [21/Oct/2020 15:52:22] "[37mPOST /receiveMessage HTTP/1.1[0m" 200 -

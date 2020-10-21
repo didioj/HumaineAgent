@@ -1,7 +1,6 @@
 # Imports
 import importlib
 import json
-from cool_math3 import square
 import ibm_watson
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
@@ -86,10 +85,10 @@ def classifyMessage(input_):
 
 # convert watsons response to a usable JSON object
 def translateWatsonResponse(response, input_):
-
+    print("Entering translateWatsonResponse")
     output = response['output'] or {}
     output['input'] = input_
     output['addressee'] = input_['addressee']
     output['speaker'] = input_['speaker']
-
+    print("Returning Watson response:", output)
     return output
