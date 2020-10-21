@@ -145,12 +145,12 @@ def receiveMessage():
         }
         if message['speaker'] == agentName:
             print("This message is from me!")
-        else:
-            bidMessage = processMessage(message)
-            print("Bid message from processMessage:", bidMessage)
-            if bidMessage: # If warranted, proactively send a new negotiation message to the environment orchestrator
-                print("Sending message:", bidMessage)
-                sendMessage(bidMessage)
+        #else:
+        bidMessage = processMessage(message)
+        print("Bid message from processMessage:", bidMessage)
+        if bidMessage: # If warranted, proactively send a new negotiation message to the environment orchestrator
+            print("Sending message:", bidMessage)
+            sendMessage(bidMessage)
     else: # Either there's no body or the round is over.
         response = {
             'status': "Failed; round not active"

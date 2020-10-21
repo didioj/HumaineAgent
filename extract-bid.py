@@ -32,7 +32,7 @@ def interpretMessage(watsonResponse):
             elif watsonResponse['input']['role'] == 'seller':
                 cmd['type'] = "SellRequest"
     elif intents[0]['intent'] == "AcceptOffer" and intents[0]['confidence'] > 0.2:
-        cmd = {'type': "AcceptedOffer"}
+        cmd = {'type': "AcceptOffer"}
     elif intents[0]['intent'] == "RejectOffer" and intents[0]['confidence'] > 0.2:
         cmd = {'type': "RejectOffer"}
     elif intents[0]['intent'] == 'Information' and intents[0]['confidence'] > 0.2:
