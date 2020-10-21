@@ -277,11 +277,18 @@ def mayIRespond(interpretation):
 def calculateUtilityAgent(utilityInfo, bundle):
     utilityParams = utilityInfo['utility']
     util = 0
-    price = bundle['price']['value'] or 0
+    # check added here in case no price given
+    if 'price' in bundle:
+        price = bundle['price']['value']
+    else:
+        price = 0
 
     if bundle['quantity']:
         util = price
-        unit = bundle['price']['value'] or None
+        if 'price' in bundle:
+            unit = bundle['price']['value']
+        else:
+            unit = None
         if not unit: # Check units -- not really used, but a good practice in case we want
                      # to support currency conversion some day
             print("no currency units provided")
@@ -318,7 +325,7 @@ def generateBid(offer):
         'quantity': offer['quantity']
     }
 
-    if offer['price'] and offer['price']['value']: # The buyer included a proposed price, which we must take into account
+    if 'price' in offer and 'value' in offer['price']:#offer['price'] and offer['price']['value']: # The buyer included a proposed price, which we must take into account
         bundleCost = offer['price']['value'] - utility
         markupRatio = utility / bundleCost
 
@@ -455,7 +462,7 @@ def processMessage(message):
         elif ((interpretation['type'] == 'BuyOffer'
                 or interpretation['type'] == 'BuyRequest')
                 and mayIRespond(interpretation)): #The buyer evidently is making an offer or request; if permitted, generate a bid response
-            if 'speaker' not in bidHistory:
+            if speaker not in bidHistory: # check to see if speaker here should be a string
                 bidHistory[speaker] = []
             bidHistory[speaker].append(interpretation)
 
@@ -474,9 +481,21 @@ def processMessage(message):
             return bidResponse
         else:
             return None
-    elif role == 'buyer' and addressee != agentName:  # Message was not addressed to me, but is a buyer.
-                                                      # A more clever agent might try to steal the deal.
-        return None
+    elif role == 'buyer' and addressee != agentName:  # Message was not addressed to me, but is a buyer. A more clever agent might try to steal the deal.
+        if speaker not in bidHistory:
+            bidHistory[speaker] = []
+        bidHistory[speaker].append(interpretation)
+        bid = generateBid(interpretation)
+        bidResponse = {
+                'text': translateBid(bid, False), # Translate the bid into English
+                'speaker': agentName,
+                'role': "seller",
+                'addressee': speaker,
+                'environmentUUID': interpretation['metadata']['environmentUUID'],
+                'timestamp': (time.time() * 1000),
+                'bid': bid
+            }
+        return bidResponse
     elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
         return None
     return None
