@@ -1,0 +1,11 @@
+1. Fix typo in /receiverejection.
+
+2. If we receive a generic request for offers from the human,
+then in receiveMessage sleep for about 2 seconds, and if the other
+agent has not responded, make an offer, otherwise undercut their offer.
+
+3. What we're trying to avoid: human scamming the bot by constantly
+rejecting until minimum offer is reached. So an option is, maybe
+we can make it semi-random as to whether or not we continue to offer
+lower price or fix the price at a current point and offer a funny remark.
+And maybe if thet reject fixed price, we can try again.
