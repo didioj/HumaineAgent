@@ -35,7 +35,11 @@ for i in range(len(sys.argv)):
 rejectionMessages = [
   "No thanks. Your offer is much too low for me to consider.",
   "Forget it. That's not a serious offer.",
-  "Sorry. You're going to have to do a lot better than that!"
+  "Sorry. You're going to have to do a lot better than that!",
+  "That is daylight ROBBERY!"
+]
+minOfferMessages = [
+  "That's the best I can do. You won't find a better deal out there!"
 ]
 acceptanceMessages = [
   "You've got a deal! I'll sell you",
@@ -177,18 +181,19 @@ def receiveRejection():
         }
     elif negotiationState['active']: # We received a message and time remains in the round.
         message = request.json
+        print("Received message:", message)
         response = { # Acknowledge receipt of message from the environment orchestrator
             'status': 'Acknowledged',
             'message': message
         }
-        if (message['ratiolan']
-            and message['rational'] == 'Insufficient budget'
+        if (message['rationale']
+            and message['rationale'] == 'Insufficient budget'
             and message['bid']
             and message['bid']['type'] == "Accept"): # We tried to respond with an accept, but were rejected.
                                                      # So that the buyer will not interpret our apparent silence as rudeness, 
                                                      # explain to the Human that he/she were rejected due to insufficient budget.
             msg2 = json.loads(json.dumps(message))
-            del msg2['rational']
+            del msg2['rationale']
             del msg2['bid']
             msg2['timestamp'] = (time.time() * 1000)
             msg2['text'] = "I'm sorry, " + msg2['addressee'] + ". I was ready to make a deal, but apparently you don't have enough money left."
@@ -307,11 +312,17 @@ def calculateUtilityAgent(utilityInfo, bundle):
     
     utilityParams = utilityInfo['utility']
     util = 0
-    price = bundle['price']['value'] or 0
+    if 'price' in bundle:
+        price = bundle['price']['value'] 
+    else:
+        price = 0
 
     if bundle['quantity']:
         util = price
-        unit = bundle['price']['value'] or None
+        if 'price' in bundle:
+            unit = bundle['price']['value']
+        else:
+            unit = None
         if not unit: # Check units -- not really used, but a good practice in case we want
                      # to support currency conversion some day
             print("no currency units provided")
@@ -336,6 +347,10 @@ def generateBid(offer):
     minDicker = 0.10
     buyerName = offer['metadata']['speaker']
     
+    for bidBlock in bidHistory[buyerName]:
+        print("BidBlock:", bidBlock)
+        print("BidBlock['type']:", bidBlock['type'])
+    
     myRecentOffers = [bidBlock for bidBlock in bidHistory[buyerName] if bidBlock['type'] == "SellOffer"]
     print("My recent offers:",myRecentOffers)
     myLastPrice = None
@@ -345,6 +360,10 @@ def generateBid(offer):
     
     timeRemaining = (negotiationState['stopTime'] - (time.time() * 1000)) / 1000
     print("Remaining time:",timeRemaining)
+    
+    # need to add quantities to RejectOffer to calculate utility
+    if offer['type'] == 'RejectOffer':
+        offer['quantity'] = myRecentOffers[0]['quantity']
     utility = calculateUtilityAgent(utilityInfo, offer)
     print("Utility received:",utility)
 
@@ -355,10 +374,10 @@ def generateBid(offer):
         'quantity': offer['quantity']
     }
 
-    if offer['price'] and offer['price']['value']: # The buyer included a proposed price, which we must take into account
+    if 'price' in offer and 'value' in offer['price']: # The buyer included a proposed price, which we must take into account
         print("Bugyer proposed price! Going to consider it based on profit")
         bundleCost = offer['price']['value'] - utility
-        print("Calculated bundleCost::",bundleCost)
+        print("Calculated bundleCost:",bundleCost)
         markupRatio = utility / bundleCost
         print("Calculated markupRatio::", markupRatio)
 
@@ -381,7 +400,23 @@ def generateBid(offer):
     else: # The buyer didn't include a proposed price, leaving us free to consider how much to charge.
     # Set markup between 2 and 3 times the cost of the bundle and generate price accordingly.
         print("Buyer did not propose price. Going to generate price")
-        markupRatio = 2.0 + random.random()
+        # if lowering last offer, then reduce last markupRatio
+        if myLastPrice:
+            # if not making enough profit, set type to MinMarkup
+            minMarkupRatio = 0.5
+            if myLastPrice/utility*-1 <= minMarkupRatio+1:
+                print("Reached minMarkupRatio:", myLastPrice/utility*-1)
+                bid['type'] = 'MinMarkup'
+                bid['price'] = None
+                return bid
+            
+            # reversed the calculation to find the previous random.random() value
+            lastMarkupRatio = 1 - myLastPrice/utility - 2
+            print("Calcuated last markupRatio:", lastMarkupRatio)
+            markupRatio = 2.0 + (lastMarkupRatio * random.random())
+        else: 
+            markupRatio = 2.0 + random.random()
+        print("Going to markup price by", markupRatio)
         bid['type'] = 'SellOffer'
         bid['price'] = {
             'unit': utilityInfo['currencyUnit'],
@@ -454,6 +489,7 @@ def processMessage(message):
             print("Adding message to bidHistory")
             if bidHistory[addressee]:
                 bidHistory[addressee].append(interpretation)
+            print("bidHistory:", bidHistory)
     elif addressee == agentName and role == 'buyer': # Message was addressed to me by a buyer; continue to process
         print("Message from buyer to me")
         messageResponse = {
@@ -466,6 +502,7 @@ def processMessage(message):
         }
         if interpretation['type'] == 'AcceptOffer': # Buyer accepted my offer! Deal with it.
             print("Buyer accepted offer")
+            print("Checking bidHistory:", bidHistory)
             if bidHistory[speaker] and len(bidHistory[speaker]): # I actually did make an offer to this buyer;
                                                                  # fetch details and confirm acceptance
                 bidHistoryIndividual = [bid for bid in bidHistory[speaker] if bid['metadata']['speaker'] == agentName and bid['type'] == "SellOffer"]
@@ -490,10 +527,25 @@ def processMessage(message):
             if bidHistory[speaker] and len(bidHistory[speaker]): # Check whether I made an offer to this buyer
                 bidHistoryIndividual = [bid for bid in bidHistory[speaker] if bid['metadata']['speaker'] == agentName and bid['type'] == "SellOffer"]
                 if len(bidHistoryIndividual):
-                    messageResponse['text'] = "I'm sorry you rejected my bid. I hope we can do business in the near future."
+                    if speaker not in bidHistory:
+                        bidHistory[speaker] = []
+                    bidHistory[speaker].append(interpretation)
+                    bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
+                                                      # and the current state of negotiation with the buyer
+                    bidResponse = {
+                        'text': translateBid(bid, False), # Translate the bid into English
+                        'speaker': agentName,
+                        'role': "seller",
+                        'addressee': speaker,
+                        'environmentUUID': interpretation['metadata']['environmentUUID'],
+                        'timestamp': (time.time() * 1000),
+                        'bid': bid
+                    }
+                    # messageResponse['text'] = "I'm sorry you rejected my bid. I hope we can do business in the near future."
                     # TODO: make another offer
-                    print("Buyer didn't like our offer. Need to make another offer!")
-                    bidHistory[speaker] = None
+                    # print("Buyer didn't like our offer. Need to make another offer!")
+                    # bidHistory[speaker] = None
+                    return bidResponse
                 else:
                     messageResponse['text'] = "There must be some confusion; I'm not aware of any outstanding offers."
             else:
@@ -519,7 +571,7 @@ def processMessage(message):
                 or interpretation['type'] == 'BuyRequest')
                 and mayIRespond(interpretation)): #The buyer evidently is making an offer or request; if permitted, generate a bid response
             print("Buyer is making an BuyRequest")
-            if 'speaker' not in bidHistory:
+            if speaker not in bidHistory:
                 bidHistory[speaker] = []
             bidHistory[speaker].append(interpretation)
 
@@ -596,6 +648,9 @@ def translateBid(bid, confirm):
     elif bid['type'] == 'Reject':
         print("bid is a Reject")
         text = selectMessage(rejectionMessages)
+    elif bid['type'] == 'MinMarkup':
+        print("bid is a minMarkup")
+        text = selectMessage(minOfferMessages)
     elif bid['type'] == 'Accept':
         print("bid is a Accept")
         if confirm:

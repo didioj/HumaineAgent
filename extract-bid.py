@@ -115,8 +115,6 @@ def extractPrice(entities):
                 'value': eBlock['metadata']['numeric_value'],
                 'unit': 'USD'
             }
-    if price is None:
-        price = {'value':0, 'unit':'USD'}
     print("Returning price:", price)
     return price
 
