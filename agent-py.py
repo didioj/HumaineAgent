@@ -484,7 +484,7 @@ def processMessage(message):
         # Otherwise, add the message to the bid history with this negotiation partner
         print("Received own message")
         if interpretation['type'] == 'AcceptOffer' or interpretation['type'] == 'RejectOffer':
-            bidHistory[addressee] = None
+            bidHistory[addressee] = [] # originally was none, but that created lots of problems and doesn't make sense
             print("Offer complete. Clearing history")
         else:
             print("Adding message to bidHistory")
@@ -516,7 +516,7 @@ def processMessage(message):
                     }
                     messageResponse['text'] = translateBid(bid, True)
                     messageResponse['bid'] = bid
-                    bidHistory[speaker] = None
+                    bidHistory[speaker] = [] # originally was none, but that created lots of problems and doesn't make sense
                 else: # Didn't have any outstanding offers with this buyer
                     messageResponse['text'] = "I'm sorry, but I'm not aware of any outstanding offers."
             else: # Didn't have any outstanding offers with this buyer
