@@ -312,8 +312,9 @@ def calculateUtilityAgent(utilityInfo, bundle):
     
     utilityParams = utilityInfo['utility']
     util = 0
+    # check added here in case no price given
     if 'price' in bundle:
-        price = bundle['price']['value'] 
+        price = bundle['price']['value']
     else:
         price = 0
 
@@ -375,7 +376,7 @@ def generateBid(offer):
     }
 
     if 'price' in offer and 'value' in offer['price']: # The buyer included a proposed price, which we must take into account
-        print("Bugyer proposed price! Going to consider it based on profit")
+        print("Buyer proposed price! Going to consider it based on profit")
         bundleCost = offer['price']['value'] - utility
         print("Calculated bundleCost:",bundleCost)
         markupRatio = utility / bundleCost
@@ -591,11 +592,22 @@ def processMessage(message):
         else:
             print("Message not processed. Edge case?")
             return None
-    elif role == 'buyer' and addressee != agentName:  # Message was not addressed to me, but is a buyer.
-                                                      # A more clever agent might try to steal the deal.
-        # TODO: Make an offer
+    elif role == 'buyer' and addressee != agentName:  # Message was not addressed to me, but is a buyer. A more clever agent might try to steal the deal.
+        if speaker not in bidHistory:
+            bidHistory[speaker] = []
+        bidHistory[speaker].append(interpretation)
+        bid = generateBid(interpretation)
+        bidResponse = {
+                'text': translateBid(bid, False), # Translate the bid into English
+                'speaker': agentName,
+                'role': "seller",
+                'addressee': speaker,
+                'environmentUUID': interpretation['metadata']['environmentUUID'],
+                'timestamp': (time.time() * 1000),
+                'bid': bid
+            }
         print("Message from buyer not addressed to me. Need to make an offer!")
-        return None
+        return bidResponse
     elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
         # TODO: Make an offer
         print("Message from another seller. Need to make an offer!")

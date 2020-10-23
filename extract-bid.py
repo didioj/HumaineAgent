@@ -11,6 +11,9 @@ def interpretMessage(watsonResponse):
     print("entered interpretMessage")
     print("Received watsonResponse:", watsonResponse)
 
+    print(watsonResponse['intents'])
+    print(watsonResponse['entities'])
+    print(watsonResponse['input'])
     intents = watsonResponse['intents']
     entities = watsonResponse['entities']
     cmd = {}
@@ -55,10 +58,10 @@ def extractAddressee(entities):
     addressees = {}
     addressee = None
     for eBlock in entities:
-        if eBlock['entity'] == "avatarName":
+        if eBlock['entity'] == "avatarName": # same here
             addressees.append(eBlock['value'])
     
-    if 'agentName' in addressees.keys():
+    if 'agentName' in addressees: # check to see if this agentName is just placeholder or is crucial
         addressee = addressees['agentName']
     else:
         addressee = None
