@@ -20,6 +20,7 @@ with open('./appSettings.json') as f:
     appSettings = json.load(f)
 myPort = appSettings['defaultPort']
 agentName = appSettings['name'] or "Agent007"
+opponentName = "Opponent"
 defaultRole = 'buyer'
 defaultSpeaker = 'Jeff'
 defaultEnvironmentUUID = 'abcdefg'
@@ -75,6 +76,10 @@ def setUtility():
         print("Info received:", utilityInfo)
         global agentName
         agentName = utilityInfo['name'] or agentName
+        if agentName == 'Watson':
+            opponentName == 'Celia'
+        elif agentName == 'Celia':
+            opponentName == 'Watson'
         msg = {
             'status': 'Acknowledged',
             'utility': utilityInfo
@@ -594,56 +599,37 @@ def processMessage(message):
             return None
     elif role == 'buyer' and addressee != agentName:  # Message was not addressed to me, but is a buyer. A more clever agent might try to steal the deal.
         # Ok, let's first wait and see if the other agent has responded
-        time.sleep(3)
+        '''time.sleep(3)
         # if the entry for the other speaker is not empty
-        if agentName == 'Watson':
-            opponentName = 'Celia'
-        else:
-            opponentName = 'Watson'
         if opponentName in bidHistory: # this might cause problems if the history is not properly cleared for other seller
                                        # solution could be to just check the last bid?
-            print("\nFOUND OPPONENT NAME\n")
             return None
-        else:
-            print("\nNOT FOUND OPPONENT NAME", opponentName, agentName, "\n")
-            print("\n\nBIDHISTORY IS CURRENTLY", bidHistory, "\n\n")
-            if speaker not in bidHistory:
-                bidHistory[speaker] = []
-            bidHistory[speaker].append(interpretation)
-            bid = generateBid(interpretation)
-            bidResponse = {
-                    'text': translateBid(bid, False), # Translate the bid into English
-                    'speaker': agentName,
-                    'role': "seller",
-                    'addressee': speaker,
-                    'environmentUUID': interpretation['metadata']['environmentUUID'],
-                    'timestamp': (time.time() * 1000),
-                    'bid': bid
-                }
-            print("Message from buyer not addressed to me. Need to make an offer!")
-            return bidResponse
-    elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
-        print("\n\nRECEIVED MESSAGE FROM OTHER SELLER\n\n")
-        # TODO: Make an offer
-        # below block adds history of seller responses for use by the program
+        else:'''
         if speaker not in bidHistory:
             bidHistory[speaker] = []
         bidHistory[speaker].append(interpretation)
-        print("\n\nBIDHISTORY IS NOW", bidHistory, "\n\n")
-        offeredPrice = interpretation['price']['value']
-        print("The other seller offered this price", offeredPrice)
-        counterPrice = offeredPrice - 0.10# this calculation will need to be adjusted
+        bid = generateBid(interpretation)
         bidResponse = {
-                    'text': "I will give you a counteroffer of " + str(quantize(counterPrice, 2)) + " USD.", # Translate the bid into English
-                    'speaker': agentName,
-                    'role': "seller",
-                    'addressee': speaker,
-                    'environmentUUID': interpretation['metadata']['environmentUUID'],
-                    'timestamp': (time.time() * 1000),
-                    'bid': quantize(counterPrice, 2)
-                }
-        #print("Message from another seller. Need to make an offer!")
+                'text': translateBid(bid, False), # Translate the bid into English
+                'speaker': agentName,
+                'role': "seller",
+                'addressee': speaker,
+                'environmentUUID': interpretation['metadata']['environmentUUID'],
+                'timestamp': (time.time() * 1000),
+                'bid': bid
+            }
+        print("Message from buyer not addressed to me. Need to make an offer!")
         return bidResponse
+    elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
+        # TODO: Make an offer
+        # below block adds history of seller responses for use by the program
+        '''if speaker not in bidHistory:
+            bidHistory[speaker] = []
+        bidHistory[speaker].append(interpretation)'''
+        offeredPrice = interpretation['price']
+        print("The other seller offered this price", offeredPrice)
+        #print("Message from another seller. Need to make an offer!")
+        return None
     return None
 
 
