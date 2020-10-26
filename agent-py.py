@@ -38,18 +38,32 @@ rejectionMessages = [
   "Sorry. You're going to have to do a lot better than that!",
   "That is daylight ROBBERY!"
 ]
+
+# chance of fixing price and making an excuse when asked for better offer
+minOfferExcuseMessages = [
+  "All of our products are ORGANIC!",
+  "All of our products are NON-GMO!",
+  "Destiny has brought you to me, so I gave you a good deal.",
+  "I have 5 cats at home to feed."
+]
+
 minOfferMessages = [
   "That's the best I can do. You won't find a better deal out there!"
 ]
+
+tauntMessages = [
+  "Their products must be of low quality if they're so cheap!"
+]
+
 acceptanceMessages = [
   "You've got a deal! I'll sell you",
   "You've got it! I'll let you have",
   "I accept your offer. Just to confirm, I'll give you"
 ]
 confirmAcceptanceMessages = [
-  "I confirm that I'm selling you ",
-  "I'm so glad! This is to confirm that I'll give you ",
-  "Perfect! Just to confirm, I'm giving you "
+  "I confirm that I'm selling you",
+  "I'm so glad! This is to confirm that I'll give you",
+  "Perfect! Just to confirm, I'm giving you"
 ]
 negotiationState = {
   "active": False,
@@ -297,6 +311,8 @@ def reportUtility():
 # right circumstances. You can do better than this!
 def mayIRespond(interpretation):
     print("Entering mayIRespond")
+    print("Need to make it so can't respond if just responded and human hasn't responded. \
+            Check history to see if human responded?")
     print("Returning reponse:", (interpretation and interpretation['metadata']['role'] and
             (interpretation['metadata']['addressee'] == agentName or not interpretation['metadata']['addressee']) ))
     return (interpretation and interpretation['metadata']['role'] and
@@ -312,15 +328,15 @@ def calculateUtilityAgent(utilityInfo, bundle):
     
     utilityParams = utilityInfo['utility']
     util = 0
-    if 'price' in bundle:
-        price = bundle['price']['value'] 
-    else:
+    if 'price' not in bundle or bundle['type'] == 'SellOffer':
         price = 0
+    else:
+        price = bundle['price']['value'] 
 
     if bundle['quantity']:
         util = price
         if 'price' in bundle:
-            unit = bundle['price']['value']
+            unit = bundle['price']['unit']
         else:
             unit = None
         if not unit: # Check units -- not really used, but a good practice in case we want
@@ -345,25 +361,30 @@ def generateBid(offer):
     print("Entering generateBid")
     print("Received offer:", offer)
     minDicker = 0.10
-    buyerName = offer['metadata']['speaker']
+    speaker = offer['metadata']['speaker']
+    humanName = None 
+    if offer['metadata']['role'] == 'buyer':
+        humanName = speaker
+    else:
+        humanName = offer['metadata']['addressee']
     
-    for bidBlock in bidHistory[buyerName]:
+    for bidBlock in bidHistory[humanName]:
         print("BidBlock:", bidBlock)
         print("BidBlock['type']:", bidBlock['type'])
     
-    myRecentOffers = [bidBlock for bidBlock in bidHistory[buyerName] if bidBlock['type'] == "SellOffer"]
-    print("My recent offers:",myRecentOffers)
-    myLastPrice = None
-    if len(myRecentOffers):
-        myLastPrice = myRecentOffers[len(myRecentOffers) - 1]['price']['value']
-    print("My last price:",myLastPrice)
+    recentOffers = [bidBlock for bidBlock in bidHistory[humanName] if bidBlock['type'] == "SellOffer"]
+    print("Recent offers:", recentOffers)
+    lastPrice = None
+    if len(recentOffers):
+       lastPrice = recentOffers[len(recentOffers) - 1]['price']['value']
+    print("Last price:", lastPrice)
     
     timeRemaining = (negotiationState['stopTime'] - (time.time() * 1000)) / 1000
     print("Remaining time:",timeRemaining)
     
-    # need to add quantities to RejectOffer to calculate utility
+    # need to add offer quantities to RejectOffer to calculate utility
     if offer['type'] == 'RejectOffer':
-        offer['quantity'] = myRecentOffers[0]['quantity']
+        offer['quantity'] = recentOffers[0]['quantity']
     utility = calculateUtilityAgent(utilityInfo, offer)
     print("Utility received:",utility)
 
@@ -373,58 +394,149 @@ def generateBid(offer):
     bid = {
         'quantity': offer['quantity']
     }
-
-    if 'price' in offer and 'value' in offer['price']: # The buyer included a proposed price, which we must take into account
-        print("Bugyer proposed price! Going to consider it based on profit")
+    
+    # check that offer is a BuyOffer before deciding 
+    if offer['type'] == 'BuyOffer' and 'price' in offer and 'value' in offer['price']: # The buyer included a proposed price, which we must take into account
+        print("Bugyer proposed price! Going to consider it based on bundleCost (profit)")
         bundleCost = offer['price']['value'] - utility
         print("Calculated bundleCost:",bundleCost)
         markupRatio = utility / bundleCost
-        print("Calculated markupRatio::", markupRatio)
+        print("Calculated markupRatio:", markupRatio)
 
         if (markupRatio > 2.0
-            or (myLastPrice != None
-            and abs(offer['price']['value'] - myLastPrice) < minDicker)): # If our markup is large, accept the offer
-
+            or (lastPrice != None
+            and abs(offer['price']['value'] - lastPrice) < minDicker)): # If our markup is large, accept the offer
+            print("Proposed price is good. Going to make an accept bid")
             bid['type'] = 'Accept'
             bid['price'] = offer['price']
-
         elif markupRatio < -0.5: # If buyer's offer is substantially below our cost, reject their offer
+            print("Proposed price is too low. Going to reject")
             bid['type'] = 'Reject'
             bid['price'] = None
         else: # If buyer's offer is in a range where an agreement seems possible, generate a counteroffer
+            print("Buyer's offer is workable. Going to generate a SellOffer")
             bid['type'] = 'SellOffer'
-            bid['price'] = generateSellPrice(bundleCost, offer['price'], myLastPrice, timeRemaining)
+            bid['price'] = generateSellPrice(bundleCost, offer['price'], lastPrice, timeRemaining)
             if bid['price']['value'] < offer['price']['value'] + minDicker:
                 bid['type'] = 'Accept'
                 bid['price'] = offer['price']
     else: # The buyer didn't include a proposed price, leaving us free to consider how much to charge.
     # Set markup between 2 and 3 times the cost of the bundle and generate price accordingly.
-        print("Buyer did not propose price. Going to generate price")
+    # make price based on the last offer price if exists
+    # handles other agent's SellOffer
+        print("Buyer did not propose price or other agent made an offer. Going to generate price")
         # if lowering last offer, then reduce last markupRatio
-        if myLastPrice:
+        if lastPrice:
+            print("A SellOffer has been made before")
             # if not making enough profit, set type to MinMarkup
-            minMarkupRatio = 0.5
-            if myLastPrice/utility*-1 <= minMarkupRatio+1:
-                print("Reached minMarkupRatio:", myLastPrice/utility*-1)
-                bid['type'] = 'MinMarkup'
-                bid['price'] = None
-                return bid
+            minMarkupRatio = 0.3
             
-            # reversed the calculation to find the previous random.random() value
-            lastMarkupRatio = 1 - myLastPrice/utility - 2
-            print("Calcuated last markupRatio:", lastMarkupRatio)
-            markupRatio = 2.0 + (lastMarkupRatio * random.random())
-        else: 
+             # find my last offer 
+            myRecentOffers = [bidBlock for bidBlock in bidHistory[humanName] 
+                                if (bidBlock['type'] == "SellOffer" and bidBlock['metadata']['speaker'] == agentName)]
+            print("My recent offers:",  myRecentOffers)
+            myLastPrice = None
+
+            if len(myRecentOffers):
+                print("We've made a SellOffer before!")
+                myLastPrice = myRecentOffers[len(myRecentOffers) - 1]['price']['value']
+                print("myLastPrice:", myLastPrice)
+                bid['price'] = myRecentOffers[len(myRecentOffers) - 1]['price']
+                bid['type'] = "MinMarkup"
+                if myLastPrice <= lastPrice:
+                    print("Our offer is better than or equal to this offer")
+                    # passing on our last offer and our name
+                    bid['speaker'] = agentName
+                else:
+                    print("Our offer was worse. Reached minMarkupRatio so going to match or repeat our last offer")
+                    # passing on other agent's name
+                    bid['speaker'] = speaker
+                    # to match other agent's deal or reject
+                    if lastPrice > utility*-1: # positive profit
+                        bid['action'] = 'match'
+                        bid['price']['value'] = lastPrice
+                    else:
+                        bid['action'] = 'reject' # negative profit. Going to taunt
+            # price can still be reduced
+            elif lastPrice/utility*-1 > minMarkupRatio+1:
+                # reversed the calculation to find the previous random.random() value
+                lastMarkupRatio = 1 - lastPrice/utility - 2
+                print("Calcuated last markupRatio:", lastMarkupRatio)
+                # reduce by 10%-25% -> ratio = 75-90%
+                markupRatio = 2.0 + (lastMarkupRatio * (random.random() * 0.15 + 0.75))
+                print("Going to markup price by", markupRatio)
+                bid['type'] = 'SellOffer'
+                
+                # if low markupRatio, 20% chance of fixing price and making an excuse
+                if (offer['type'] == 'RejectOffer' and offer['metadata']['addressee'] == agentName and
+                        markupRatio < 2.5 and random.random() < 0.2):
+                    bid['type'] = 'MinMarkupExcuse'
+
+                bid['price'] = {
+                    'unit': utilityInfo['currencyUnit'],
+                    'value': quantize((1.0 - markupRatio) * utility, 2)
+                }
+            else: # price can't be reduced
+                print("Reached minMarkupRatio:", lastPrice/utility*-1)
+                bid['type'] = 'MinMarkup'
+                # if we made a SellOffer, 
+                #   if we proposed lastPrice, reiterate it's the best we can do
+                #   if other agent proposed lastPrice, taunt them
+                # if no SellOffer history, generate price
+                if humanName in bidHistory:
+                    # find my last offer 
+                    myRecentOffers = [bidBlock for bidBlock in bidHistory[humanName] 
+                                        if (bidBlock['type'] == "SellOffer" and bidBlock['metadata']['speaker'] == agentName)]
+                    print("My recent offers:",  myRecentOffers)
+                    myLastPrice = None
+
+                    if len(myRecentOffers):
+                        print("We've made a SellOffer before!")
+                        # reiterate it's the best we can do
+                        myLastPrice = myRecentOffers[len(myRecentOffers) - 1]['price']['value']
+                        print("myLastPrice:", myLastPrice)
+                        bid['price'] = myRecentOffers[len(myRecentOffers) - 1]['price']
+                        if myLastPrice <= lastPrice:
+                            print("Our offer is better than or equal to this offer")
+                            # passing on our last offer and our name
+                            bid['speaker'] = agentName
+                        else:
+                            print("Our offer was worse. Reached minMarkupRatio so  \
+                                going to match or repeat our last offer")
+                            # passing on other agent's name
+                            bid['speaker'] = speaker
+                            # to match other agent's deal or reject
+                            if lastPrice > utility*-1: # positive profit
+                                bid['action'] = 'match'
+                                bid['price']['value'] = lastPrice
+                            else:
+                                bid['action'] = 'reject' # negative profit. Going to taunt
+                    else: 
+                        print("We've never made a SellOffer before. Going to match or propose minMarkup price")
+                        # State that the minMarkupRatio price is the best we can do.
+                        bid['speaker'] = speaker # other agent made the minOffer
+                        if lastPrice > utility*-1: # positive profit
+                            bid['action'] = 'match'
+                            bid['price'] = offer['price']
+                            bid['price']['value'] = lastPrice
+                        else:
+                            bid['action'] = 'reject'
+                            bid['price'] = offer['price']
+                            # propose minMarkupRatio price
+                            bid['price']['value'] = quantize((utility*-1)*(1+minMarkupRatio), 2)
+                else:
+                    print("ERROR: edge case other agent made an offer but human not in bidHistory")
+        else:
+            print("No history of any SellOffers. Going to propose price")
             markupRatio = 2.0 + random.random()
-        print("Going to markup price by", markupRatio)
-        bid['type'] = 'SellOffer'
-        bid['price'] = {
-            'unit': utilityInfo['currencyUnit'],
-            'value': quantize((1.0 - markupRatio) * utility, 2)
-        }
+            print("Going to markup price by", markupRatio)
+            bid['type'] = 'SellOffer'
+            bid['price'] = {
+                'unit': utilityInfo['currencyUnit'],
+                'value': quantize((1.0 - markupRatio) * utility, 2)
+            }
     print("Returning bid:", bid)
     return bid
-
 
 # *** generateSellPrice()
 # Generate a bid price that is sensitive to cost, negotiation history with this buyer, and time remaining in round
@@ -484,7 +596,7 @@ def processMessage(message):
         print("Received own message")
         if interpretation['type'] == 'AcceptOffer' or interpretation['type'] == 'RejectOffer':
             bidHistory[addressee] = None
-            print("Offer complete. Clearing history")
+            print("We accepted/rejected offer. Clearing bidHistory")
         else:
             print("Adding message to bidHistory")
             if bidHistory[addressee]:
@@ -503,18 +615,23 @@ def processMessage(message):
         if interpretation['type'] == 'AcceptOffer': # Buyer accepted my offer! Deal with it.
             print("Buyer accepted offer")
             print("Checking bidHistory:", bidHistory)
-            if bidHistory[speaker] and len(bidHistory[speaker]): # I actually did make an offer to this buyer;
+            if speaker in bidHistory and len(bidHistory[speaker]): # I actually did make an offer to this buyer;
                                                                  # fetch details and confirm acceptance
-                bidHistoryIndividual = [bid for bid in bidHistory[speaker] if bid['metadata']['speaker'] == agentName and bid['type'] == "SellOffer"]
+                bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
+                                            if (bid['metadata']['speaker'] == agentName and bid['type'] == "SellOffer")]
+                print("Our SellOffers:", bidHistoryIndividual)
                 if len(bidHistoryIndividual):
                     acceptedBid = bidHistoryIndividual[-1]
+                    print("acceptedBid:", acceptedBid)
                     bid = {
                         'price': acceptedBid['price'],
                         'quantity': acceptedBid['quantity'],
                         'type': "Accept"
                     }
+                    print("Sending bid to translate:", bid)
                     messageResponse['text'] = translateBid(bid, True)
                     messageResponse['bid'] = bid
+                    print("Clearing bidHistory")
                     bidHistory[speaker] = None
                 else: # Didn't have any outstanding offers with this buyer
                     messageResponse['text'] = "I'm sorry, but I'm not aware of any outstanding offers."
@@ -524,11 +641,11 @@ def processMessage(message):
             return messageResponse
         elif interpretation['type'] == 'RejectOffer': # The buyer claims to be rejecting an offer I made; deal with it
             print("Buyer rejected offer")
-            if bidHistory[speaker] and len(bidHistory[speaker]): # Check whether I made an offer to this buyer
-                bidHistoryIndividual = [bid for bid in bidHistory[speaker] if bid['metadata']['speaker'] == agentName and bid['type'] == "SellOffer"]
+            if speaker in bidHistory and len(bidHistory[speaker]): # Check whether I made an offer to this buyer
+                bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
+                                        if (bid['metadata']['speaker'] == agentName and bid['type'] == "SellOffer")]
+                print("Our SellOffers:", bidHistoryIndividual)
                 if len(bidHistoryIndividual):
-                    if speaker not in bidHistory:
-                        bidHistory[speaker] = []
                     bidHistory[speaker].append(interpretation)
                     bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
                                                       # and the current state of negotiation with the buyer
@@ -541,10 +658,8 @@ def processMessage(message):
                         'timestamp': (time.time() * 1000),
                         'bid': bid
                     }
-                    # messageResponse['text'] = "I'm sorry you rejected my bid. I hope we can do business in the near future."
-                    # TODO: make another offer
                     # print("Buyer didn't like our offer. Need to make another offer!")
-                    # bidHistory[speaker] = None
+                    print("Returning bidResponse:", bidResponse)
                     return bidResponse
                 else:
                     messageResponse['text'] = "There must be some confusion; I'm not aware of any outstanding offers."
@@ -571,7 +686,7 @@ def processMessage(message):
                 or interpretation['type'] == 'BuyRequest')
                 and mayIRespond(interpretation)): #The buyer evidently is making an offer or request; if permitted, generate a bid response
             print("Buyer is making an BuyRequest")
-            if speaker not in bidHistory:
+            if speaker not in bidHistory or not bidHistory[speaker]:
                 bidHistory[speaker] = []
             bidHistory[speaker].append(interpretation)
 
@@ -593,12 +708,48 @@ def processMessage(message):
             return None
     elif role == 'buyer' and addressee != agentName:  # Message was not addressed to me, but is a buyer.
                                                       # A more clever agent might try to steal the deal.
-        # TODO: Make an offer
-        print("Message from buyer not addressed to me. Need to make an offer!")
+        
+        print("Message from buyer not addressed to me. Need to wait for other agent to respond")
+        if interpretation['type'] == 'AcceptOffer':
+            bidHistory[speaker] = None
+            print("Other agent accepted/rejected offer. Clearing bidHistory")
+        else: # Add to bidHistory
+            if speaker not in bidHistory or not bidHistory[speaker]:
+                bidHistory[speaker] = []
+            bidHistory[speaker].append(interpretation)
+            print("Added to bidHistory:", bidHistory)
+            
+            print("Delay, respond or cancel")
         return None
     elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
         # TODO: Make an offer
+        
         print("Message from another seller. Need to make an offer!")
+        print("Message type:", interpretation['type'])
+        time.sleep(2)
+        # If other agent makes a sell offer, 
+        if interpretation['type'] == 'SellOffer' or interpretation['type'] == 'MinOffer':
+            print("Other agent made a sell offer!")
+            if addressee not in bidHistory:
+                bidHistory[addressee] = []
+            bidHistory[addressee].append(interpretation)
+            bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
+                                              # and the current state of negotiation with the buyer
+            bidResponse = {
+                'text': translateBid(bid, False), # Translate the bid into English
+                'speaker': agentName,
+                'role': "seller",
+                'addressee': addressee,
+                'environmentUUID': interpretation['metadata']['environmentUUID'],
+                'timestamp': (time.time() * 1000),
+                'bid': bid
+            }
+            
+            print("Returning bidResponse:", bidResponse)
+            return bidResponse
+        elif interpretation['type'] == 'AcceptOffer':
+            bidHistory[addressee] = None
+            print("Other agent accepted/rejected offer. Clearing bidHistory")
         return None
     return None
 
@@ -648,9 +799,43 @@ def translateBid(bid, confirm):
     elif bid['type'] == 'Reject':
         print("bid is a Reject")
         text = selectMessage(rejectionMessages)
+    elif bid['type'] == 'MinMarkupExcuse':
+        print("bid is a minMarkupExcuse")
+        text += selectMessage(minOfferExcuseMessages) + ' '
+        text += str(bid['price']['value']) + " " + str(bid['price']['unit']) + " for "
+        for good in bid['quantity'].keys():
+            text += str(bid['quantity'][good]) + " " + good + " "
+        text += "is already a great deal."
+        
     elif bid['type'] == 'MinMarkup':
         print("bid is a minMarkup")
-        text = selectMessage(minOfferMessages)
+        # identify who made the min offer and respond accordingly
+        if bid['speaker'] == agentName:
+            print("min offer was made by us!")
+            text += "My offer for " 
+            for good in bid['quantity'].keys():
+                text += str(bid['quantity'][good]) + " " + good + " "
+                
+            text += "stands at " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + ". "
+            text += selectMessage(minOfferMessages)
+        else:
+            print("min offer was made by other agent")
+            # match the other agent's deal (lower than our min markupRatio so can't do better)
+            if bid['action'] == 'match':
+                print("Going to match other agent's offer")
+                text += 'I will also offer you '
+                for good in bid['quantity'].keys():
+                    text += str(bid['quantity'][good]) + " " + good + ' '
+                text += "for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + ". "
+                text += "Our products are organic and Non-GMO."
+            elif bid['action'] == 'reject': # other agent is losing money so don't match
+                # state our best offer and taunt other agent
+                text += str(bid['price']['value']) + " " + str(bid['price']['unit']) + " for "
+                for good in bid['quantity'].keys():
+                    text += str(bid['quantity'][good]) + " " + good + " "
+                text += "is my best offer. "
+                text += selectMessage(tauntMessages)
+
     elif bid['type'] == 'Accept':
         print("bid is a Accept")
         if confirm:

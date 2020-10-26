@@ -13,6 +13,8 @@ def interpretMessage(watsonResponse):
 
     intents = watsonResponse['intents']
     entities = watsonResponse['entities']
+    print("intents: ", intents)
+    print("entities: ", entities)
     cmd = {}
 
     if intents[0]['intent'] == "Offer" and intents[0]['confidence'] > 0.2:
@@ -35,6 +37,14 @@ def interpretMessage(watsonResponse):
         cmd = {'type': "AcceptOffer"}
     elif intents[0]['intent'] == "RejectOffer" and intents[0]['confidence'] > 0.2:
         cmd = {'type': "RejectOffer"}
+    elif intents[0]['intent'] == "MinOffer" and intents[0]['confidence'] > 0.2:
+        extractedOffer = extractOfferFromEntities(entities)
+        cmd = {
+            'quantity': extractedOffer['quantity']
+        }
+        if extractedOffer['price']:
+            cmd['price'] = extractedOffer['price']
+        cmd['type'] = "MinOffer"
     elif intents[0]['intent'] == 'Information' and intents[0]['confidence'] > 0.2:
         cmd = {'type': "Information"}
     else:
@@ -52,13 +62,13 @@ def interpretMessage(watsonResponse):
 def extractAddressee(entities):
     print("entered extractAddressee")
     print("Received entities:", entities)
-    addressees = {}
+    addressees = []
     addressee = None
     for eBlock in entities:
         if eBlock['entity'] == "avatarName":
             addressees.append(eBlock['value'])
     
-    if 'agentName' in addressees.keys():
+    if 'agentName' in addressees:
         addressee = addressees['agentName']
     else:
         addressee = None
