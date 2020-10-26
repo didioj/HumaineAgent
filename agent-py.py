@@ -629,6 +629,11 @@ def processMessage(message):
         if speaker not in bidHistory:
             bidHistory[speaker] = []
         bidHistory[speaker].append(interpretation)
+        if not 'Human' in bidHistory:
+            bidHistory['Human'] = [interpretation]
+        else:
+            bidHistory['Human'].append(interpretation)# this change is experimental and may cause problems.
+        time.sleep(2)
         print("\n\nBIDHISTORY IS NOW", bidHistory, "\n\n")
         offeredPrice = interpretation['price']['value']
         print("The other seller offered this price", offeredPrice)
