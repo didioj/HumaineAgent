@@ -88,6 +88,8 @@ def extractOfferFromEntities(entityList):
     quantity = {}
     state = None
     amount = None
+    foundGood = False
+    nameFoundGood = None
 
     for i, eBlock in enumerate(entities):
         entities[i]['index'] = i
@@ -102,12 +104,21 @@ def extractOfferFromEntities(entityList):
             state = None
             removedIndices.append(i - 1)
             removedIndices.append(i)
+        # this below block is intended to address the issue where a buyer
+        # can issue a generic request for a type of product
+        # could cause issues with
+        if eBlock['entity'] == 'good':
+            foundGood = True
+            nameFoundGood = eBlock['value']
     
     entities = [entity for entity in entities if entity['index'] not in removedIndices]
     print("Found entities:", entities)
     price = extractPrice(entities)
     print("Received price:", price)
     print("Returning offer:", {'quantity': quantity, 'price': price})
+    # we haven't isolated a quantity from the offer, so it must be an open request for offers
+    if not quantity:
+            quantity = {nameFoundGood: 'indef'}
     return {'quantity': quantity, 'price': price}
 
 
