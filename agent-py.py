@@ -397,7 +397,7 @@ def generateBid(offer):
     
     # check that offer is a BuyOffer before deciding 
     if offer['type'] == 'BuyOffer' and 'price' in offer and 'value' in offer['price']: # The buyer included a proposed price, which we must take into account
-        print("Bugyer proposed price! Going to consider it based on bundleCost (profit)")
+        print("Buyer proposed price! Going to consider it based on bundleCost (profit)")
         bundleCost = offer['price']['value'] - utility
         print("Calculated bundleCost:",bundleCost)
         markupRatio = utility / bundleCost
@@ -714,13 +714,45 @@ def processMessage(message):
             bidHistory[speaker] = None
             print("Other agent accepted/rejected offer. Clearing bidHistory")
         else: # Add to bidHistory
+        
             if speaker not in bidHistory or not bidHistory[speaker]:
                 bidHistory[speaker] = []
             bidHistory[speaker].append(interpretation)
             print("Added to bidHistory:", bidHistory)
+        
+            # Ok, let's first wait and see if the other agent has responded
+            time.sleep(3)
             
+            if speaker not in bidHistory:
+                print("Can't find speaker in bidHistory. Do nothing")
+                return None
+            
+            humanHistory = [bidBlock for bidBlock in bidHistory[speaker]]
+            print("Human's history:", humanHistory)
+            mostRecent = humanHistory[len(humanHistory) - 1]
+            print("Most recent human history:", mostRecent)
+            print("Most recent human history should be:", interpretation)
+            # most recent human history is the same buyer request we just added
+            if (mostRecent == interpretation and 
+                (interpretation['type'] == 'BuyOffer' or interpretation['type'] == 'BuyRequest')) :
+                print("No change to bidHistory. Going to make offer")
+                bid = generateBid(interpretation)
+                bidResponse = {
+                    'text': translateBid(bid, False), # Translate the bid into English
+                    'speaker': agentName,
+                    'role': "seller",
+                    'addressee': speaker,
+                    'environmentUUID': interpretation['metadata']['environmentUUID'],
+                    'timestamp': (time.time() * 1000),
+                    'bid': bid
+                }
+                return bidResponse
+            else:
+                print("bidHistory changed, going to do nothing.")
+                return None
+
             print("Delay, respond or cancel")
-        return None
+            
     elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
         # TODO: Make an offer
         

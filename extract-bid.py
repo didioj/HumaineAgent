@@ -62,19 +62,22 @@ def interpretMessage(watsonResponse):
 def extractAddressee(entities):
     print("entered extractAddressee")
     print("Received entities:", entities)
-    addressees = []
+    addressees = {}
     addressee = None
     for eBlock in entities:
         if eBlock['entity'] == "avatarName":
-            addressees.append(eBlock['value'])
-    
+            addressee = eBlock['value']
+            print("Found an avatarName:", addressee)
+            return addressee
+            # addressees.append(eBlock['value'])
+    """
     if 'agentName' in addressees:
         addressee = addressees['agentName']
     else:
         addressee = None
     print("Returning addressee:", addressee)
     return addressee
-
+    """
 
 # Extract goods and their amounts from the entities extracted by Watson Assistant
 def extractOfferFromEntities(entityList):
