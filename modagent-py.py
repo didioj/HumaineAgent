@@ -334,6 +334,12 @@ def calculateUtilityAgent(utilityInfo, bundle):
         price = bundle['price']['value'] 
 
     if bundle['quantity']:
+        # this is to handle the case of indefinite quantity, note that
+        # we are producing a random quantity in the range 1-4
+        for good in bundle['quantity'].keys():
+            goodVal = bundle['quantity'][good]
+            if goodVal == 'indef':
+                bundle['quantity'][good] = (int(random.random() * 100)%3)+1
         util = price
         if 'price' in bundle:
             unit = bundle['price']['unit']
