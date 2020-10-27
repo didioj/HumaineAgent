@@ -31,6 +31,9 @@ for i in range(len(sys.argv)):
     if sys.argv[i] == "--port":
         myPort = sys.argv[i + 1]
 
+# Offer types
+offerTypes = ["SellOffer", "MinOffer"]
+
 # predefined responses
 rejectionMessages = [
   "No thanks. Your offer is much too low for me to consider.",
@@ -43,7 +46,7 @@ rejectionMessages = [
 minOfferExcuseMessages = [
   "All of our products are ORGANIC!",
   "All of our products are NON-GMO!",
-  "Destiny has brought you to me, so I gave you a good deal.",
+  "Destiny has brought you to me, so I'll give you a good deal.",
   "I have 5 cats at home to feed."
 ]
 
@@ -328,7 +331,7 @@ def calculateUtilityAgent(utilityInfo, bundle):
     
     utilityParams = utilityInfo['utility']
     util = 0
-    if 'price' not in bundle or bundle['type'] == 'SellOffer':
+    if 'price' not in bundle or bundle['type'] in offerTypes :
         price = 0
     else:
         price = bundle['price']['value'] 
@@ -378,7 +381,7 @@ def generateBid(offer):
         print("BidBlock:", bidBlock)
         print("BidBlock['type']:", bidBlock['type'])
     
-    recentOffers = [bidBlock for bidBlock in bidHistory[humanName] if bidBlock['type'] == "SellOffer"]
+    recentOffers = [bidBlock for bidBlock in bidHistory[humanName] if bidBlock['type'] in offerTypes]
     print("Recent offers:", recentOffers)
     lastPrice = None
     lastOffer = None
@@ -447,7 +450,7 @@ def generateBid(offer):
             
             # find my last offer 
             myRecentOffers = [bidBlock for bidBlock in bidHistory[humanName] 
-                                if (bidBlock['type'] == "SellOffer" and bidBlock['metadata']['speaker'] == agentName)]
+                                if ( bidBlock['type'] in offerTypes and bidBlock['metadata']['speaker'] == agentName)]
             print("My recent offers:",  myRecentOffers)
             myLastPrice = None
             if len(myRecentOffers):
@@ -513,9 +516,12 @@ def generateBid(offer):
                     else:
                         print("Can't reduce price anymore. Going negative")
                         bid['speaker'] = speaker
+                        bid['type'] = "MinMarkup"
                         bid['action'] = 'reject' # negative profit. Going to taunt
+                        # propose the minMarkupPrice
+                        markupRatio = 2.0 + minMarkupRatio
                         minMarkupPrice = quantize((1.0 - markupRatio) * totalCosts, 2)
-                        if myLastPrice > minMarkupPrice:
+                        if not myLastPrice or myLastPrice > minMarkupPrice:
                             print("minMarkupPrice is lower")
                             bid['price']['value'] = minMarkupPrice
                         else:
@@ -613,7 +619,7 @@ def processMessage(message):
             if speaker in bidHistory and len(bidHistory[speaker]): # I actually did make an offer to this buyer;
                                                                  # fetch details and confirm acceptance
                 bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
-                                            if (bid['metadata']['speaker'] == agentName and bid['type'] == "SellOffer")]
+                                            if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
                 print("Our SellOffers:", bidHistoryIndividual)
                 if len(bidHistoryIndividual):
                     acceptedBid = bidHistoryIndividual[-1]
@@ -638,7 +644,7 @@ def processMessage(message):
             print("Buyer rejected offer")
             if speaker in bidHistory and len(bidHistory[speaker]): # Check whether I made an offer to this buyer
                 bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
-                                        if (bid['metadata']['speaker'] == agentName and bid['type'] == "SellOffer")]
+                                        if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
                 print("Our SellOffers:", bidHistoryIndividual)
                 if len(bidHistoryIndividual):
                     bidHistory[speaker].append(interpretation)
@@ -716,7 +722,7 @@ def processMessage(message):
             print("Added to bidHistory:", bidHistory)
         
             # Ok, let's first wait and see if the other agent has responded
-            #time.sleep(3)
+            # time.sleep(3)
             
             if speaker not in bidHistory:
                 print("Can't find speaker in bidHistory. Do nothing")
