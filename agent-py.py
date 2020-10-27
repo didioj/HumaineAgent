@@ -375,9 +375,12 @@ def generateBid(offer):
     recentOffers = [bidBlock for bidBlock in bidHistory[humanName] if bidBlock['type'] == "SellOffer"]
     print("Recent offers:", recentOffers)
     lastPrice = None
+    lastOffer = None
     if len(recentOffers):
-       lastPrice = recentOffers[len(recentOffers) - 1]['price']['value']
+        lastPrice = recentOffers[len(recentOffers) - 1]['price']['value']
+        lastOffer = recentOffers[len(recentOffers) - 1]
     print("Last price:", lastPrice)
+    print("Last offer:", lastOffer)
     
     timeRemaining = (negotiationState['stopTime'] - (time.time() * 1000)) / 1000
     print("Remaining time:",timeRemaining)
@@ -386,6 +389,11 @@ def generateBid(offer):
     if offer['type'] == 'RejectOffer':
         offer['quantity'] = recentOffers[0]['quantity']
     utility = calculateUtilityAgent(utilityInfo, offer)
+    totalItems = dict(offer)
+    totalItems.pop('price', None)
+    totalCosts = calculateUtilityAgent(utilityInfo, totalItems)
+    print("Total items:", totalItems)
+    print("Total cost of items (should be negative):", totalCosts)
     print("Utility received:",utility)
 
     # Note that we are making no effort to upsell the buyer on a different package of goods than what they requested.
@@ -431,51 +439,44 @@ def generateBid(offer):
             # if not making enough profit, set type to MinMarkup
             minMarkupRatio = 0.3
             
-             # find my last offer 
+            # find my last offer 
             myRecentOffers = [bidBlock for bidBlock in bidHistory[humanName] 
                                 if (bidBlock['type'] == "SellOffer" and bidBlock['metadata']['speaker'] == agentName)]
             print("My recent offers:",  myRecentOffers)
             myLastPrice = None
-
             if len(myRecentOffers):
                 print("We've made a SellOffer before!")
                 myLastPrice = myRecentOffers[len(myRecentOffers) - 1]['price']['value']
                 print("myLastPrice:", myLastPrice)
-                bid['price'] = myRecentOffers[len(myRecentOffers) - 1]['price']
-                bid['type'] = "MinMarkup"
-                if myLastPrice <= lastPrice:
-                    print("Our offer is better than or equal to this offer")
-                    # passing on our last offer and our name
+            
+            # price can still be reduced
+            if lastPrice/totalCosts*-1 > minMarkupRatio+1:
+                print("lastPrice can still be reduced")
+                if myLastPrice and myLastPrice < lastPrice:
+                    print("Our last offer was better than lastPrice. Reiterate our better offer")
+                    bid['price'] = myRecentOffers[len(myRecentOffers) - 1]['price']
+                    bid['type'] = "MinMarkup"
                     bid['speaker'] = agentName
                 else:
-                    print("Our offer was worse. Reached minMarkupRatio so going to match or repeat our last offer")
-                    # passing on other agent's name
-                    bid['speaker'] = speaker
-                    # to match other agent's deal or reject
-                    if lastPrice > utility*-1: # positive profit
-                        bid['action'] = 'match'
-                        bid['price']['value'] = lastPrice
-                    else:
-                        bid['action'] = 'reject' # negative profit. Going to taunt
-            # price can still be reduced
-            elif lastPrice/utility*-1 > minMarkupRatio+1:
-                # reversed the calculation to find the previous random.random() value
-                lastMarkupRatio = 1 - lastPrice/utility - 2
-                print("Calcuated last markupRatio:", lastMarkupRatio)
-                # reduce by 10%-25% -> ratio = 75-90%
-                markupRatio = 2.0 + (lastMarkupRatio * (random.random() * 0.15 + 0.75))
-                print("Going to markup price by", markupRatio)
-                bid['type'] = 'SellOffer'
-                
-                # if low markupRatio, 20% chance of fixing price and making an excuse
-                if (offer['type'] == 'RejectOffer' and offer['metadata']['addressee'] == agentName and
+                    print("This is the lowest offer so far. Going to reduce")
+                    # reversed the calculation to find the previous random.random() value
+                    lastMarkupRatio = 1 - (lastPrice/totalCosts) - 2
+                    print("Calcuated last markupRatio:", lastMarkupRatio) # i.e., 1.3
+                    # reduce by 10%-25% -> ratio = 75-90%
+                    markupRatio = 2.0 + (lastMarkupRatio * (random.random() * 0.15 + 0.75))
+                    print("Going to markup price by", markupRatio)
+                    bid['type'] = 'SellOffer'
+                    
+                    # if low markupRatio, 20% chance of fixing price and making an excuse
+                    if (offer['type'] == 'RejectOffer' and offer['metadata']['addressee'] == agentName and
                         markupRatio < 2.5 and random.random() < 0.2):
-                    bid['type'] = 'MinMarkupExcuse'
-
-                bid['price'] = {
-                    'unit': utilityInfo['currencyUnit'],
-                    'value': quantize((1.0 - markupRatio) * utility, 2)
-                }
+                        bid['type'] = 'MinMarkupExcuse'
+                        markupRatio = 2.0 + lastMarkupRatio
+                    
+                    bid['price'] = {
+                        'unit': utilityInfo['currencyUnit'],
+                        'value': quantize((1.0 - markupRatio) * totalCosts, 2)
+                    }
             else: # price can't be reduced
                 print("Reached minMarkupRatio:", lastPrice/utility*-1)
                 bid['type'] = 'MinMarkup'
@@ -483,49 +484,37 @@ def generateBid(offer):
                 #   if we proposed lastPrice, reiterate it's the best we can do
                 #   if other agent proposed lastPrice, taunt them
                 # if no SellOffer history, generate price
-                if humanName in bidHistory:
-                    # find my last offer 
-                    myRecentOffers = [bidBlock for bidBlock in bidHistory[humanName] 
-                                        if (bidBlock['type'] == "SellOffer" and bidBlock['metadata']['speaker'] == agentName)]
-                    print("My recent offers:",  myRecentOffers)
-                    myLastPrice = None
-
-                    if len(myRecentOffers):
-                        print("We've made a SellOffer before!")
-                        # reiterate it's the best we can do
-                        myLastPrice = myRecentOffers[len(myRecentOffers) - 1]['price']['value']
-                        print("myLastPrice:", myLastPrice)
-                        bid['price'] = myRecentOffers[len(myRecentOffers) - 1]['price']
-                        if myLastPrice <= lastPrice:
-                            print("Our offer is better than or equal to this offer")
-                            # passing on our last offer and our name
-                            bid['speaker'] = agentName
-                        else:
-                            print("Our offer was worse. Reached minMarkupRatio so  \
-                                going to match or repeat our last offer")
-                            # passing on other agent's name
-                            bid['speaker'] = speaker
-                            # to match other agent's deal or reject
-                            if lastPrice > utility*-1: # positive profit
-                                bid['action'] = 'match'
-                                bid['price']['value'] = lastPrice
-                            else:
-                                bid['action'] = 'reject' # negative profit. Going to taunt
-                    else: 
-                        print("We've never made a SellOffer before. Going to match or propose minMarkup price")
-                        # State that the minMarkupRatio price is the best we can do.
-                        bid['speaker'] = speaker # other agent made the minOffer
-                        if lastPrice > utility*-1: # positive profit
-                            bid['action'] = 'match'
-                            bid['price'] = offer['price']
-                            bid['price']['value'] = lastPrice
-                        else:
-                            bid['action'] = 'reject'
-                            bid['price'] = offer['price']
-                            # propose minMarkupRatio price
-                            bid['price']['value'] = quantize((utility*-1)*(1+minMarkupRatio), 2)
+                if humanName not in bidHistory:
+                    print("ERROR: edge case other agent made an offer but human not in bidHistory")        
+                    return None
+                    
+                if myLastPrice and myLastPrice < lastPrice:
+                    print("Our last offer was better than lastPrice. Reiterate our better offer")
+                    bid['price'] = myRecentOffers[len(myRecentOffers) - 1]['price']
+                    bid['type'] = "MinMarkup"
+                    bid['speaker'] = agentName
                 else:
-                    print("ERROR: edge case other agent made an offer but human not in bidHistory")
+                    bid['price'] = lastOffer['price']
+                    bid['type'] = "MinMarkupExcuse"
+                    bid['speaker'] = agentName
+                    if lastOffer['metadata']['speaker'] == agentName:
+                        print("We made the last offer. Say it's the lowest")
+                        bid['type'] = "MinMarkup"
+                    elif (lastPrice-0.01) > (totalCosts*-1):
+                    # offer 1 cent cheaper if possible
+                        print("Going to offer 1 cent cheaper")
+                        bid['price']['value'] = quantize(lastPrice-0.01,2)
+                    else:
+                        print("Can't reduce price anymore. Going negative")
+                        bid['speaker'] = speaker
+                        bid['action'] = 'reject' # negative profit. Going to taunt
+                        minMarkupPrice = quantize((1.0 - markupRatio) * totalCosts, 2)
+                        if myLastPrice > minMarkupPrice:
+                            print("minMarkupPrice is lower")
+                            bid['price']['value'] = minMarkupPrice
+                        else:
+                            print("myLastPrice is lower")
+                            bid['price']['value'] = myLastPrice
         else:
             print("No history of any SellOffers. Going to propose price")
             markupRatio = 2.0 + random.random()
@@ -837,7 +826,7 @@ def translateBid(bid, confirm):
         text += str(bid['price']['value']) + " " + str(bid['price']['unit']) + " for "
         for good in bid['quantity'].keys():
             text += str(bid['quantity'][good]) + " " + good + " "
-        text += "is already a great deal."
+        text += "is a great deal."
         
     elif bid['type'] == 'MinMarkup':
         print("bid is a minMarkup")
