@@ -1,7 +1,4 @@
 ## To do:
-* message ahmed if we can submit our code tomorrow
-* tomorrow debug and submit
-
 * remove from bidHistory if wasn't accepted
 * Test rejectoffer
 
@@ -15,6 +12,8 @@
 	* Counter it or
 	* The lowest I can go is $ because ... 
 	* Make a different deal
+##10/27/2020
+* Changed bidBlock['type'] == 'Offer' to bidBlock['type'] in offerTypes
 
 ##10/26/2020
 * When reducing price, always reduce markupRatio by 10% to 25%
