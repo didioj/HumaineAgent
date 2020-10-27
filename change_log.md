@@ -1,19 +1,8 @@
 ## To do:
 * message ahmed if we can submit our code tomorrow
-* push my changes
-* compare with sneaky
-* push to master
-* Jakob implement general case
 * tomorrow debug and submit
 
 * remove from bidHistory if wasn't accepted
-
-* sleep when buyer address other agent
-
-* Respond when buyer not addressing anyone
-	* Wait 2 sec
-	* Check for other agent's offer in bidHistory
-	* Exit if new offer, continue if no offer
 * Test rejectoffer
 
 ## Considerations:
@@ -32,6 +21,11 @@
 * Add price details to MinOffer in interpretMessage
 * Address human when other agent talks
 * Recognize confirmations then clear bidHistory
+* Wait 2 seconds after receiving message from other agent
+* Added changes from sneaky branch
+	* Wait 3 seconds after receiving general message from human. Then check if history changed. 
+	* If yes, do nothing.
+	* If no, make an offer
 
 ## 10/25/2020
 * Note: Formatting for bidHistory, interpretation, offer
