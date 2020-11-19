@@ -39,7 +39,6 @@ rejectionMessages = [
   "No thanks. Your offer is much too low for me to consider.",
   "Forget it. That's not a serious offer.",
   "Sorry. You're going to have to do a lot better than that!",
-  "That is daylight ROBBERY!"
 ]
 
 # chance of fixing price and making an excuse when asked for better offer
@@ -722,7 +721,7 @@ def processMessage(message):
             print("Added to bidHistory:", bidHistory)
         
             # Ok, let's first wait and see if the other agent has responded
-            time.sleep(3)
+            # time.sleep(3)
             
             if speaker not in bidHistory:
                 print("Can't find speaker in bidHistory. Do nothing")
@@ -754,7 +753,7 @@ def processMessage(message):
 
             print("Delay, respond or cancel")
             
-elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
+    elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
         # TODO: Make an offer
         
         print("Message from another seller. Need to make an offer!")
