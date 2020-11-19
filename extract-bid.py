@@ -11,6 +11,9 @@ def interpretMessage(watsonResponse):
     print("entered interpretMessage")
     print("Received watsonResponse:", watsonResponse)
 
+    print(watsonResponse['intents'])
+    print(watsonResponse['entities'])
+    print(watsonResponse['input'])
     intents = watsonResponse['intents']
     entities = watsonResponse['entities']
     print("intents: ", intents)

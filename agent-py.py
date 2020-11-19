@@ -754,7 +754,7 @@ def processMessage(message):
 
             print("Delay, respond or cancel")
             
-    elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
+elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
         # TODO: Make an offer
         
         print("Message from another seller. Need to make an offer!")
