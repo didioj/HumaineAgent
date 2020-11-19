@@ -39,7 +39,6 @@ rejectionMessages = [
   "No thanks. Your offer is much too low for me to consider.",
   "Forget it. That's not a serious offer.",
   "Sorry. You're going to have to do a lot better than that!",
-  "That is daylight ROBBERY!"
 ]
 
 # chance of fixing price and making an excuse when asked for better offer

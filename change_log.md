@@ -1,8 +1,34 @@
+======================================================================================
+
 ## To do:
 * remove from bidHistory if wasn't accepted
 * Test rejectoffer
 
 ## Considerations:
+* Fix bidHistory on messageRejections
+* Make more human
+* Detect more general intent. Deal with unknown intent.
+	* Filter out price and quantity goods
+	* Add default intents from 
+* Detect context change
+* Better reply (units, commas, 'and')
+* Ask "how can I negotiate with you"/ ask how to use
+	* At start round, list things we can do
+* Inquire about inventory
+* Ask what do you sell
+	* "Do you have"
+* Ask about quality and pricing
+* Ask about sales/ special deals
+* Ask about origins
+* Automatic discount when over a certain price
+* Proper rejection to clear history
+* Sentient classifier for intent 
+* Haggle intent
+* Sell bundle for cake/pancake
+	* reject bundle and only buy item
+	* Scale up for bundle pancake/cake, additives
+* "I accept"
+
 * Response to different messages:
 	* General
 	* No quantity
@@ -12,10 +38,11 @@
 	* Counter it or
 	* The lowest I can go is $ because ... 
 	* Make a different deal
-##10/27/2020
+
+## 10/27/2020
 * Changed bidBlock['type'] == 'Offer' to bidBlock['type'] in offerTypes
 
-##10/26/2020
+## 10/26/2020
 * When reducing price, always reduce markupRatio by 10% to 25%
 * Add price details to MinOffer in interpretMessage
 * Address human when other agent talks
