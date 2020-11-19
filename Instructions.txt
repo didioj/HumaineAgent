@@ -4,6 +4,9 @@ The agent is based is based on agent-py. You need to install Flask to run it:
 # Run Instructions for Windows
 * Run `run_agent001.cmd` in one Command Prompt
 * For 2 agents, run `run_agent002.cmd` in a second Command Prompt
+* To better manage the print statements when trying to debug the code in Windows Command Prompt
+	Right click the top menu -> Properties -> Layout -> Uncheck `Wrap text output on resize` -> 
+	Set `Screen Buffer Size` `Width` to `1000`. 
 
 # Run Instructions for Mac/Linux
 * Run `run_agent001.sh` in one terminal
