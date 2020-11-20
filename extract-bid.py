@@ -8,16 +8,16 @@ conversation = importlib.import_module('conversation')
 # From the intents and entities obtained from Watson Assistant, extract a structured representation
 # of the message
 def interpretMessage(watsonResponse):
-    print("entered interpretMessage")
-    print("Received watsonResponse:", watsonResponse)
+    print("- entered interpretMessage")
+    print("- Received watsonResponse:", watsonResponse)
 
-    print(watsonResponse['intents'])
-    print(watsonResponse['entities'])
-    print(watsonResponse['input'])
+    print("- intents from watsonResponse:", watsonResponse['intents'])
+    print("- entities from watsonResponse:", watsonResponse['entities'])
+    print("- input from watsonResponse:", watsonResponse['input'])
     intents = watsonResponse['intents']
     entities = watsonResponse['entities']
-    print("intents: ", intents)
-    print("entities: ", entities)
+    print("- intents: ", intents)
+    print("- entities: ", entities)
     cmd = {}
 
     if intents[0]['intent'] == "Offer" and intents[0]['confidence'] > 0.2:
@@ -57,20 +57,20 @@ def interpretMessage(watsonResponse):
         cmd['metadata'] = watsonResponse['input']
         cmd['metadata']['addressee'] = watsonResponse['input']['addressee'] or extractAddressee(entities) # Expect the addressee to be provided, but extract it if necessary
         cmd['metadata']['timeStamp'] = time.time()
-    print("cmd leaving interpretMessage:", cmd)
+    print("- cmd leaving interpretMessage:", cmd)
     return cmd
 
 
 # Extract the addressee from entities (in case addressee is not already supplied with the input message)
 def extractAddressee(entities):
-    print("entered extractAddressee")
-    print("Received entities:", entities)
+    print("- entered extractAddressee")
+    print("- Received entities:", entities)
     addressees = {}
     addressee = None
     for eBlock in entities:
         if eBlock['entity'] == "avatarName":
             addressee = eBlock['value']
-            print("Found an avatarName:", addressee)
+            print("- Found an avatarName:", addressee)
             return addressee
             # addressees.append(eBlock['value'])
     """
@@ -78,14 +78,14 @@ def extractAddressee(entities):
         addressee = addressees['agentName']
     else:
         addressee = None
-    print("Returning addressee:", addressee)
+    print("- Returning addressee:", addressee)
     return addressee
     """
 
 # Extract goods and their amounts from the entities extracted by Watson Assistant
 def extractOfferFromEntities(entityList):
-    print("entered extractOfferFromEntities")
-    print("Received entityList:", entityList)
+    print("- entered extractOfferFromEntities")
+    print("- Received entityList:", entityList)
     entities = json.loads(json.dumps(entityList))
     removedIndices = []
     quantity = {}
@@ -115,10 +115,10 @@ def extractOfferFromEntities(entityList):
             nameFoundGood = eBlock['value']
     
     entities = [entity for entity in entities if entity['index'] not in removedIndices]
-    print("Found entities:", entities)
+    print("- Found entities:", entities)
     price = extractPrice(entities)
-    print("Received price:", price)
-    print("Returning offer:", {'quantity': quantity, 'price': price})
+    print("- Received price:", price)
+    print("- Returning offer:", {'quantity': quantity, 'price': price})
     # we haven't isolated a quantity from the offer, so it must be an open request for offers
     if not quantity:
             quantity = {nameFoundGood: 'indef'}
@@ -127,8 +127,8 @@ def extractOfferFromEntities(entityList):
 
 # Extract price from entities extracted by Watson Assistant
 def extractPrice(entities):
-    print("entered extractPrice")
-    print("entities given:", entities)
+    print("- entered extractPrice")
+    print("- entities given:", entities)
     price = None
 
     for eBlock in entities:
@@ -142,24 +142,24 @@ def extractPrice(entities):
                 'value': eBlock['metadata']['numeric_value'],
                 'unit': 'USD'
             }
-    print("Returning price:", price)
+    print("- Returning price:", price)
     return price
 
 
 # Extract bid from message sent by another agent, a human, or myself
 def extractBidFromMessage(message):
-    print("entered extractBidFromMessage")
-    print("Received message:", message)
+    print("- entered extractBidFromMessage")
+    print("- Received message:", message)
     response = conversation.classifyMessage(message)
-    print("Received response:", response)
+    print("- Received response:", response)
     response['environmentUUID'] = message['environmentUUID']
 
     receivedOffer = interpretMessage(response)
-    print("Received offer:", receivedOffer)
+    print("- Received offer:", receivedOffer)
     extractedBid = {
         'type': receivedOffer['type'],
         'price': receivedOffer['price'],
         'quantity': receivedOffer['quantity']
     }
-    print("Returning extractedBid:", extractedBid)
+    print("- Returning extractedBid:", extractedBid)
     return extractedBid
