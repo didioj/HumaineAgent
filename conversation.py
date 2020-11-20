@@ -30,6 +30,7 @@ def createSessionID(assistantID):
 
 # Send a user message to ibm assistant to be processed and classified
 def classifyMessage(input_):
+    print("- Entering classifyMessage")
     assistantId = assistantParams['assistantId']
     text = None
     if input_['text']:
@@ -48,6 +49,7 @@ def classifyMessage(input_):
         }
         assistantMessageParams['sessionId'] = GLOBAL_sessionID
     
+    print("- Passsing params into WatsonAssistant:", assistantMessageParams)
     response = None
 
     # try to get a response with the current session ID
@@ -60,6 +62,7 @@ def classifyMessage(input_):
                 'text': text
             }
         )
+        print("- Response from WatsonAssistant:", response)
         translateWatsonResponse(response, input_)
     except:
 
@@ -75,20 +78,23 @@ def classifyMessage(input_):
                     'text': text
                 }
             ).get_result()
-
+    
+            print("- Response from WatsonAssistant [except]:", response)
             return translateWatsonResponse(response, input_)
         except:
-            print("Error creating sessionId for assistantId", assistantId)
+            print("- Error creating sessionId for assistantId", assistantId)
     
     return None
 
 
 # convert watsons response to a usable JSON object
 def translateWatsonResponse(response, input_):
-    print("Entering translateWatsonResponse")
+    print("- Entering translateWatsonResponse")
+    print("- Received response:", response)
+    print("- Received input_:", input_)
     output = response['output'] or {}
     output['input'] = input_
     output['addressee'] = input_['addressee']
     output['speaker'] = input_['speaker']
-    print("Returning Watson response:", output)
+    print("- Returning Watson response:", output)
     return output

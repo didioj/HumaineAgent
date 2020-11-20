@@ -39,7 +39,6 @@ rejectionMessages = [
   "No thanks. Your offer is much too low for me to consider.",
   "Forget it. That's not a serious offer.",
   "Sorry. You're going to have to do a lot better than that!",
-  "That is daylight ROBBERY!"
 ]
 
 # chance of fixing price and making an excuse when asked for better offer
@@ -54,7 +53,6 @@ minOfferMessages = [
   "That's the best I can do. You won't find a better deal out there!"
 ]
 
-# if other seller proposed a price that will make us lose money
 tauntMessages = [
   "Their products must be of low quality if they're so cheap!"
 ]
@@ -315,7 +313,8 @@ def reportUtility():
 # right circumstances. You can do better than this!
 def mayIRespond(interpretation):
     print("- Entering mayIRespond")
-    print("- Need to make it so can't respond if just responded and human hasn't responded. Check history to see if human responded?")
+    print("- Need to make it so can't respond if just responded and human hasn't responded. \
+            Check history to see if human responded?")
     print("- Returning reponse:", (interpretation and interpretation['metadata']['role'] and
             (interpretation['metadata']['addressee'] == agentName or not interpretation['metadata']['addressee']) ))
     return (interpretation and interpretation['metadata']['role'] and
@@ -381,12 +380,10 @@ def generateBid(offer):
         print("- BidBlock:", bidBlock)
         print("- BidBlock['type']:", bidBlock['type'])
     
-    
-    # all the offers made to the human
     recentOffers = [bidBlock for bidBlock in bidHistory[humanName] if bidBlock['type'] in offerTypes]
     print("- Recent offers:", recentOffers)
-    lastPrice = None # last price made to human 
-    lastOffer = None # last offer made to human
+    lastPrice = None
+    lastOffer = None
     if len(recentOffers):
         lastPrice = recentOffers[len(recentOffers) - 1]['price']['value']
         lastOffer = recentOffers[len(recentOffers) - 1]
@@ -400,7 +397,7 @@ def generateBid(offer):
     if offer['type'] == 'RejectOffer':
         offer['quantity'] = recentOffers[0]['quantity']
     utility = calculateUtilityAgent(utilityInfo, offer)
-    totalItems = dict(offer) # make a copy of the offer for calculating utility
+    totalItems = dict(offer)
     totalItems.pop('price', None)
     totalCosts = calculateUtilityAgent(utilityInfo, totalItems)
     print("- Total items:", totalItems)
@@ -724,7 +721,7 @@ def processMessage(message):
             print("- Added to bidHistory:", bidHistory)
         
             # Ok, let's first wait and see if the other agent has responded
-            time.sleep(3)
+            # time.sleep(3)
             
             if speaker not in bidHistory:
                 print("- Can't find speaker in bidHistory. Do nothing")

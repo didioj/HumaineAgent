@@ -1,0 +1,37 @@
+The agent is based is based on agent-py. You need to install Flask to run it:
+* `pip install Flask`
+
+# Run Instructions for Windows
+* Run `run_agent001.cmd` in one Command Prompt
+* For 2 agents, run `run_agent002.cmd` in a second Command Prompt
+* To better manage the print statements when trying to debug the code in Windows Command Prompt
+	Right click the top menu -> Properties -> Layout -> Uncheck `Wrap text output on resize` -> 
+	Set `Screen Buffer Size` `Width` to `1000`. 
+
+# Run Instructions for Mac/Linux
+* Run `run_agent001.sh` in one terminal
+* For 2 agents, run `run_agent002.sh` in a second terminal
+
+# Demo
+* For the class demo, run `run_mod` and `run_agent002`. 
+	The template code is too simple and has a lot of bugs, so we made a 
+	another version of our agent (mod) to complete against. The mod will
+	be Watson and our agent will be Celia
+
+# Test
+B = Buyer	\
+W = Watson	\
+C = Celia	\
+* B: Watson I want 1 cup of milk	
+* W: How about if I sell you 1 milk for 0.44 USD
+* C: How about if I sell you 1 milk for 0.41 USD
+* B: Celia I don't like your offer
+* C: How about if I sell you 1 milk for 0.39 USD
+* W: 0.44 USD for 1 milk is my best offer. Their products must be of low 
+	quality if they're so cheap!
+* B: Watson I accept your offer
+* W: I'm so glad! This is to confirm that I'll give you 1 milk for 0.44 USD.
+
+# Notes
+* You must state the good and the quantity when you make the initial request
+* You do not need to specify the agent or price
