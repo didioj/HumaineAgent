@@ -165,6 +165,7 @@ def receiveMessage():
             'status': "Acknowledged",
             'interpretation': message
         }
+
         if message['speaker'] == agentName:
             print("- This message is from me!")
         #else:
@@ -445,7 +446,7 @@ def generateBid(offer):
     # handles other agent's SellOffer
         print("- Buyer did not propose price or other agent made an offer. Going to generate price")
         # if lowering last offer, then reduce last markupRatio
-        if lastPrice:
+        if lastPrice and lastOffer['quantity']!=bid['quantity']:
             print("- A SellOffer has been made before")
             # if not making enough profit, set type to MinMarkup
             minMarkupRatio = 0.3
@@ -717,7 +718,6 @@ def processMessage(message):
             bidHistory[speaker] = None
             print("- Other agent accepted/rejected offer. Clearing bidHistory")
         else: # Add to bidHistory
-        
             if speaker not in bidHistory or not bidHistory[speaker]:
                 bidHistory[speaker] = []
             bidHistory[speaker].append(interpretation)
@@ -751,8 +751,19 @@ def processMessage(message):
                 }
                 return bidResponse
             else:
-                print("- bidHistory changed, going to do nothing.")
-                return None
+                '''print("- bidHistory changed, going to do nothing.")
+                return None'''
+                bid = generateBid(interpretation)
+                bidResponse = {
+                    'text': translateBid(bid, False), # Translate the bid into English
+                    'speaker': agentName,
+                    'role': "seller",
+                    'addressee': speaker,
+                    'environmentUUID': interpretation['metadata']['environmentUUID'],
+                    'timestamp': (time.time() * 1000),
+                    'bid': bid
+                }
+                return bidResponse
 
             print("- Delay, respond or cancel")
             
