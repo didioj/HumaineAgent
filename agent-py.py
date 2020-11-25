@@ -87,15 +87,161 @@ utilityInfo = None
 bidHistory = {}
 
 def reactOwnAgent(interpretation):
-	print("- Received own message")
-	if interpretation['type'] == 'AcceptOffer' or interpretation['type'] == 'RejectOffer':
-	    bidHistory[addressee] = None
-	    print("- We accepted/rejected offer. Clearing bidHistory")
-	else:
-	    print("- Adding message to bidHistory")
-	    if bidHistory[addressee]:
-	        bidHistory[addressee].append(interpretation)
-	    print("- bidHistory:", bidHistory)
+    print("- Received own message")
+    if interpretation['type'] == 'AcceptOffer' or interpretation['type'] == 'RejectOffer':
+        bidHistory[addressee] = None
+        print("- We accepted/rejected offer. Clearing bidHistory")
+    else:
+        print("- Adding message to bidHistory")
+        if bidHistory[addressee]:
+            bidHistory[addressee].append(interpretation)
+        print("- bidHistory:", bidHistory)
+
+def reactToBuyer(interpretation):
+    print("- Message from buyer to me")
+    messageResponse = {
+        'text': "",
+        'speaker': agentName,
+        'role': "seller",
+        'addressee': speaker,
+        'environmentUUID': interpretation['metadata']['environmentUUID'],
+        'timestamp': (time.time() * 1000)
+    }
+    if interpretation['type'] == 'AcceptOffer': # Buyer accepted my offer! Deal with it.
+        print("- Buyer accepted offer")
+        print("- Checking bidHistory:", bidHistory)
+        if speaker in bidHistory and bidHistory[speaker]: # I actually did make an offer to this buyer;
+                                                             # fetch details and confirm acceptance
+            bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
+                                        if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
+            print("- Our SellOffers:", bidHistoryIndividual)
+            if len(bidHistoryIndividual):
+                acceptedBid = bidHistoryIndividual[-1]
+                print("- acceptedBid:", acceptedBid)
+                bid = {
+                    'price': acceptedBid['price'],
+                    'quantity': acceptedBid['quantity'],
+                    'type': "Accept"
+                }
+                print("- Sending bid to translate:", bid)
+                messageResponse['text'] = translateBid(bid, True)
+                messageResponse['bid'] = bid
+                print("- Clearing bidHistory")
+                bidHistory[speaker] = None
+            else: # Didn't have any outstanding offers with this buyer
+                messageResponse['text'] = "I'm sorry, but I'm not aware of any outstanding offers."
+        else: # Didn't have any outstanding offers with this buyer
+            messageResponse['text'] = "I'm sorry, but I'm not aware of any outstanding offers."
+        print("- Returning message:", messageResponse)
+        return messageResponse
+    elif interpretation['type'] == 'RejectOffer': # The buyer claims to be rejecting an offer I made; deal with it
+        print("- Buyer rejected offer")
+        if speaker in bidHistory and bidHistory[speaker]: # Check whether I made an offer to this buyer
+            bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
+                                    if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
+            print("- Our SellOffers:", bidHistoryIndividual)
+            if len(bidHistoryIndividual):
+                bidHistory[speaker].append(interpretation)
+                bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
+                                                  # and the current state of negotiation with the buyer
+                bidResponse = {
+                    'text': translateBid(bid, False), # Translate the bid into English
+                    'speaker': agentName,
+                    'role': "seller",
+                    'addressee': speaker,
+                    'environmentUUID': interpretation['metadata']['environmentUUID'],
+                    'timestamp': (time.time() * 1000),
+                    'bid': bid
+                }
+                # print("- Buyer didn't like our offer. Need to make another offer!")
+                print("- Returning bidResponse:", bidResponse)
+                return bidResponse
+            else:
+                messageResponse['text'] = "There must be some confusion; I'm not aware of any outstanding offers."
+        else:
+            messageResponse['text'] = "OK, but I didn't think we had any outstanding offers."
+        print("- Returning message:", messageResponse)
+        return messageResponse
+    elif interpretation['type'] == 'BundleRequest': # Buyer wants to make a specific good
+        print("- Bundle request detected. Need to process interpretation for generateBid.")
+        # processing calculating ingredients needed for bundle request
+        ingredients  = {}
+        for bundle in interpretation['quantity']:
+            print("- Getting ingredients for:", bundle)
+            scale = interpretation['quantity'][bundle]
+            if bundle == 'cake':
+                unit_ingredients = {'egg':2, 'flour':2, 'milk':1, 'sugar':1}
+            elif bundle == 'pancake':
+                unit_ingredients = {'egg':1, 'flour':2, 'milk':2}
+            print("- unit_ingredients:", unit_ingredients)
+            scaled_ingredients = dict(unit_ingredients)
+            for key in scaled_ingredients:
+                scaled_ingredients[key] = scaled_ingredients[key] * scale
+                if key not in ingredients:
+                    ingredients[key] = scaled_ingredients[key]
+                else:
+                    ingredients[key] = ingredients[key] + scaled_ingredients[key]
+        print("- Calculated ingredients needed:", ingredients)
+        interpretation['quantity'] = ingredients
+        bid = generateBid(interpretation)
+        bidResponse = {
+            'text': translateBid(bid, False), # Translate the bid into English
+            'speaker': agentName,
+            'role': "seller",
+            'addressee': speaker,
+            'environmentUUID': interpretation['metadata']['environmentUUID'],
+            'timestamp': (time.time() * 1000),
+            'bid': bid
+        }
+        return bidResponse
+    elif interpretation['type'] == 'Information': # The buyer is just sending an informational message. Reply politely without attempting to understand.
+        messageResponse = {
+            'text': "OK. Thanks for letting me know.",
+            'speaker': agentName,
+            'role': "seller",
+            'addressee': speaker,
+            'environmentUUID': interpretation['metadata']['environmentUUID'],
+            'timestamp': (time.time() * 1000)
+        }
+        print("- Returning message:", messageResponse)
+        return messageResponse
+    elif interpretation['type'] == 'NotUnderstood': # The buyer said something, but we can't figure out what
+                                                    # they meant. Just ignore them and hope they'll try again if it's important.
+        print("- Buyer message not understood. Going to ask to clarify.")
+        bidResponse = {
+            'text': selectMessage(clarifyMessages), 
+            'speaker': agentName,
+            'role': "seller",
+            'addressee': speaker,
+            'environmentUUID': interpretation['metadata']['environmentUUID'],
+            'timestamp': (time.time() * 1000),
+            'bid': None
+        }
+        return bidResponse
+    elif ((interpretation['type'] == 'BuyOffer'
+            or interpretation['type'] == 'BuyRequest')
+            and mayIRespond(interpretation)): #The buyer evidently is making an offer or request; if permitted, generate a bid response
+        print("\n\n\n\n- Buyer is making an BuyRequest\n\n\n\n")
+        if speaker not in bidHistory or not bidHistory[speaker]:
+            bidHistory[speaker] = []
+        bidHistory[speaker].append(interpretation)
+
+        bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
+                                          # and the current state of negotiation with the buyer
+        bidResponse = {
+            'text': translateBid(bid, False), # Translate the bid into English
+            'speaker': agentName,
+            'role': "seller",
+            'addressee': speaker,
+            'environmentUUID': interpretation['metadata']['environmentUUID'],
+            'timestamp': (time.time() * 1000),
+            'bid': bid
+        }
+        print("- Returning bidResponse:", bidResponse)
+        return bidResponse
+    else:
+        print("- Message not processed. Edge case?")
+        return None
 
 # ************************************************************************************************************ #
 # REQUIRED APIs
@@ -624,150 +770,7 @@ def processMessage(message):
         # Otherwise, add the message to the bid history with this negotiation partner
         reactOwnAgent(interpretation)
     elif addressee == agentName and role == 'buyer': # Message was addressed to me by a buyer; continue to process
-        print("- Message from buyer to me")
-        messageResponse = {
-            'text': "",
-            'speaker': agentName,
-            'role': "seller",
-            'addressee': speaker,
-            'environmentUUID': interpretation['metadata']['environmentUUID'],
-            'timestamp': (time.time() * 1000)
-        }
-        if interpretation['type'] == 'AcceptOffer': # Buyer accepted my offer! Deal with it.
-            print("- Buyer accepted offer")
-            print("- Checking bidHistory:", bidHistory)
-            if speaker in bidHistory and bidHistory[speaker]: # I actually did make an offer to this buyer;
-                                                                 # fetch details and confirm acceptance
-                bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
-                                            if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
-                print("- Our SellOffers:", bidHistoryIndividual)
-                if len(bidHistoryIndividual):
-                    acceptedBid = bidHistoryIndividual[-1]
-                    print("- acceptedBid:", acceptedBid)
-                    bid = {
-                        'price': acceptedBid['price'],
-                        'quantity': acceptedBid['quantity'],
-                        'type': "Accept"
-                    }
-                    print("- Sending bid to translate:", bid)
-                    messageResponse['text'] = translateBid(bid, True)
-                    messageResponse['bid'] = bid
-                    print("- Clearing bidHistory")
-                    bidHistory[speaker] = None
-                else: # Didn't have any outstanding offers with this buyer
-                    messageResponse['text'] = "I'm sorry, but I'm not aware of any outstanding offers."
-            else: # Didn't have any outstanding offers with this buyer
-                messageResponse['text'] = "I'm sorry, but I'm not aware of any outstanding offers."
-            print("- Returning message:", messageResponse)
-            return messageResponse
-        elif interpretation['type'] == 'RejectOffer': # The buyer claims to be rejecting an offer I made; deal with it
-            print("- Buyer rejected offer")
-            if speaker in bidHistory and bidHistory[speaker]: # Check whether I made an offer to this buyer
-                bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
-                                        if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
-                print("- Our SellOffers:", bidHistoryIndividual)
-                if len(bidHistoryIndividual):
-                    bidHistory[speaker].append(interpretation)
-                    bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
-                                                      # and the current state of negotiation with the buyer
-                    bidResponse = {
-                        'text': translateBid(bid, False), # Translate the bid into English
-                        'speaker': agentName,
-                        'role': "seller",
-                        'addressee': speaker,
-                        'environmentUUID': interpretation['metadata']['environmentUUID'],
-                        'timestamp': (time.time() * 1000),
-                        'bid': bid
-                    }
-                    # print("- Buyer didn't like our offer. Need to make another offer!")
-                    print("- Returning bidResponse:", bidResponse)
-                    return bidResponse
-                else:
-                    messageResponse['text'] = "There must be some confusion; I'm not aware of any outstanding offers."
-            else:
-                messageResponse['text'] = "OK, but I didn't think we had any outstanding offers."
-            print("- Returning message:", messageResponse)
-            return messageResponse
-        elif interpretation['type'] == 'BundleRequest': # Buyer wants to make a specific good
-            print("- Bundle request detected. Need to process interpretation for generateBid.")
-            # processing calculating ingredients needed for bundle request
-            ingredients  = {}
-            for bundle in interpretation['quantity']:
-                print("- Getting ingredients for:", bundle)
-                scale = interpretation['quantity'][bundle]
-                if bundle == 'cake':
-                    unit_ingredients = {'egg':2, 'flour':2, 'milk':1, 'sugar':1}
-                elif bundle == 'pancake':
-                    unit_ingredients = {'egg':1, 'flour':2, 'milk':2}
-                print("- unit_ingredients:", unit_ingredients)
-                scaled_ingredients = dict(unit_ingredients)
-                for key in scaled_ingredients:
-                    scaled_ingredients[key] = scaled_ingredients[key] * scale
-                    if key not in ingredients:
-                        ingredients[key] = scaled_ingredients[key]
-                    else:
-                        ingredients[key] = ingredients[key] + scaled_ingredients[key]
-            print("- Calculated ingredients needed:", ingredients)
-            interpretation['quantity'] = ingredients
-            bid = generateBid(interpretation)
-            bidResponse = {
-                'text': translateBid(bid, False), # Translate the bid into English
-                'speaker': agentName,
-                'role': "seller",
-                'addressee': speaker,
-                'environmentUUID': interpretation['metadata']['environmentUUID'],
-                'timestamp': (time.time() * 1000),
-                'bid': bid
-            }
-            return bidResponse
-        elif interpretation['type'] == 'Information': # The buyer is just sending an informational message. Reply politely without attempting to understand.
-            messageResponse = {
-                'text': "OK. Thanks for letting me know.",
-                'speaker': agentName,
-                'role': "seller",
-                'addressee': speaker,
-                'environmentUUID': interpretation['metadata']['environmentUUID'],
-                'timestamp': (time.time() * 1000)
-            }
-            print("- Returning message:", messageResponse)
-            return messageResponse
-        elif interpretation['type'] == 'NotUnderstood': # The buyer said something, but we can't figure out what
-                                                        # they meant. Just ignore them and hope they'll try again if it's important.
-            print("- Buyer message not understood. Going to ask to clarify.")
-            bidResponse = {
-                'text': selectMessage(clarifyMessages), 
-                'speaker': agentName,
-                'role': "seller",
-                'addressee': speaker,
-                'environmentUUID': interpretation['metadata']['environmentUUID'],
-                'timestamp': (time.time() * 1000),
-                'bid': None
-            }
-            return bidResponse
-        elif ((interpretation['type'] == 'BuyOffer'
-                or interpretation['type'] == 'BuyRequest')
-                and mayIRespond(interpretation)): #The buyer evidently is making an offer or request; if permitted, generate a bid response
-            print("\n\n\n\n- Buyer is making an BuyRequest\n\n\n\n")
-            if speaker not in bidHistory or not bidHistory[speaker]:
-                bidHistory[speaker] = []
-            bidHistory[speaker].append(interpretation)
-
-            bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
-                                              # and the current state of negotiation with the buyer
-            bidResponse = {
-                'text': translateBid(bid, False), # Translate the bid into English
-                'speaker': agentName,
-                'role': "seller",
-                'addressee': speaker,
-                'environmentUUID': interpretation['metadata']['environmentUUID'],
-                'timestamp': (time.time() * 1000),
-                'bid': bid
-            }
-            print("- Returning bidResponse:", bidResponse)
-            return bidResponse
-        else:
-            print("- Message not processed. Edge case?")
-            return None
+        reactToBuyer(interpretation)
     elif role == 'buyer' and addressee != agentName:  # Message was not addressed to me, but is a buyer.
                                                       # A more clever agent might try to steal the deal.
         
