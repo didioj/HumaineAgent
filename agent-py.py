@@ -64,11 +64,19 @@ acceptanceMessages = [
   "You've got it! I'll let you have",
   "I accept your offer. Just to confirm, I'll give you"
 ]
+
 confirmAcceptanceMessages = [
   "I confirm that I'm selling you",
   "I'm so glad! This is to confirm that I'll give you",
   "Perfect! Just to confirm, I'm giving you"
 ]
+
+# Asking Human to clarify a message we didn't understand
+clarifyMessages = [
+  "Can you rephrase your request?",
+  "I'm not sure what you're asking for."
+]
+
 negotiationState = {
   "active": False,
   "startTime": None,
@@ -618,7 +626,7 @@ def processMessage(message):
         if interpretation['type'] == 'AcceptOffer': # Buyer accepted my offer! Deal with it.
             print("- Buyer accepted offer")
             print("- Checking bidHistory:", bidHistory)
-            if speaker in bidHistory and len(bidHistory[speaker]): # I actually did make an offer to this buyer;
+            if speaker in bidHistory and bidHistory[speaker]: # I actually did make an offer to this buyer;
                                                                  # fetch details and confirm acceptance
                 bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
                                             if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
@@ -644,7 +652,7 @@ def processMessage(message):
             return messageResponse
         elif interpretation['type'] == 'RejectOffer': # The buyer claims to be rejecting an offer I made; deal with it
             print("- Buyer rejected offer")
-            if speaker in bidHistory and len(bidHistory[speaker]): # Check whether I made an offer to this buyer
+            if speaker in bidHistory and bidHistory[speaker]: # Check whether I made an offer to this buyer
                 bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
                                         if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
                 print("- Our SellOffers:", bidHistoryIndividual)
@@ -683,8 +691,17 @@ def processMessage(message):
             return messageResponse
         elif interpretation['type'] == 'NotUnderstood': # The buyer said something, but we can't figure out what
                                                         # they meant. Just ignore them and hope they'll try again if it's important.
-            print("- Buyer message not understood. Ignoring message.")
-            return None
+            print("- Buyer message not understood. Going to ask to clarify.")
+            bidResponse = {
+                'text': selectMessage(clarifyMessages), 
+                'speaker': agentName,
+                'role': "seller",
+                'addressee': speaker,
+                'environmentUUID': interpretation['metadata']['environmentUUID'],
+                'timestamp': (time.time() * 1000),
+                'bid': None
+            }
+            return bidResponse
         elif ((interpretation['type'] == 'BuyOffer'
                 or interpretation['type'] == 'BuyRequest')
                 and mayIRespond(interpretation)): #The buyer evidently is making an offer or request; if permitted, generate a bid response
@@ -716,8 +733,7 @@ def processMessage(message):
         if interpretation['type'] == 'AcceptOffer':
             bidHistory[speaker] = None
             print("- Other agent accepted/rejected offer. Clearing bidHistory")
-        else: # Add to bidHistory
-        
+        else: # Add to bidHistory and figure out how to respond
             if speaker not in bidHistory or not bidHistory[speaker]:
                 bidHistory[speaker] = []
             bidHistory[speaker].append(interpretation)
@@ -750,12 +766,27 @@ def processMessage(message):
                     'bid': bid
                 }
                 return bidResponse
+            if (mostRecent == interpretation and interpretation['type'] == 'NotUnderstood'):
+                print("- No change to bidHistory and don't understand message.")
+                # do nothing if addressing other seller, ask to clarify if no addressee
+                if not addressee:
+                    print("- Message wasn't addressed to anyone. Going to ask to clarify")
+                    bidResponse = {
+                        'text': selectMessage(clarifyMessages), 
+                        'speaker': agentName,
+                        'role': "seller",
+                        'addressee': speaker,
+                        'environmentUUID': interpretation['metadata']['environmentUUID'],
+                        'timestamp': (time.time() * 1000),
+                        'bid': None
+                    }
+                    return bidResponse
+                else:
+                    print("- Message was addressed to other seller. Do nothing")
+                    return None
             else:
-                print("- bidHistory changed, going to do nothing.")
-                return None
-
-            print("- Delay, respond or cancel")
-            
+                print("- bidHistory changed, or last offer wasn't a BuyOffer or BuyRequest. Going to do nothing.")
+                return None            
     elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
         # TODO: Make an offer
         

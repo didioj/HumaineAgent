@@ -1,3 +1,12 @@
+## 11/24/2020
+* Check that `intents` isn't empty [extract-bid.py - interpretMessage]
+* Ask Human to clarify if we can't classify the intent and messages not addressed to other agent
+	(empty intent or uncertain) [agent-py.py - processMessage]
+* Added new clarifyMessages (Can you rephrase your request?, I'm not sure what you're asking for.) [agent-py.py]
+* Changed `if len(bidHistory[speaker])` to `if bidHistory[speaker]` in case bidHistory[speaker] is None [agent-py.py - processMessage]
+To do:
+* Add greeting intent
+
 ## 11/19/2020
 * Merged Ling to master
 * Added instructions

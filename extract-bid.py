@@ -20,7 +20,7 @@ def interpretMessage(watsonResponse):
     print("- entities: ", entities)
     cmd = {}
 
-    if intents[0]['intent'] == "Offer" and intents[0]['confidence'] > 0.2:
+    if intents and intents[0]['intent'] == "Offer" and intents[0]['confidence'] > 0.2:
         extractedOffer = extractOfferFromEntities(entities)
         cmd = {
             'quantity': extractedOffer['quantity']
@@ -36,11 +36,11 @@ def interpretMessage(watsonResponse):
                 cmd['type'] = "BuyRequest"
             elif watsonResponse['input']['role'] == 'seller':
                 cmd['type'] = "SellRequest"
-    elif intents[0]['intent'] == "AcceptOffer" and intents[0]['confidence'] > 0.2:
+    elif intents and intents[0]['intent'] == "AcceptOffer" and intents[0]['confidence'] > 0.2:
         cmd = {'type': "AcceptOffer"}
-    elif intents[0]['intent'] == "RejectOffer" and intents[0]['confidence'] > 0.2:
+    elif intents and intents[0]['intent'] == "RejectOffer" and intents[0]['confidence'] > 0.2:
         cmd = {'type': "RejectOffer"}
-    elif intents[0]['intent'] == "MinOffer" and intents[0]['confidence'] > 0.2:
+    elif intents and intents[0]['intent'] == "MinOffer" and intents[0]['confidence'] > 0.2:
         extractedOffer = extractOfferFromEntities(entities)
         cmd = {
             'quantity': extractedOffer['quantity']
@@ -48,7 +48,7 @@ def interpretMessage(watsonResponse):
         if extractedOffer['price']:
             cmd['price'] = extractedOffer['price']
         cmd['type'] = "MinOffer"
-    elif intents[0]['intent'] == 'Information' and intents[0]['confidence'] > 0.2:
+    elif intents and intents[0]['intent'] == 'Information' and intents[0]['confidence'] > 0.2:
         cmd = {'type': "Information"}
     else:
         cmd = {'type': "NotUnderstood"}
