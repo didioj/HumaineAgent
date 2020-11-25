@@ -173,6 +173,7 @@ def receiveMessage():
             'status': "Acknowledged",
             'interpretation': message
         }
+
         if message['speaker'] == agentName:
             print("- This message is from me!")
         #else:
@@ -453,7 +454,7 @@ def generateBid(offer):
     # handles other agent's SellOffer
         print("- Buyer did not propose price or other agent made an offer. Going to generate price")
         # if lowering last offer, then reduce last markupRatio
-        if lastPrice:
+        if lastPrice and lastOffer['quantity']!=bid['quantity']:
             print("- A SellOffer has been made before")
             # if not making enough profit, set type to MinMarkup
             minMarkupRatio = 0.3
@@ -852,6 +853,8 @@ def processMessage(message):
                     return None
             else:
                 print("- bidHistory changed, or last offer wasn't a BuyOffer or BuyRequest. Going to do nothing.")
+                # if the bidHistory changed, then the new receiveMessage will deal with the new message. 
+                # End the current action here
                 return None            
     elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
         # TODO: Make an offer

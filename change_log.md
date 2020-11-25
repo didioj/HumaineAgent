@@ -12,7 +12,7 @@
 * Convert `bundle` entity to ingredients [agent-py.py - processMessage]
 To do:
 * Context change!!!!!
-* Test only allow accept request when addresssed to us
+* Test: only allow accept request when addresssed to us
 * Add greeting intent?
 Note: 
 * BundleRequest response for both addressed to us and not addressed to us
