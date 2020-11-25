@@ -454,7 +454,13 @@ def generateBid(offer):
     # handles other agent's SellOffer
         print("- Buyer did not propose price or other agent made an offer. Going to generate price")
         # if lowering last offer, then reduce last markupRatio
-        if lastPrice and lastOffer['quantity']!=bid['quantity']:
+        
+        print("\n\n\n\n\n\n\n\n", lastOffer, "\n", lastPrice, "\n")
+        if lastOffer!=None:
+            print(lastOffer['quantity']==bid['quantity'])
+        print("\n\n\n\n\n\n\n\n", bid, "\n\n\n\n\n\n\n\n")
+        
+        if lastPrice and lastOffer['quantity']==bid['quantity'] and lastOffer['metadata']['speaker']==agentName:
             print("- A SellOffer has been made before")
             # if not making enough profit, set type to MinMarkup
             minMarkupRatio = 0.3
@@ -717,7 +723,7 @@ def processMessage(message):
                 'speaker': agentName,
                 'role': "seller",
                 'addressee': speaker,
-                'evnironmentUUID': interpretation['metadata']['environmentUUID'],
+                'environmentUUID': interpretation['metadata']['environmentUUID'],
                 'timestamp': (time.time() * 1000)
             }
             print("- Returning message:", messageResponse)
@@ -738,7 +744,7 @@ def processMessage(message):
         elif ((interpretation['type'] == 'BuyOffer'
                 or interpretation['type'] == 'BuyRequest')
                 and mayIRespond(interpretation)): #The buyer evidently is making an offer or request; if permitted, generate a bid response
-            print("- Buyer is making an BuyRequest")
+            print("\n\n\n\n- Buyer is making an BuyRequest\n\n\n\n")
             if speaker not in bidHistory or not bidHistory[speaker]:
                 bidHistory[speaker] = []
             bidHistory[speaker].append(interpretation)
