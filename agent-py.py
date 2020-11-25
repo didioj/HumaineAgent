@@ -855,7 +855,7 @@ def processMessage(message):
                 print("- bidHistory changed, or last offer wasn't a BuyOffer or BuyRequest. Going to do nothing.")
                 # if the bidHistory changed, then the new receiveMessage will deal with the new message. 
                 # End the current action here
-                return None            
+                return None
     elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
         # TODO: Make an offer
         
