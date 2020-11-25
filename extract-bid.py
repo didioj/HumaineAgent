@@ -48,6 +48,12 @@ def interpretMessage(watsonResponse):
         if extractedOffer['price']:
             cmd['price'] = extractedOffer['price']
         cmd['type'] = "MinOffer"
+    elif intents and intents[0]['intent'] == "BundleRequest" and intents[0]['confidence'] > 0.2:
+        extractedOffer = extractOfferFromEntities(entities)
+        cmd = {
+            'quantity': extractedOffer['quantity'],
+            'type': "BundleRequest"
+        }
     elif intents and intents[0]['intent'] == 'Information' and intents[0]['confidence'] > 0.2:
         cmd = {'type': "Information"}
     else:
@@ -99,7 +105,7 @@ def extractOfferFromEntities(entityList):
         if eBlock['entity'] == 'sys-number':
             amount = float(eBlock['value'])
             state = 'amount'
-        elif eBlock['entity'] == 'good' and state == 'amount':
+        elif (eBlock['entity'] == 'good' or eBlock['entity'] == 'bundle') and state == 'amount':
             if(amount % 1 == 0):
                 quantity[eBlock['value']] = int(amount)
             else:

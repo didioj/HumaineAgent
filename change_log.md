@@ -2,10 +2,20 @@
 * Check that `intents` isn't empty [extract-bid.py - interpretMessage]
 * Ask Human to clarify if we can't classify the intent and messages not addressed to other agent
 	(empty intent or uncertain) [agent-py.py - processMessage]
-* Added new clarifyMessages (Can you rephrase your request?, I'm not sure what you're asking for.) [agent-py.py]
-* Changed `if len(bidHistory[speaker])` to `if bidHistory[speaker]` in case bidHistory[speaker] is None [agent-py.py - processMessage]
+* Added new clarifyMessages (Can you rephrase your request?, 
+	I'm not sure what you're asking for.) [agent-py.py]
+* Changed `if len(bidHistory[speaker])` to `if bidHistory[speaker]` 
+	in case bidHistory[speaker] is None [agent-py.py - processMessage]
+* Added `bundle` entity and `BundleRequest` intent to Watson Assistant
+* Extract `bundle` entity from entityList [extract-bid.py - extractOfferFromEntities]
+* Detect `BundleRequest` [agent-py.py - processMessage]
+* Convert `bundle` entity to ingredients [agent-py.py - processMessage]
 To do:
-* Add greeting intent
+* Context change!!!!!
+* Test only allow accept request when addresssed to us
+* Add greeting intent?
+Note: 
+* BundleRequest response for both addressed to us and not addressed to us
 
 ## 11/19/2020
 * Merged Ling to master
@@ -88,7 +98,7 @@ To do:
 * Set `addressee  = None` if no addressee specified [extract-bid.py - extractAddressee]
 * Fixed typo to `cmd = {'type': "AcceptOffer"}` [extract-bid.py - interpretMessage]
 * Fixed receiveMessage to allow this agent's message to be processed [agent-py.py - receiveMessage]
-* Fixed `speaker not in bidHistory` [agent-py.py - procesMessage]
+* Fixed `speaker not in bidHistory` [agent-py.py - processMessage]
 * Add `quantity` from recent offer to RejectOffer to calculate utility [agent-py.py - generateBid]
 * Fixed typo to `rationale` [agent-py.py - receiveMessage]
 * If buyer rejects offer, reduce markup and make another offer

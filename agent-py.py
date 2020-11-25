@@ -678,6 +678,38 @@ def processMessage(message):
                 messageResponse['text'] = "OK, but I didn't think we had any outstanding offers."
             print("- Returning message:", messageResponse)
             return messageResponse
+        elif interpretation['type'] == 'BundleRequest': # Buyer wants to make a specific good
+            print("- Bundle request detected. Need to process interpretation for generateBid.")
+            # processing calculating ingredients needed for bundle request
+            ingredients  = {}
+            for bundle in interpretation['quantity']:
+                print("- Getting ingredients for:", bundle)
+                scale = interpretation['quantity'][bundle]
+                if bundle == 'cake':
+                    unit_ingredients = {'egg':2, 'flour':2, 'milk':1, 'sugar':1}
+                elif bundle == 'pancake':
+                    unit_ingredients = {'egg':1, 'flour':2, 'milk':2}
+                print("- unit_ingredients:", unit_ingredients)
+                scaled_ingredients = dict(unit_ingredients)
+                for key in scaled_ingredients:
+                    scaled_ingredients[key] = scaled_ingredients[key] * scale
+                    if key not in ingredients:
+                        ingredients[key] = scaled_ingredients[key]
+                    else:
+                        ingredients[key] = ingredients[key] + scaled_ingredients[key]
+            print("- Calculated ingredients needed:", ingredients)
+            interpretation['quantity'] = ingredients
+            bid = generateBid(interpretation)
+            bidResponse = {
+                'text': translateBid(bid, False), # Translate the bid into English
+                'speaker': agentName,
+                'role': "seller",
+                'addressee': speaker,
+                'environmentUUID': interpretation['metadata']['environmentUUID'],
+                'timestamp': (time.time() * 1000),
+                'bid': bid
+            }
+            return bidResponse
         elif interpretation['type'] == 'Information': # The buyer is just sending an informational message. Reply politely without attempting to understand.
             messageResponse = {
                 'text': "OK. Thanks for letting me know.",
@@ -742,9 +774,11 @@ def processMessage(message):
             # Ok, let's first wait and see if the other agent has responded
             time.sleep(3)
             
+            """
+            # This might prevent the NotUnderstood condition from running
             if speaker not in bidHistory:
                 print("- Can't find speaker in bidHistory. Do nothing")
-                return None
+                return None"""
             
             humanHistory = [bidBlock for bidBlock in bidHistory[speaker]]
             print("- Human's history:", humanHistory)
@@ -755,6 +789,38 @@ def processMessage(message):
             if (mostRecent == interpretation and 
                 (interpretation['type'] == 'BuyOffer' or interpretation['type'] == 'BuyRequest')) :
                 print("- No change to bidHistory. Going to make offer")
+                bid = generateBid(interpretation)
+                bidResponse = {
+                    'text': translateBid(bid, False), # Translate the bid into English
+                    'speaker': agentName,
+                    'role': "seller",
+                    'addressee': speaker,
+                    'environmentUUID': interpretation['metadata']['environmentUUID'],
+                    'timestamp': (time.time() * 1000),
+                    'bid': bid
+                }
+                return bidResponse
+            if (mostRecent == interpretation and interpretation['type'] == 'BundleRequest'): # Buyer wants to make a specific good
+                print("- Bundle request detected. Need to process interpretation for generateBid.")
+                # processing calculating ingredients needed for bundle request
+                ingredients  = {}
+                for bundle in interpretation['quantity']:
+                    print("- Getting ingredients for:", bundle)
+                    scale = interpretation['quantity'][bundle]
+                    if bundle == 'cake':
+                        unit_ingredients = {'egg':2, 'flour':2, 'milk':1, 'sugar':1}
+                    elif bundle == 'pancake':
+                        unit_ingredients = {'egg':1, 'flour':2, 'milk':2}
+                    print("- unit_ingredients:", unit_ingredients)
+                    scaled_ingredients = dict(unit_ingredients)
+                    for key in scaled_ingredients:
+                        scaled_ingredients[key] = scaled_ingredients[key] * scale
+                        if key not in ingredients:
+                            ingredients[key] = scaled_ingredients[key]
+                        else:
+                            ingredients[key] = ingredients[key] + scaled_ingredients[key]
+                print("- Calculated ingredients needed:", ingredients)
+                interpretation['quantity'] = ingredients
                 bid = generateBid(interpretation)
                 bidResponse = {
                     'text': translateBid(bid, False), # Translate the bid into English
