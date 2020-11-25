@@ -86,6 +86,17 @@ negotiationState = {
 utilityInfo = None
 bidHistory = {}
 
+def reactOwnAgent(interpretation):
+	print("- Received own message")
+	if interpretation['type'] == 'AcceptOffer' or interpretation['type'] == 'RejectOffer':
+	    bidHistory[addressee] = None
+	    print("- We accepted/rejected offer. Clearing bidHistory")
+	else:
+	    print("- Adding message to bidHistory")
+	    if bidHistory[addressee]:
+	        bidHistory[addressee].append(interpretation)
+	    print("- bidHistory:", bidHistory)
+
 # ************************************************************************************************************ #
 # REQUIRED APIs
 # ************************************************************************************************************ #
@@ -611,15 +622,7 @@ def processMessage(message):
     if speaker == agentName: # The message was from me; this means that the system allowed it to go through.
         # If the message from me was an accept or reject, wipe out the bidHistory with this particular negotiation partner
         # Otherwise, add the message to the bid history with this negotiation partner
-        print("- Received own message")
-        if interpretation['type'] == 'AcceptOffer' or interpretation['type'] == 'RejectOffer':
-            bidHistory[addressee] = None
-            print("- We accepted/rejected offer. Clearing bidHistory")
-        else:
-            print("- Adding message to bidHistory")
-            if bidHistory[addressee]:
-                bidHistory[addressee].append(interpretation)
-            print("- bidHistory:", bidHistory)
+        reactOwnAgent(interpretation)
     elif addressee == agentName and role == 'buyer': # Message was addressed to me by a buyer; continue to process
         print("- Message from buyer to me")
         messageResponse = {
