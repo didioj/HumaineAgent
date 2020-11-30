@@ -35,23 +35,40 @@ for i in range(len(sys.argv)):
 offerTypes = ["SellOffer", "MinOffer"]
 
 # predefined responses
+offerMessages = [
+  "How about if I sell you",
+  "You look like a nice person. I can give you",
+  "I can do",
+  "Take",
+  "I got you",
+  "What do you think about",
+  "I can sell you"
+]
+
 rejectionMessages = [
-  "No thanks. Your offer is much too low for me to consider.",
-  "Forget it. That's not a serious offer.",
+  "No thanks. That offer is way too low for anyone. I have a family to feed.",
+  "Forget it, I already gave you my best offer.",
   "Sorry. You're going to have to do a lot better than that!",
-  "That is daylight ROBBERY!"
+  "That is daylight ROBBERY!",
+  "Come on, friend. I can't accept an offer like that."
 ]
 
 # chance of fixing price and making an excuse when asked for better offer
 minOfferExcuseMessages = [
-  "All of our products are ORGANIC!",
+  "All of our products are FRESH and ORGANIC!",
   "All of our products are NON-GMO!",
   "Destiny has brought you to me, so I'll give you a good deal.",
   "I have 5 cats at home to feed."
 ]
 
 minOfferMessages = [
-  "That's the best I can do. You won't find a better deal out there!"
+  "That's the best I can do. You won't find a better deal out there!",
+  "This is the best deal I've offered to anyone.",
+  "Incredible value on this deal.",
+  "You won't find a deal like that anywhere else!",
+  "I'm not even making any profit with that.",
+  "I seriously can't go any lower than that.",
+  "That price is unbeatable."
 ]
 
 # if other seller proposed a price that will make us lose money
@@ -60,14 +77,16 @@ tauntMessages = [
 ]
 
 acceptanceMessages = [
-  "You've got a deal! I'll sell you",
+  "Awesome! I'm glad we could do business. You got",
+  "You've got a deal! I'll give you",
   "You've got it! I'll let you have",
-  "I accept your offer. Just to confirm, I'll give you"
+  "I accept your offer. Just to confirm, I'm giving you"
 ]
 confirmAcceptanceMessages = [
-  "I confirm that I'm selling you",
+  "Just to cofirm, I'm selling you ",
+  "I'm so glad to do business with you. I'll give you the ",
+  "Perfect! To confirm, I'm giving you ",
   "I'm so glad! This is to confirm that I'll give you",
-  "Perfect! Just to confirm, I'm giving you"
 ]
 negotiationState = {
   "active": False,
@@ -833,7 +852,7 @@ def translateBid(bid, confirm):
     text = ""
     if bid['type'] == 'SellOffer':
         print("- bid is a SellOffer")
-        text = "How about if I sell you"
+        text = selectMessage(offerMessages)  
         for good in bid['quantity'].keys():
             text += " " + str(bid['quantity'][good]) + " " + good
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
@@ -846,7 +865,7 @@ def translateBid(bid, confirm):
         text += str(bid['price']['value']) + " " + str(bid['price']['unit']) + " for "
         for good in bid['quantity'].keys():
             text += str(bid['quantity'][good]) + " " + good + " "
-        text += "is a great deal."
+        text += "This is such a good deal for you!"
         
     elif bid['type'] == 'MinMarkup':
         print("- bid is a minMarkup")
@@ -886,6 +905,7 @@ def translateBid(bid, confirm):
         for good in bid['quantity'].keys():
             text += " " + str(bid['quantity'][good]) + " " + good
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
+        text += " This is such a good deal for you!"
     print("- Returning response:", text)
     return text
 
