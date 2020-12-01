@@ -433,7 +433,7 @@ def generateBid(offer):
     bid = {
         'quantity': offer['quantity']
     }
-    
+    bid['markupRatio'] = 0
     # check that offer is a BuyOffer before deciding 
     if offer['type'] == 'BuyOffer' and 'price' in offer and 'value' in offer['price']: # The buyer included a proposed price, which we must take into account
         print("- Buyer proposed price! Going to consider it based on bundleCost (profit)")
@@ -441,7 +441,8 @@ def generateBid(offer):
         print("- Calculated bundleCost:",bundleCost)
         markupRatio = utility / bundleCost
         print("- Calculated markupRatio:", markupRatio)
-
+        #Addition
+        bid['markupRatio'] = markupRatio
         if (markupRatio > 2.0
             or (lastPrice != None
             and abs(offer['price']['value'] - lastPrice) < minDicker)): # If our markup is large, accept the offer
@@ -452,6 +453,7 @@ def generateBid(offer):
             print("- Proposed price is too low. Going to reject")
             bid['type'] = 'Reject'
             bid['price'] = None
+        #start offering justification for prices when approaching negotiation loss
         else: # If buyer's offer is in a range where an agreement seems possible, generate a counteroffer
             print("- Buyer's offer is workable. Going to generate a SellOffer")
             bid['type'] = 'SellOffer'
@@ -845,6 +847,46 @@ def getSafe(p, o, d):
 
 # *** translateBid()
 # Translate structured bid to text, with some randomization
+#if dict[item] = chocolate and quantity > 1, print (s) else if quantity = 1 do nothing
+#if dict[item] = egg and quantity > 1, print (s)
+
+ 
+#make another function for words in front of this
+def UnitsBid(good,good_quantity):
+    if good == 'egg' and good_quantity > 1:
+        return "eggs"
+    elif good == 'egg' and good_quantity == 1:
+        return "egg"
+    elif good == 'chocolate' and good_quantity >1:
+        return "chocolates"
+    elif good == 'chocolate' and good_quantity == 1:
+        return "chocolate"
+    elif good =='flour' and good_quantity > 1:
+        return "cups of flour"
+    elif good =='flour' and good_quantity == 1:
+        return "cup of flour"
+    elif good == 'milk' and good_quantity > 1:
+        return "cups of milk"
+    elif good == 'milk' and good_quantity == 1:
+        return "cup of milk"
+    elif good == 'sugar' and good_quantity > 1:
+        return "cups of sugar"
+    elif good == 'sugar' and good_quantity == 1:
+        return "cup of sugar"
+    elif good == 'vanilla' and good_quantity >1:
+        return "teaspoons of vanilla extract"
+    elif good == 'vanilla' and good_quantity ==1:
+        return "teaspoon of vanilla extract"
+    elif good == 'blueberry' and good_quantity > 1:
+        return 'cups of blueberries'
+    elif good == 'blueberry' and good_quantity == 1:
+        return 'cup of blueberries'
+    else:
+        return ""
+
+#negotiation logic? based on markup ratio, if the buyer offers a deal that is < 0.1 or > 0, then say this is our final offer
+#but also add a time constraint, if the time is below 50 seconds or something and you get to that deal point then accept the offer
+
 def translateBid(bid, confirm):
     print("- Entering translateBid")
     print("- Received bid:", bid)
@@ -854,8 +896,15 @@ def translateBid(bid, confirm):
         print("- bid is a SellOffer")
         text = selectMessage(offerMessages)  
         for good in bid['quantity'].keys():
-            text += " " + str(bid['quantity'][good]) + " " + good
+            good_quantity = bid['quantity'][good]
+            text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
+        if bid['markupRatio'] < 0: #so if we would lose money by making this deal
+            text += " Sorry for not accepting your offer as it stands, but we would have lost money."
+        elif bid['markupRatio'] > 0 and bid['markupRatio'] < 0.5: #if we are approaching the break-even point
+            text += " We're getting close to the best I can do here."
+        
+            
     elif bid['type'] == 'Reject':
         print("- bid is a Reject")
         text = selectMessage(rejectionMessages)
@@ -903,7 +952,8 @@ def translateBid(bid, confirm):
         else:
             text = selectMessage(acceptanceMessages)
         for good in bid['quantity'].keys():
-            text += " " + str(bid['quantity'][good]) + " " + good
+            good_quantity = bid['quantity'][good]
+            text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
         text += " This is such a good deal for you!"
     print("- Returning response:", text)
