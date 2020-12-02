@@ -9,6 +9,7 @@ import sys
 import time
 import math
 import random
+from copy import deepcopy
 app = Flask(__name__)
 
 conversation = importlib.import_module('conversation')
@@ -86,7 +87,7 @@ negotiationState = {
 utilityInfo = None
 bidHistory = {}
 
-def reactOwnAgent(interpretation):
+def reactOwnAgent(interpretation, speaker, addressee, role):
     print("- Received own message")
     if interpretation['type'] == 'AcceptOffer' or interpretation['type'] == 'RejectOffer':
         bidHistory[addressee] = None
@@ -97,7 +98,7 @@ def reactOwnAgent(interpretation):
             bidHistory[addressee].append(interpretation)
         print("- bidHistory:", bidHistory)
 
-def reactToBuyer(interpretation):
+def reactToBuyer(interpretation, speaker, addressee, role):
     print("- Message from buyer to me")
     messageResponse = {
         'text': "",
@@ -173,6 +174,8 @@ def reactToBuyer(interpretation):
                 unit_ingredients = {'egg':2, 'flour':2, 'milk':1, 'sugar':1}
             elif bundle == 'pancake':
                 unit_ingredients = {'egg':1, 'flour':2, 'milk':2}
+            elif bundle in utilityInfo['utility']:
+                unit_ingredients = {bundle:scale}
             print("- unit_ingredients:", unit_ingredients)
             scaled_ingredients = dict(unit_ingredients)
             for key in scaled_ingredients:
@@ -224,18 +227,23 @@ def reactToBuyer(interpretation):
         print("\n\n\n\n- Buyer is making an BuyRequest\n\n\n\n")
         if speaker not in bidHistory or not bidHistory[speaker]:
             bidHistory[speaker] = []
+        
         bidHistory[speaker].append(interpretation)
-
+        
+        # TODO: Offer bulk price if buying less than 5 items
+        # text = bulkPriceMessage(interpretation)
+        
         bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
                                           # and the current state of negotiation with the buyer
         bidResponse = {
             'text': translateBid(bid, False), # Translate the bid into English
+            # 'text': text, for bulkPrice
             'speaker': agentName,
             'role': "seller",
             'addressee': speaker,
             'environmentUUID': interpretation['metadata']['environmentUUID'],
             'timestamp': (time.time() * 1000),
-            'bid': bid
+            'bid': None
         }
         print("- Returning bidResponse:", bidResponse)
         return bidResponse
@@ -243,7 +251,7 @@ def reactToBuyer(interpretation):
         print("- Message not processed. Edge case?")
         return None
 
-def reactToEnemyBuyer(interpretation):
+def reactToEnemyBuyer(interpretation, speaker, addressee, role):
     print("- Message from buyer not addressed to me. Need to wait for other agent to respond")
     if interpretation['type'] == 'AcceptOffer':
         bidHistory[speaker] = None
@@ -294,6 +302,8 @@ def reactToEnemyBuyer(interpretation):
                     unit_ingredients = {'egg':2, 'flour':2, 'milk':1, 'sugar':1}
                 elif bundle == 'pancake':
                     unit_ingredients = {'egg':1, 'flour':2, 'milk':2}
+                elif bundle in utilityInfo['utility']:
+                    unit_ingredients = {bundle:scale}
                 print("- unit_ingredients:", unit_ingredients)
                 scaled_ingredients = dict(unit_ingredients)
                 for key in scaled_ingredients:
@@ -339,7 +349,7 @@ def reactToEnemyBuyer(interpretation):
             # End the current action here
             return None
 
-def reactToOtherSeller(interpretation):
+def reactToOtherSeller(interpretation, speaker, addressee, role):
     print("- Message from another seller. Need to make an offer!")
     print("- Message type:", interpretation['type'])
     time.sleep(2)
@@ -893,16 +903,17 @@ def processMessage(message):
     if speaker == agentName: # The message was from me; this means that the system allowed it to go through.
         # If the message from me was an accept or reject, wipe out the bidHistory with this particular negotiation partner
         # Otherwise, add the message to the bid history with this negotiation partner
-        reactOwnAgent(interpretation)
+        return reactOwnAgent(interpretation, speaker, addressee, role)
     elif addressee == agentName and role == 'buyer': # Message was addressed to me by a buyer; continue to process
-        reactToBuyer(interpretation)
+        return reactToBuyer(interpretation, speaker, addressee, role)
     elif role == 'buyer' and addressee != agentName:  # Message was not addressed to me, but is a buyer.
                                                       # A more clever agent might try to steal the deal.
-        reactToEnemyBuyer(interpretation)
+        return reactToEnemyBuyer(interpretation, speaker, addressee, role)
     elif role == 'seller': # Message was from another seller. A more clever agent might be able to exploit this info somehow!
         # TODO: Make an offer
-        reactToOtherSeller(interpretation)
+        return reactToOtherSeller(interpretation, speaker, addressee, role)
     return None
+
 
 
 # ******************************************************************************************************* #
@@ -933,6 +944,34 @@ def getSafe(p, o, d):
 # ******************************************************************************************************* #
 #                                                    Messaging                                            #
 # ******************************************************************************************************* #
+
+# *** bulkPriceMessage()
+# Generate message for bulk price
+def bulkPriceMessage(interpretation):
+    print("- Entering bulkPriceMessage")
+    print("- received interpretation:", interpretation)
+    # regular bid for requested items
+    basic_bid = generateBid(interpretation)
+    # bulk bid for requested items
+    bulk_interpretation = deepcopy(interpretation)
+    bulk_interpretation['type'] = 'GoodPrice'
+    # scale up to 6 times the quantity of goods
+    scale = int((random.random() * 5) + 2)
+    print("- scale:", scale)
+    for good in bulk_interpretation['quantity']:
+        bulk_interpretation['quantity'][good] = bulk_interpretation['quantity'][good] * scale
+    bulk_bid = generateBid(bulk_interpretation)
+    bulk_bid['type'] = "GoodPrice"
+    print("- interpretation:", interpretation)
+    print("- bulk_interpretation:", bulk_interpretation)
+    print("- basic_bid:", basic_bid)
+    print("- bulk_bid:", bulk_bid)
+    
+    message = translateBid(basic_bid, False)
+    message += " I can also offer you a special discounted bulk deal of"
+    message += translateBid(bulk_bid, False)
+    message += " Just let me know if you want the regular price or the special discounted bulk deal."
+    return message
 
 # *** translateBid()
 # Translate structured bid to text, with some randomization
@@ -996,6 +1035,11 @@ def translateBid(bid, confirm):
         for good in bid['quantity'].keys():
             text += " " + str(bid['quantity'][good]) + " " + good
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
+    elif bid['type'] == 'GoodPrice': # just the goods and the price
+        for good in bid['quantity'].keys():
+            text += " " + str(bid['quantity'][good]) + " " + good
+        text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
+      
     print("- Returning response:", text)
     return text
 

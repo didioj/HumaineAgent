@@ -16,9 +16,17 @@ def interpretMessage(watsonResponse):
     print("- input from watsonResponse:", watsonResponse['input'])
     intents = watsonResponse['intents']
     entities = watsonResponse['entities']
+    # look for keywords
+    keywords = []
+    for entity in entities:
+        if entity['entity'] == 'keyword':
+            keywords.append(entity['value'])
     print("- intents: ", intents)
     print("- entities: ", entities)
+    print("- keywords:", keywords)
     cmd = {}
+    if len(keywords):
+        cmd['keywords'] = keywords
 
     if intents and intents[0]['intent'] == "Offer" and intents[0]['confidence'] > 0.2:
         extractedOffer = extractOfferFromEntities(entities)
@@ -105,7 +113,7 @@ def extractOfferFromEntities(entityList):
         if eBlock['entity'] == 'sys-number':
             amount = float(eBlock['value'])
             state = 'amount'
-        elif (eBlock['entity'] == 'good' or eBlock['entity'] == 'bundle') and state == 'amount':
+        elif (eBlock['entity'] == 'good' or eBlock['entity'] == 'bundle') and state == 'amount':    
             if(amount % 1 == 0):
                 quantity[eBlock['value']] = int(amount)
             else:
@@ -113,6 +121,12 @@ def extractOfferFromEntities(entityList):
             state = None
             removedIndices.append(i - 1)
             removedIndices.append(i)
+        elif eBlock['entity'] == 'bundle' and not state:
+            # bundle quantity not specified so default to 1
+            quantity[eBlock['value']] = 1
+            removedIndices.append(i - 1)
+            removedIndices.append(i)
+            
         # this below block is intended to address the issue where a buyer
         # can issue a generic request for a type of product
         # could cause issues with

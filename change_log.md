@@ -1,3 +1,15 @@
+## 12/1/2020
+* If buyer doesn't specify quantity of cake/pancakes, default to 1 [extract-bid.py - extractOfferFromEntities]
+* Buyer can specify bundle request and individual goods
+
+
+## 11/29/2020
+* bulkPriceMessage - returns agent message with regular offer and bulk price offer [agent-py.py - bulkPriceMessage]
+* Added `keyword` entity to Watson Assistant so we can check which offer the buyer wants
+* Include a list of keywords in interpretation [extract-bid.py - interpretMessage]
+* Pass needed variables from `processMessage` to `reactTo...` [agent-py.py - processMessage]
+* Return `reactTo...` in processMessage [agent-py.py - processMessage]
+
 ## 11/24/2020
 * Check that `intents` isn't empty [extract-bid.py - interpretMessage]
 * Ask Human to clarify if we can't classify the intent and messages not addressed to other agent
