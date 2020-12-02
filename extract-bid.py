@@ -25,8 +25,6 @@ def interpretMessage(watsonResponse):
     print("- entities: ", entities)
     print("- keywords:", keywords)
     cmd = {}
-    if len(keywords):
-        cmd['keywords'] = keywords
 
     if intents and intents[0]['intent'] == "Offer" and intents[0]['confidence'] > 0.2:
         extractedOffer = extractOfferFromEntities(entities)
@@ -41,7 +39,10 @@ def interpretMessage(watsonResponse):
                 cmd['type'] = "SellOffer"
         else:
             if watsonResponse['input']['role'] == 'buyer':
-                cmd['type'] = "BuyRequest"
+                if 'cake' in cmd['quantity'] or 'pancake' in cmd['quantity']:
+                    cmd['type'] = "BundleRequest"
+                else:
+                    cmd['type'] = "BuyRequest"
             elif watsonResponse['input']['role'] == 'seller':
                 cmd['type'] = "SellRequest"
     elif intents and intents[0]['intent'] == "AcceptOffer" and intents[0]['confidence'] > 0.2:
@@ -66,11 +67,13 @@ def interpretMessage(watsonResponse):
         cmd = {'type': "Information"}
     else:
         cmd = {'type': "NotUnderstood"}
-    
+
     if cmd:
         cmd['metadata'] = watsonResponse['input']
         cmd['metadata']['addressee'] = watsonResponse['input']['addressee'] or extractAddressee(entities) # Expect the addressee to be provided, but extract it if necessary
         cmd['metadata']['timeStamp'] = time.time()
+        if len(keywords):
+            cmd['keywords'] = keywords
     print("- cmd leaving interpretMessage:", cmd)
     return cmd
 

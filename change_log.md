@@ -1,8 +1,31 @@
+To do:
+* Accept bulk discount
+	* Process bulkoffer as bulk offer. Filter out base offer and bulk offer.
+	* Edit bidHistory based on response.
+* Store old bulk deals so don't keep offering. reset at new buyrequest? 
+* Add bulk deal to reactToEnemy
+* Rejection offer with no addressee should be directed to us. Talking to me?
+* Pull from personality branch
+
 ## 12/1/2020
+* bidHistory switch context and reject properly **** 
+	* Testing:
+		* If rejection, need to find our last offer
+		* If quantity given, pull up all offers for that quantity
+		* relevant offers is correct (use our last offer)
+		* my recent offers is correct
+		* rejection refers to the correct offer
+		* context switch works (use new given quantity)
+		* rejection fails if no offer
 * If buyer doesn't specify quantity of cake/pancakes, default to 1 [extract-bid.py - extractOfferFromEntities]
-* Buyer can specify bundle request and individual goods
-
-
+* Buyer can specify bundle request and individual goods [agent-py.py - processMessage]
+	* Classify `BundleRequest` correctly [extract-bid.py - interpretMessage]
+* Make sure bulk price is lower than original price 
+	* Add normal price for bulk to bidHistory as NormalBulkOffer [agent-py.py - bulkPriceMessage]
+	* Reduce bulk price in generateBid [agent-py.py - generateBid]
+	* Say how much the buyer is saving [agent-py.py - bulkPriceMessage]
+* Fixed bug reject most recent offer instead of first offer [agent-py.py - generateBid]
+ 
 ## 11/29/2020
 * bulkPriceMessage - returns agent message with regular offer and bulk price offer [agent-py.py - bulkPriceMessage]
 * Added `keyword` entity to Watson Assistant so we can check which offer the buyer wants
