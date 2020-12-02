@@ -35,6 +35,9 @@ for i in range(len(sys.argv)):
 # Offer types
 offerTypes = ["SellOffer", "MinOffer", "BulkOffer"]
 
+# bundle types
+bundleTypes = ['cake', 'pancake']
+
 # predefined responses
 rejectionMessages = [
   "No thanks. Your offer is much too low for me to consider.",
@@ -113,6 +116,12 @@ def reactToBuyer(interpretation, speaker, addressee, role):
         'environmentUUID': interpretation['metadata']['environmentUUID'],
         'timestamp': (time.time() * 1000)
     }
+    
+    if interpretation['type'] in ["BuyRequest", "BuyOffer","BundleRequest"]:
+        for good in interpretation['quantity']:
+            if good not in utilityInfo['utility'] and good not in bundleTypes:
+                interpretation['type'] = "NotUnderstood"
+
     if interpretation['type'] == 'AcceptOffer': # Buyer accepted my offer! Deal with it.
         print("- Buyer accepted offer")
         print("- Checking bidHistory:", bidHistory)
@@ -271,6 +280,11 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
             print("- Can't find speaker in bidHistory. Do nothing")
             return None"""
         
+        if interpretation['type'] in ["BuyRequest", "BuyOffer","BundleRequest"]:
+            for good in interpretation['quantity']:
+                if good not in utilityInfo['utility'] and good not in bundleTypes:
+                    interpretation['type'] = "NotUnderstood"
+        
         humanHistory = [bidBlock for bidBlock in bidHistory[speaker]]
         print("- Human's history:", humanHistory)
         mostRecent = humanHistory[len(humanHistory) - 1]
@@ -362,6 +376,12 @@ def reactToOtherSeller(interpretation, speaker, addressee, role):
     print("- Message type:", interpretation['type'])
     time.sleep(2)
     # If other agent makes a sell offer, 
+    
+    if interpretation['type'] in ['SellOffer', 'MinOffer']:
+         for good in interpretation['quantity']:
+            if good not in utilityInfo['utility'] and good not in bundleTypes:
+                interpretation['type'] = "NotUnderstood"
+
     if interpretation['type'] == 'SellOffer' or interpretation['type'] == 'MinOffer':
         print("- Other agent made a sell offer!")
         if addressee not in bidHistory:
@@ -477,9 +497,22 @@ def receiveMessage():
         if message['speaker'] == agentName:
             print("- This message is from me!")
         #else:
-        bidMessage = processMessage(message)
-        print("- Bid message from processMessage:", bidMessage)
-        if bidMessage: # If warranted, proactively send a new negotiation message to the environment orchestrator
+        try:
+            bidMessage = processMessage(message)
+            print("- Bid message from processMessage:", bidMessage)
+        except:
+            print("- ERROR: caught an error. Going to ask to clarify")
+            bidMessage = bidResponse = {
+                'text': selectMessage(clarifyMessages), 
+                'speaker': agentName,
+                'role': "seller",
+                'addressee': "Human",
+                'environmentUUID': interpretation['metadata']['environmentUUID'],
+                'timestamp': (time.time() * 1000),
+                'bid': None
+            }
+            
+        if bidMessage: # If warranted, proactively send a new negotiation message to the environment orchestrator        
             print("- Sending message:", bidMessage)
             sendMessage(bidMessage)
     else: # Either there's no body or the round is over.
@@ -731,7 +764,7 @@ def generateBid(offer):
     # It would be legal to do so, and perhaps profitable in some situations -- consider doing that!
 
     bid = {
-        'quantity': offer['quantity']
+        'quantity': deepcopy(offer['quantity'])
     }
     
     # check that offer is a BuyOffer before deciding 
