@@ -1,18 +1,21 @@
 To do:
+* Pull from personality branch
+* Clear bidHistory at StartRound
 * I don't want <item>, I want <item>
+* I want to buy 1 egg and 1 <unknown>. 1 gets set as the price
+* BuyOffer only when 
 * Accept bulk discount
 	* Process bulkoffer as bulk offer. Filter out base offer and bulk offer.
 	* Edit bidHistory based on response.
 * Store old bulk deals so don't keep offering. reset at new buyrequest? 
 * Add bulk deal to reactToEnemy
 * Rejection offer with no addressee should be directed to us. Talking to me?
-* Pull from personality branch
-* Clear bidHistory at StartRound
 
 ## 12/2/2020
 * Classify unknown goods and messages as `NotUnderstood` [agent-py.py - processMessage]
 	* Filter out `cake` and `pancake`
 * Rejection: I want better offer, is there better offer, too expensive [Watson Assistant - rejectOffer]
+* Merging with `refactor` branch
 
 ## 12/1/2020
 * bidHistory switch context and reject properly **** 

@@ -90,6 +90,17 @@ negotiationState = {
 utilityInfo = None
 bidHistory = {}
 
+def assembleBidResponse(bid, agentName, role, speaker, environmentUUID):
+    response = {
+        'text': translateBid(bid, False), # Translate the bid into English
+        'speaker': agentName,
+        'role': role,
+        'addressee': speaker,
+        'environmentUUID': environmentUUID,
+        'timestamp': (time.time() * 1000),
+        'bid': bid
+    }
+
 def reactOwnAgent(interpretation, speaker, addressee, role):
     print("- Received own message")
     if interpretation['type'] == 'AcceptOffer' or interpretation['type'] == 'RejectOffer':
@@ -158,7 +169,9 @@ def reactToBuyer(interpretation, speaker, addressee, role):
             if len(bidHistoryIndividual):
                 bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
                                                   # and the current state of negotiation with the buyer
-                bidResponse = {
+                environmentUUID = interpretation['metadata']['environmentUUID']
+                bidResponse = assembleBidResponse(bid, agentName, 'seller', speaker, environmentUUID)
+                '''{
                     'text': translateBid(bid, False), # Translate the bid into English
                     'speaker': agentName,
                     'role': "seller",
@@ -166,7 +179,7 @@ def reactToBuyer(interpretation, speaker, addressee, role):
                     'environmentUUID': interpretation['metadata']['environmentUUID'],
                     'timestamp': (time.time() * 1000),
                     'bid': bid
-                }
+                }'''
                 # print("- Buyer didn't like our offer. Need to make another offer!")
                 print("- Returning bidResponse:", bidResponse)
                 return bidResponse
@@ -201,7 +214,9 @@ def reactToBuyer(interpretation, speaker, addressee, role):
         print("- Calculated ingredients needed:", ingredients)
         interpretation['quantity'] = ingredients
         bid = generateBid(interpretation)
-        bidResponse = {
+        environmentUUID = interpretation['metadata']['environmentUUID']
+        bidResponse = assembleBidResponse(bid, agentName, 'seller', speaker, environmentUUID)
+        ''' {
             'text': translateBid(bid, False), # Translate the bid into English
             'speaker': agentName,
             'role': "seller",
@@ -209,7 +224,7 @@ def reactToBuyer(interpretation, speaker, addressee, role):
             'environmentUUID': interpretation['metadata']['environmentUUID'],
             'timestamp': (time.time() * 1000),
             'bid': bid
-        }
+        }'''
         return bidResponse
     elif interpretation['type'] == 'Information': # The buyer is just sending an informational message. Reply politely without attempting to understand.
         messageResponse = {
@@ -254,6 +269,7 @@ def reactToBuyer(interpretation, speaker, addressee, role):
             'timestamp': (time.time() * 1000),
             'bid': None
         }
+        
         print("- Returning bidResponse:", bidResponse)
         return bidResponse
     else:
@@ -298,7 +314,6 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
                       
             # bid = generateBid(interpretation)
             text = bulkPriceMessage(interpretation)
-            
             bidResponse = {
                 # 'text': translateBid(bid, False), # Translate the bid into English
                 'text': text, # for bulkPrice
@@ -310,6 +325,7 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
                 'bid': None
             }
             return bidResponse
+            
         if (mostRecent == interpretation and interpretation['type'] == 'BundleRequest'): # Buyer wants to make a specific good
             print("- Bundle request detected. Need to process interpretation for generateBid.")
             # processing calculating ingredients needed for bundle request
@@ -336,7 +352,9 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
             print("- Calculated ingredients needed:", ingredients)
             interpretation['quantity'] = ingredients
             bid = generateBid(interpretation)
-            bidResponse = {
+            environmentUUID = interpretation['metadata']['environmentUUID']
+            bidResponse = assembleBidResponse(bid, agentName, 'seller', speaker, environmentUUID)
+            '''{
                 'text': translateBid(bid, False), # Translate the bid into English
                 'speaker': agentName,
                 'role': "seller",
@@ -344,7 +362,7 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
                 'environmentUUID': interpretation['metadata']['environmentUUID'],
                 'timestamp': (time.time() * 1000),
                 'bid': bid
-            }
+            }'''
             return bidResponse
         if (mostRecent == interpretation and interpretation['type'] == 'NotUnderstood'):
             print("- No change to bidHistory and don't understand message.")
@@ -389,7 +407,9 @@ def reactToOtherSeller(interpretation, speaker, addressee, role):
         bidHistory[addressee].append(interpretation)
         bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
                                           # and the current state of negotiation with the buyer
-        bidResponse = {
+        environmentUUID = interpretation['metadata']['environmentUUID']
+        bidResponse = assembleBidResponse(bid, agentName, 'seller', speaker, environmentUUID)
+        '''{
             'text': translateBid(bid, False), # Translate the bid into English
             'speaker': agentName,
             'role': "seller",
@@ -397,7 +417,7 @@ def reactToOtherSeller(interpretation, speaker, addressee, role):
             'environmentUUID': interpretation['metadata']['environmentUUID'],
             'timestamp': (time.time() * 1000),
             'bid': bid
-        }
+        }'''
         
         print("- Returning bidResponse:", bidResponse)
         return bidResponse
