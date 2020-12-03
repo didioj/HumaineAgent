@@ -39,23 +39,40 @@ offerTypes = ["SellOffer", "MinOffer", "BulkOffer"]
 bundleTypes = ['cake', 'pancake']
 
 # predefined responses
+offerMessages = [
+  "How about if I sell you",
+  "You look like a nice person. I can give you",
+  "I can do",
+  "Take",
+  "I got you",
+  "What do you think about",
+  "I can sell you"
+]
+
 rejectionMessages = [
-  "No thanks. Your offer is much too low for me to consider.",
-  "Forget it. That's not a serious offer.",
+  "No thanks. That offer is way too low for anyone. I have a family to feed.",
+  "Forget it, I already gave you my best offer.",
   "Sorry. You're going to have to do a lot better than that!",
-  "That is daylight ROBBERY!"
+  "That is daylight ROBBERY!",
+  "Come on, friend. I can't accept an offer like that."
 ]
 
 # chance of fixing price and making an excuse when asked for better offer
 minOfferExcuseMessages = [
-  "All of our products are ORGANIC!",
+  "All of our products are FRESH and ORGANIC!",
   "All of our products are NON-GMO!",
   "Destiny has brought you to me, so I'll give you a good deal.",
   "I have 5 cats at home to feed."
 ]
 
 minOfferMessages = [
-  "That's the best I can do. You won't find a better deal out there!"
+  "That's the best I can do. You won't find a better deal out there!",
+  "This is the best deal I've offered to anyone.",
+  "Incredible value on this deal.",
+  "You won't find a deal like that anywhere else!",
+  "I'm not even making any profit with that.",
+  "I seriously can't go any lower than that.",
+  "That price is unbeatable."
 ]
 
 # if other seller proposed a price that will make us lose money
@@ -64,15 +81,17 @@ tauntMessages = [
 ]
 
 acceptanceMessages = [
-  "You've got a deal! I'll sell you",
+  "Awesome! I'm glad we could do business. You got",
+  "You've got a deal! I'll give you",
   "You've got it! I'll let you have",
-  "I accept your offer. Just to confirm, I'll give you"
+  "I accept your offer. Just to confirm, I'm giving you"
 ]
 
 confirmAcceptanceMessages = [
-  "I confirm that I'm selling you",
+  "Just to cofirm, I'm selling you ",
+  "I'm so glad to do business with you. I'll give you the ",
+  "Perfect! To confirm, I'm giving you ",
   "I'm so glad! This is to confirm that I'll give you",
-  "Perfect! Just to confirm, I'm giving you"
 ]
 
 # Asking Human to clarify a message we didn't understand
@@ -170,9 +189,7 @@ def reactToBuyer(interpretation, speaker, addressee, role):
             if len(bidHistoryIndividual):
                 bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
                                                   # and the current state of negotiation with the buyer
-                environmentUUID = interpretation['metadata']['environmentUUID']
-                bidResponse = assembleBidResponse(bid, agentName, 'seller', speaker, environmentUUID)
-                '''{
+                bidResponse = {
                     'text': translateBid(bid, False), # Translate the bid into English
                     'speaker': agentName,
                     'role': "seller",
@@ -180,7 +197,7 @@ def reactToBuyer(interpretation, speaker, addressee, role):
                     'environmentUUID': interpretation['metadata']['environmentUUID'],
                     'timestamp': (time.time() * 1000),
                     'bid': bid
-                }'''
+                }
                 # print("- Buyer didn't like our offer. Need to make another offer!")
                 print("- Returning bidResponse:", bidResponse)
                 return bidResponse
@@ -215,9 +232,7 @@ def reactToBuyer(interpretation, speaker, addressee, role):
         print("- Calculated ingredients needed:", ingredients)
         interpretation['quantity'] = ingredients
         bid = generateBid(interpretation)
-        environmentUUID = interpretation['metadata']['environmentUUID']
-        bidResponse = assembleBidResponse(bid, agentName, 'seller', speaker, environmentUUID)
-        ''' {
+        bidResponse = {
             'text': translateBid(bid, False), # Translate the bid into English
             'speaker': agentName,
             'role': "seller",
@@ -225,7 +240,7 @@ def reactToBuyer(interpretation, speaker, addressee, role):
             'environmentUUID': interpretation['metadata']['environmentUUID'],
             'timestamp': (time.time() * 1000),
             'bid': bid
-        }'''
+        }
         return bidResponse
     elif interpretation['type'] == 'Information': # The buyer is just sending an informational message. Reply politely without attempting to understand.
         messageResponse = {
@@ -270,7 +285,6 @@ def reactToBuyer(interpretation, speaker, addressee, role):
             'timestamp': (time.time() * 1000),
             'bid': None
         }
-        
         print("- Returning bidResponse:", bidResponse)
         return bidResponse
     else:
@@ -315,6 +329,7 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
                       
             # bid = generateBid(interpretation)
             text = bulkPriceMessage(interpretation)
+            
             bidResponse = {
                 # 'text': translateBid(bid, False), # Translate the bid into English
                 'text': text, # for bulkPrice
@@ -326,7 +341,6 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
                 'bid': None
             }
             return bidResponse
-            
         if (mostRecent == interpretation and interpretation['type'] == 'BundleRequest'): # Buyer wants to make a specific good
             print("- Bundle request detected. Need to process interpretation for generateBid.")
             # processing calculating ingredients needed for bundle request
@@ -353,9 +367,7 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
             print("- Calculated ingredients needed:", ingredients)
             interpretation['quantity'] = ingredients
             bid = generateBid(interpretation)
-            environmentUUID = interpretation['metadata']['environmentUUID']
-            bidResponse = assembleBidResponse(bid, agentName, 'seller', speaker, environmentUUID)
-            '''{
+            bidResponse = {
                 'text': translateBid(bid, False), # Translate the bid into English
                 'speaker': agentName,
                 'role': "seller",
@@ -363,7 +375,7 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
                 'environmentUUID': interpretation['metadata']['environmentUUID'],
                 'timestamp': (time.time() * 1000),
                 'bid': bid
-            }'''
+            }
             return bidResponse
         if (mostRecent == interpretation and interpretation['type'] == 'NotUnderstood'):
             print("- No change to bidHistory and don't understand message.")
@@ -408,9 +420,7 @@ def reactToOtherSeller(interpretation, speaker, addressee, role):
         bidHistory[addressee].append(interpretation)
         bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
                                           # and the current state of negotiation with the buyer
-        environmentUUID = interpretation['metadata']['environmentUUID']
-        bidResponse = assembleBidResponse(bid, agentName, 'seller', speaker, environmentUUID)
-        '''{
+        bidResponse = {
             'text': translateBid(bid, False), # Translate the bid into English
             'speaker': agentName,
             'role': "seller",
@@ -418,7 +428,7 @@ def reactToOtherSeller(interpretation, speaker, addressee, role):
             'environmentUUID': interpretation['metadata']['environmentUUID'],
             'timestamp': (time.time() * 1000),
             'bid': bid
-        }'''
+        }
         
         print("- Returning bidResponse:", bidResponse)
         return bidResponse
@@ -528,7 +538,7 @@ def receiveMessage():
                 'speaker': agentName,
                 'role': "seller",
                 'addressee': "Human",
-                'environmentUUID': interpretation['metadata']['environmentUUID'],
+                'environmentUUID': message['environmentUUID'],
                 'timestamp': (time.time() * 1000),
                 'bid': None
             }
@@ -1071,6 +1081,37 @@ def bulkPriceMessage(interpretation):
     message += " Are you interested in the bulk deal?"
     # return message 
 
+def UnitsBid(good,good_quantity):
+    if good == 'egg' and good_quantity > 1:
+        return "eggs"
+    elif good == 'egg' and good_quantity == 1:
+        return "egg"
+    elif good == 'chocolate' and good_quantity >1:
+        return "chocolates"
+    elif good == 'chocolate' and good_quantity == 1:
+        return "chocolate"
+    elif good =='flour' and good_quantity > 1:
+        return "cups of flour"
+    elif good =='flour' and good_quantity == 1:
+        return "cup of flour"
+    elif good == 'milk' and good_quantity > 1:
+        return "cups of milk"
+    elif good == 'milk' and good_quantity == 1:
+        return "cup of milk"
+    elif good == 'sugar' and good_quantity > 1:
+        return "cups of sugar"
+    elif good == 'sugar' and good_quantity == 1:
+        return "cup of sugar"
+    elif good == 'vanilla' and good_quantity >1:
+        return "teaspoons of vanilla extract"
+    elif good == 'vanilla' and good_quantity ==1:
+        return "teaspoon of vanilla extract"
+    elif good == 'blueberry' and good_quantity > 1:
+        return 'cups of blueberries'
+    elif good == 'blueberry' and good_quantity == 1:
+        return 'cup of blueberries'
+    else:
+        return ""
 # *** translateBid()
 # Translate structured bid to text, with some randomization
 def translateBid(bid, confirm):
@@ -1080,9 +1121,10 @@ def translateBid(bid, confirm):
     text = ""
     if bid['type'] == 'SellOffer':
         print("- bid is a SellOffer")
-        text = "How about if I sell you"
+        text = selectMessage(offerMessages)
         for good in bid['quantity'].keys():
-            text += " " + str(bid['quantity'][good]) + " " + good
+            good_quantity = bid['quantity'][good]
+            text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
     elif bid['type'] == 'Reject':
         print("- bid is a Reject")
@@ -1093,7 +1135,7 @@ def translateBid(bid, confirm):
         text += str(bid['price']['value']) + " " + str(bid['price']['unit']) + " for "
         for good in bid['quantity'].keys():
             text += str(bid['quantity'][good]) + " " + good + " "
-        text += "is a great deal."
+        text += "This is such a good deal for you!"
         
     elif bid['type'] == 'MinMarkup':
         print("- bid is a minMarkup")
@@ -1102,7 +1144,8 @@ def translateBid(bid, confirm):
             print("- min offer was made by us!")
             text += "My offer for " 
             for good in bid['quantity'].keys():
-                text += str(bid['quantity'][good]) + " " + good + " "
+                good_quantity = bid['quantity'][good]
+                text += str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
                 
             text += "stands at " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + ". "
             text += selectMessage(minOfferMessages)
@@ -1113,14 +1156,16 @@ def translateBid(bid, confirm):
                 print("- Going to match other agent's offer")
                 text += 'I will also offer you '
                 for good in bid['quantity'].keys():
-                    text += str(bid['quantity'][good]) + " " + good + ' '
+                    good_quantity = bid['quantity'][good]
+                    text += str(bid['quantity'][good]) + " " +  UnitsBid(good,good_quantity)
                 text += "for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + ". "
                 text += "Our products are organic and Non-GMO."
             elif bid['action'] == 'reject': # other agent is losing money so don't match
                 # state our best offer and taunt other agent
                 text += str(bid['price']['value']) + " " + str(bid['price']['unit']) + " for "
                 for good in bid['quantity'].keys():
-                    text += str(bid['quantity'][good]) + " " + good + " "
+                    good_quantity = bid['quantity'][good]
+                    text += str(bid['quantity'][good]) + " " +  UnitsBid(good,good_quantity)
                 text += "is my best offer. "
                 text += selectMessage(tauntMessages)
 
@@ -1131,8 +1176,10 @@ def translateBid(bid, confirm):
         else:
             text = selectMessage(acceptanceMessages)
         for good in bid['quantity'].keys():
-            text += " " + str(bid['quantity'][good]) + " " + good
+            good_quantity = bid['quantity'][good]
+            text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
+        text += " This is such a good deal for you!"
     elif bid['type'] == 'GoodPrice': # just the goods and the price
         for good in bid['quantity'].keys():
             text += " " + str(bid['quantity'][good]) + " " + good
