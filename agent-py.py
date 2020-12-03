@@ -100,6 +100,7 @@ def assembleBidResponse(bid, agentName, role, speaker, environmentUUID):
         'timestamp': (time.time() * 1000),
         'bid': bid
     }
+    return response
 
 def reactOwnAgent(interpretation, speaker, addressee, role):
     print("- Received own message")
