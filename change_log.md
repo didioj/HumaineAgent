@@ -1,64 +1,3 @@
-To do:
-* I don't want <item>, I want <item>
-* Accept bulk discount
-	* Process bulkoffer as bulk offer. Filter out base offer and bulk offer.
-	* Edit bidHistory based on response.
-* Store old bulk deals so don't keep offering. reset at new buyrequest? 
-* Add bulk deal to reactToEnemy
-* Rejection offer with no addressee should be directed to us. Talking to me?
-* Pull from personality branch
-* Clear bidHistory at StartRound
-
-## 12/2/2020
-* Classify unknown goods and messages as `NotUnderstood` [agent-py.py - processMessage]
-	* Filter out `cake` and `pancake`
-* Rejection: I want better offer, is there better offer, too expensive [Watson Assistant - rejectOffer]
-
-## 12/1/2020
-* bidHistory switch context and reject properly **** 
-	* Testing:
-		* If rejection, need to find our last offer
-		* If quantity given, pull up all offers for that quantity
-		* relevant offers is correct (use our last offer)
-		* my recent offers is correct
-		* rejection refers to the correct offer
-		* context switch works (use new given quantity)
-		* rejection fails if no offer
-* If buyer doesn't specify quantity of cake/pancakes, default to 1 [extract-bid.py - extractOfferFromEntities]
-* Buyer can specify bundle request and individual goods [agent-py.py - processMessage]
-	* Classify `BundleRequest` correctly [extract-bid.py - interpretMessage]
-* Make sure bulk price is lower than original price 
-	* Add normal price for bulk to bidHistory as NormalBulkOffer [agent-py.py - bulkPriceMessage]
-	* Reduce bulk price in generateBid [agent-py.py - generateBid]
-	* Say how much the buyer is saving [agent-py.py - bulkPriceMessage]
-* Fixed bug reject most recent offer instead of first offer [agent-py.py - generateBid]
- 
-## 11/29/2020
-* bulkPriceMessage - returns agent message with regular offer and bulk price offer [agent-py.py - bulkPriceMessage]
-* Added `keyword` entity to Watson Assistant so we can check which offer the buyer wants
-* Include a list of keywords in interpretation [extract-bid.py - interpretMessage]
-* Pass needed variables from `processMessage` to `reactTo...` [agent-py.py - processMessage]
-* Return `reactTo...` in processMessage [agent-py.py - processMessage]
-
-## 11/24/2020
-* Check that `intents` isn't empty [extract-bid.py - interpretMessage]
-* Ask Human to clarify if we can't classify the intent and messages not addressed to other agent
-	(empty intent or uncertain) [agent-py.py - processMessage]
-* Added new clarifyMessages (Can you rephrase your request?, 
-	I'm not sure what you're asking for.) [agent-py.py]
-* Changed `if len(bidHistory[speaker])` to `if bidHistory[speaker]` 
-	in case bidHistory[speaker] is None [agent-py.py - processMessage]
-* Added `bundle` entity and `BundleRequest` intent to Watson Assistant
-* Extract `bundle` entity from entityList [extract-bid.py - extractOfferFromEntities]
-* Detect `BundleRequest` [agent-py.py - processMessage]
-* Convert `bundle` entity to ingredients [agent-py.py - processMessage]
-To do:
-* Context change!!!!!
-* Test: only allow accept request when addresssed to us
-* Add greeting intent?
-Note: 
-* BundleRequest response for both addressed to us and not addressed to us
-
 ## 11/19/2020
 * Merged Ling to master
 * Added instructions
@@ -140,7 +79,7 @@ Note:
 * Set `addressee  = None` if no addressee specified [extract-bid.py - extractAddressee]
 * Fixed typo to `cmd = {'type': "AcceptOffer"}` [extract-bid.py - interpretMessage]
 * Fixed receiveMessage to allow this agent's message to be processed [agent-py.py - receiveMessage]
-* Fixed `speaker not in bidHistory` [agent-py.py - processMessage]
+* Fixed `speaker not in bidHistory` [agent-py.py - procesMessage]
 * Add `quantity` from recent offer to RejectOffer to calculate utility [agent-py.py - generateBid]
 * Fixed typo to `rationale` [agent-py.py - receiveMessage]
 * If buyer rejects offer, reduce markup and make another offer
