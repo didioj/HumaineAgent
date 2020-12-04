@@ -9,6 +9,7 @@ import sys
 import time
 import math
 import random
+import sentiment
 app = Flask(__name__)
 
 conversation = importlib.import_module('conversation')
@@ -25,6 +26,7 @@ defaultSpeaker = 'Jeff'
 defaultEnvironmentUUID = 'abcdefg'
 defaultAddressee = agentName
 defaultRoundDuration = 600
+sentimentModule = sentiment.Sentiment()
 
 # fetch the port number
 for i in range(len(sys.argv)):
@@ -852,6 +854,13 @@ def generateBid(offer):
         else:
             print("- No history of any SellOffers. Going to propose price")
             markupRatio = 2.0 + random.random()
+            if sentimentModule.getStrategy() == 'haggle':
+                markupRatio += 0.3
+            elif sentimentModule.getStrategy() == 'greedy':
+                if markupRatio - 0.3 < 2.0:
+                    markupRatio = 2.0
+                else:
+                    markupRatio -= 0.3
             print("- Going to markup price by", markupRatio)
             bid['type'] = 'SellOffer'
             bid['price'] = {

@@ -41,7 +41,7 @@ class Sentiment:
 			elif event.type == 'dealReject':
 				rejects += 1
 		# make sure this sorting works properly
-		counts = [(haggleCount, 'haggle'), (accepts, 'accept'), (rejects, 'reject')]
+		counts = [(haggleCount, 'haggle'), (accepts, 'greedy'), (rejects, 'indeterminate')]
 		counts.sort()
 		prevMax = 0
 		strategy = counts[0][1]
