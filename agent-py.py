@@ -923,7 +923,7 @@ def translateBid(bid, confirm):
             print("- min offer was made by us!")
             text += "My offer for " 
             for good in bid['quantity'].keys():
-                text += str(bid['quantity'][good]) + " " + + UnitsBid(good,good_quantity)
+                text += str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity) + " "
                 
             text += "stands at " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + ". "
             text += selectMessage(minOfferMessages)
@@ -934,14 +934,14 @@ def translateBid(bid, confirm):
                 print("- Going to match other agent's offer")
                 text += 'I will also offer you '
                 for good in bid['quantity'].keys():
-                    text += str(bid['quantity'][good]) + " " + + UnitsBid(good,good_quantity)
+                    text += str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity) + " "
                 text += "for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + ". "
                 text += "Our products are organic and Non-GMO."
             elif bid['action'] == 'reject': # other agent is losing money so don't match
                 # state our best offer and taunt other agent
                 text += str(bid['price']['value']) + " " + str(bid['price']['unit']) + " for "
                 for good in bid['quantity'].keys():
-                    text += str(bid['quantity'][good]) + " " + + UnitsBid(good,good_quantity)
+                    text += str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity) + " "
                 text += "is my best offer. "
                 text += selectMessage(tauntMessages)
 
