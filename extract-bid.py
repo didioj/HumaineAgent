@@ -16,11 +16,17 @@ def interpretMessage(watsonResponse):
     print("- input from watsonResponse:", watsonResponse['input'])
     intents = watsonResponse['intents']
     entities = watsonResponse['entities']
+    # look for keywords
+    keywords = []
+    for entity in entities:
+        if entity['entity'] == 'keyword':
+            keywords.append(entity['value'])
     print("- intents: ", intents)
     print("- entities: ", entities)
+    print("- keywords:", keywords)
     cmd = {}
 
-    if intents[0]['intent'] == "Offer" and intents[0]['confidence'] > 0.2:
+    if intents and intents[0]['intent'] == "Offer" and intents[0]['confidence'] > 0.2:
         extractedOffer = extractOfferFromEntities(entities)
         cmd = {
             'quantity': extractedOffer['quantity']
@@ -33,14 +39,17 @@ def interpretMessage(watsonResponse):
                 cmd['type'] = "SellOffer"
         else:
             if watsonResponse['input']['role'] == 'buyer':
-                cmd['type'] = "BuyRequest"
+                if 'cake' in cmd['quantity'] or 'pancake' in cmd['quantity']:
+                    cmd['type'] = "BundleRequest"
+                else:
+                    cmd['type'] = "BuyRequest"
             elif watsonResponse['input']['role'] == 'seller':
                 cmd['type'] = "SellRequest"
-    elif intents[0]['intent'] == "AcceptOffer" and intents[0]['confidence'] > 0.2:
+    elif intents and intents[0]['intent'] == "AcceptOffer" and intents[0]['confidence'] > 0.2:
         cmd = {'type': "AcceptOffer"}
-    elif intents[0]['intent'] == "RejectOffer" and intents[0]['confidence'] > 0.2:
+    elif intents and intents[0]['intent'] == "RejectOffer" and intents[0]['confidence'] > 0.2:
         cmd = {'type': "RejectOffer"}
-    elif intents[0]['intent'] == "MinOffer" and intents[0]['confidence'] > 0.2:
+    elif intents and intents[0]['intent'] == "MinOffer" and intents[0]['confidence'] > 0.2:
         extractedOffer = extractOfferFromEntities(entities)
         cmd = {
             'quantity': extractedOffer['quantity']
@@ -48,15 +57,23 @@ def interpretMessage(watsonResponse):
         if extractedOffer['price']:
             cmd['price'] = extractedOffer['price']
         cmd['type'] = "MinOffer"
-    elif intents[0]['intent'] == 'Information' and intents[0]['confidence'] > 0.2:
+    elif intents and intents[0]['intent'] == "BundleRequest" and intents[0]['confidence'] > 0.2:
+        extractedOffer = extractOfferFromEntities(entities)
+        cmd = {
+            'quantity': extractedOffer['quantity'],
+            'type': "BundleRequest"
+        }
+    elif intents and intents[0]['intent'] == 'Information' and intents[0]['confidence'] > 0.2:
         cmd = {'type': "Information"}
     else:
         cmd = {'type': "NotUnderstood"}
-    
+
     if cmd:
         cmd['metadata'] = watsonResponse['input']
         cmd['metadata']['addressee'] = watsonResponse['input']['addressee'] or extractAddressee(entities) # Expect the addressee to be provided, but extract it if necessary
         cmd['metadata']['timeStamp'] = time.time()
+        if len(keywords):
+            cmd['keywords'] = keywords
     print("- cmd leaving interpretMessage:", cmd)
     return cmd
 
@@ -99,7 +116,7 @@ def extractOfferFromEntities(entityList):
         if eBlock['entity'] == 'sys-number':
             amount = float(eBlock['value'])
             state = 'amount'
-        elif eBlock['entity'] == 'good' and state == 'amount':
+        elif (eBlock['entity'] == 'good' or eBlock['entity'] == 'bundle') and state == 'amount':    
             if(amount % 1 == 0):
                 quantity[eBlock['value']] = int(amount)
             else:
@@ -107,6 +124,12 @@ def extractOfferFromEntities(entityList):
             state = None
             removedIndices.append(i - 1)
             removedIndices.append(i)
+        elif eBlock['entity'] == 'bundle' and not state:
+            # bundle quantity not specified so default to 1
+            quantity[eBlock['value']] = 1
+            removedIndices.append(i - 1)
+            removedIndices.append(i)
+            
         # this below block is intended to address the issue where a buyer
         # can issue a generic request for a type of product
         # could cause issues with
