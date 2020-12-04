@@ -785,7 +785,12 @@ def generateBid(offer):
     bid = {
         'quantity': deepcopy(offer['quantity'])
     }
-    
+    bid['markupRatio'] = 0
+    bid['BundleIndicator'] = 0
+    #for bundle, the type is changing from bundlerequest to minoffer, to reject offer, etc 
+    print(offer['type'])
+    if offer['type'] == 'BundleRequest' or len(offer['quantity']) >1:
+        bid['BundleIndicator'] = 1
     # check that offer is a BuyOffer before deciding 
     if offer['type'] == 'BuyOffer' and 'price' in offer and 'value' in offer['price']: # The buyer included a proposed price, which we must take into account
         print("- Buyer proposed price! Going to consider it based on bundleCost (profit)")
@@ -793,7 +798,7 @@ def generateBid(offer):
         print("- Calculated bundleCost:",bundleCost)
         markupRatio = utility / bundleCost
         print("- Calculated markupRatio:", markupRatio)
-
+        bid['markupRatio'] = markupRatio
         if (markupRatio > 2.0
             or (lastPrice != None
             and abs(offer['price']['value'] - lastPrice) < minDicker)): # If our markup is large, accept the offer
@@ -1110,10 +1115,23 @@ def translateBid(bid, confirm):
     if bid['type'] == 'SellOffer':
         print("- bid is a SellOffer")
         text = selectMessage(offerMessages)
+        overall_goods = len(bid['quantity'].keys())
+        good_index = 0
         for good in bid['quantity'].keys():
             good_quantity = bid['quantity'][good]
-            text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+            if bid['BundleIndicator'] == 0: #if this is not a bundle
+                text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+            else:# if it is a bundle add commas + and if its the last good  
+                if good_index == (overall_goods-1):
+                    text += " and " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+                else:
+                    text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity) +","
+            good_index+=1
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
+        if bid['markupRatio'] < 0: #so if we would lose money by making this deal
+            text += " Sorry for not accepting your offer as it stands, but we would have lost money."
+        elif bid['markupRatio'] > 0 and bid['markupRatio'] < 0.5: #if we are approaching the break-even point
+            text += " We're getting close to the best I can do here."
     elif bid['type'] == 'Reject':
         print("- bid is a Reject")
         text = selectMessage(rejectionMessages)
@@ -1121,9 +1139,20 @@ def translateBid(bid, confirm):
         print("- bid is a minMarkupExcuse")
         text += selectMessage(minOfferExcuseMessages) + ' '
         text += str(bid['price']['value']) + " " + str(bid['price']['unit']) + " for "
+        overall_goods = len(bid['quantity'].keys())
+        good_index = 0
         for good in bid['quantity'].keys():
-            text += str(bid['quantity'][good]) + " " + good + " "
-        text += "This is such a good deal for you!"
+            good_quantity = bid['quantity'][good]
+            if bid['BundleIndicator'] == 0: #if this is not a bundle
+                text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+            else:# if it is a bundle add commas + and if its the last good  
+                if good_index == (overall_goods-1):
+                    text += " and " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+                else:
+                    text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity) +","
+            good_index+=1
+        text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
+        text += " This is such a good deal for you!"
         
     elif bid['type'] == 'MinMarkup':
         print("- bid is a minMarkup")
@@ -1131,11 +1160,19 @@ def translateBid(bid, confirm):
         if bid['speaker'] == agentName:
             print("- min offer was made by us!")
             text += "My offer for " 
+            overall_goods = len(bid['quantity'].keys())
+            good_index = 0
             for good in bid['quantity'].keys():
                 good_quantity = bid['quantity'][good]
-                text += str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
-                
-            text += "stands at " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + ". "
+                if bid['BundleIndicator'] == 0: #if this is not a bundle
+                    text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+                else:# if it is a bundle add commas + and if its the last good  
+                    if good_index == (overall_goods-1):
+                        text += " and " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+                    else:
+                        text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity) +","
+                good_index+=1
+            text += " stands at " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + ". "
             text += selectMessage(minOfferMessages)
         else:
             print("- min offer was made by other agent")
@@ -1143,9 +1180,18 @@ def translateBid(bid, confirm):
             if bid['action'] == 'match':
                 print("- Going to match other agent's offer")
                 text += 'I will also offer you '
+                overall_goods = len(bid['quantity'].keys())
+                good_index = 0
                 for good in bid['quantity'].keys():
                     good_quantity = bid['quantity'][good]
-                    text += str(bid['quantity'][good]) + " " +  UnitsBid(good,good_quantity)
+                    if bid['BundleIndicator'] == 0: #if this is not a bundle
+                        text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+                    else:# if it is a bundle add commas + and if its the last good  
+                        if good_index == (overall_goods-1):
+                            text += " and " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+                        else:
+                            text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity) +","
+                    good_index+=1
                 text += "for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + ". "
                 text += "Our products are organic and Non-GMO."
             elif bid['action'] == 'reject': # other agent is losing money so don't match
@@ -1163,14 +1209,33 @@ def translateBid(bid, confirm):
             text = selectMessage(confirmAcceptanceMessages)
         else:
             text = selectMessage(acceptanceMessages)
+        overall_goods = len(bid['quantity'].keys())
+        good_index = 0
         for good in bid['quantity'].keys():
             good_quantity = bid['quantity'][good]
-            text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+            if bid['BundleIndicator'] == 0: #if this is not a bundle
+                text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+            else:# if it is a bundle add commas + and if its the last good  
+                if good_index == (overall_goods-1):
+                    text += " and " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+                else:
+                    text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity) +","
+            good_index+=1
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
         text += " This is such a good deal for you!"
     elif bid['type'] == 'GoodPrice': # just the goods and the price
+        overall_goods = len(bid['quantity'].keys())
+        good_index = 0
         for good in bid['quantity'].keys():
-            text += " " + str(bid['quantity'][good]) + " " + good
+            good_quantity = bid['quantity'][good]
+            if bid['BundleIndicator'] == 0: #if this is not a bundle
+                text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+            else:# if it is a bundle add commas + and if its the last good  
+                if good_index == (overall_goods-1):
+                    text += " and " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
+                else:
+                    text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity) +","
+            good_index+=1
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
       
     print("- Returning response:", text)
