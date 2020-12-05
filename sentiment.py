@@ -1,6 +1,4 @@
-# potential idea, think about having a sentiment to return with abnormal number of
-# rejections, such that the return may be used to ascertain if we need to ask the
-# buyer about what is wrong, or perform some other service
+import math
 
 class Event:
 	def __init__(self, newSender=None, newRecipient=None, newType=None):
@@ -20,7 +18,7 @@ class Event:
 class Sentiment:
 	def __init__(self):
 		self.history = []
-		self.validTypes = ['haggle', 'dealReject', 'dealAccept']
+		self.validTypes = ['haggle', 'dealAccept']
 
 	def updateHistory(self, newEvent):
 		if newEvent.type not in validTypes:
@@ -32,26 +30,26 @@ class Sentiment:
 		# this is just a simple concept for now
 		haggleCount = 0
 		accepts = 0
-		rejects = 0
 		for event in self.history:
 			if event.type == 'haggle':
 				haggleCount += 1
 			elif event.type == 'dealAccept':
 				accepts += 1
-			elif event.type == 'dealReject':
-				rejects += 1
+		totalEvents = haggleCount + accepts
 		# make sure this sorting works properly
-		counts = [(haggleCount, 'haggle'), (accepts, 'greedy'), (rejects, 'indeterminate')]
-		counts.sort()
-		prevMax = 0
-		strategy = counts[0][1]
-		for i in range(0, len(self.validTypes)):
-			if counts[i][0] == prevMax:
-				return 'indeterminate'
-			elif counts[i][0] > prevMax:
-				prevMax = counts[i][0]
+		threshold = 0.15
+		hagglePercent = haggleCount/totalEvents
+		acceptPercent = accepts/totalEvents
 
-		return strategy
+		percentDifference = math.abs(hagglePercent - acceptPercent)
+
+		if percentDifference > threshold:
+			if hagglePercent > acceptPercent:
+				return 'haggle'
+			else:
+				return 'greedy'
+		else:
+			return 'indeterminate'
 
 	def getStrategy(self):
 		return self.computeStrategy()
