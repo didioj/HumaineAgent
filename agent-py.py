@@ -141,6 +141,12 @@ def reactToBuyer(interpretation, speaker, addressee, role):
                 messageResponse['bid'] = bid
                 print("- Clearing bidHistory")
                 bidHistory[speaker] = None
+                if(len(bidHistoryIndividual) > 1):
+                    haggleEvent = Event('buyer', 'seller', 'haggle')
+                    sentimentModule.updateHistory(haggleEvent)
+                else:
+                    acceptEvent = Event('buyer', 'seller', 'accept')
+                    sentimentModule.updateHistory(acceptEvent)
             else: # Didn't have any outstanding offers with this buyer
                 messageResponse['text'] = "I'm sorry, but I'm not aware of any outstanding offers."
         else: # Didn't have any outstanding offers with this buyer
@@ -267,6 +273,15 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
     if interpretation['type'] == 'AcceptOffer':
         bidHistory[speaker] = None
         print("- Other agent accepted/rejected offer. Clearing bidHistory")
+        if speaker in bidHistory and bidHistory[speaker]: # Check whether I made an offer to this buyer
+            bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
+                                if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
+        if(len(bidHistoryIndividual) > 1):
+            haggleEvent = Event('buyer', 'seller', 'haggle')
+            sentimentModule.updateHistory(haggleEvent)
+        else:
+            acceptEvent = Event('buyer', 'seller', 'dealAccept')
+            sentimentModule.updateHistory(acceptEvent)
     else: # Add to bidHistory and figure out how to respond
         if speaker not in bidHistory or not bidHistory[speaker]:
             bidHistory[speaker] = []
