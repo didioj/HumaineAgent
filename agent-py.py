@@ -2,6 +2,7 @@
 from flask import Flask
 from flask import request
 from functools import reduce
+from sentiment import Event
 import requests
 import importlib
 import json
@@ -145,7 +146,7 @@ def reactToBuyer(interpretation, speaker, addressee, role):
                     haggleEvent = Event('buyer', 'seller', 'haggle')
                     sentimentModule.updateHistory(haggleEvent)
                 else:
-                    acceptEvent = Event('buyer', 'seller', 'accept')
+                    acceptEvent = Event('buyer', 'seller', 'dealAccept')
                     sentimentModule.updateHistory(acceptEvent)
             else: # Didn't have any outstanding offers with this buyer
                 messageResponse['text'] = "I'm sorry, but I'm not aware of any outstanding offers."
