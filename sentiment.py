@@ -30,6 +30,8 @@ class Sentiment:
 		# this is just a simple concept for now
 		haggleCount = 0
 		accepts = 0
+		if len(self.history) == 0:
+			return 'indeterminate'
 		for event in self.history:
 			if event.type == 'haggle':
 				haggleCount += 1
