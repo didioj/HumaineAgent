@@ -2,6 +2,7 @@
 from flask import Flask
 from flask import request
 from functools import reduce
+from sentiment import Event
 import requests
 import importlib
 import json
@@ -12,6 +13,7 @@ import random
 import traceback
 
 from copy import deepcopy
+import sentiment
 app = Flask(__name__)
 
 conversation = importlib.import_module('conversation')
@@ -28,6 +30,7 @@ defaultSpeaker = 'Jeff'
 defaultEnvironmentUUID = 'abcdefg'
 defaultAddressee = agentName
 defaultRoundDuration = 600
+sentimentModule = sentiment.Sentiment()
 
 # fetch the port number
 for i in range(len(sys.argv)):
@@ -185,6 +188,12 @@ def reactToBuyer(interpretation, speaker, addressee, role):
                     messageResponse['bid'] = bid
                     print("- Clearing bidHistory")
                     bidHistory[speaker] = None
+                if(len(bidHistoryIndividual) > 1):
+                    haggleEvent = Event('buyer', 'seller', 'haggle')
+                    sentimentModule.updateHistory(haggleEvent)
+                else:
+                    acceptEvent = Event('buyer', 'seller', 'dealAccept')
+                    sentimentModule.updateHistory(acceptEvent)
             else: # Didn't have any outstanding offers with this buyer
                 messageResponse['text'] = "I'm sorry, but I'm not aware of any outstanding offers."
         else: # Didn't have any outstanding offers with this buyer
@@ -315,6 +324,15 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
     if interpretation['type'] == 'AcceptOffer':
         bidHistory[speaker] = None
         print("- Other agent accepted/rejected offer. Clearing bidHistory")
+        if speaker in bidHistory and bidHistory[speaker]: # Check whether I made an offer to this buyer
+            bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
+                                if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
+        if(len(bidHistoryIndividual) > 1):
+            haggleEvent = Event('buyer', 'seller', 'haggle')
+            sentimentModule.updateHistory(haggleEvent)
+        else:
+            acceptEvent = Event('buyer', 'seller', 'dealAccept')
+            sentimentModule.updateHistory(acceptEvent)
     else: # Add to bidHistory and figure out how to respond
         if speaker not in bidHistory or not bidHistory[speaker]:
             bidHistory[speaker] = []
@@ -950,8 +968,14 @@ def generateBid(offer):
                             bid['price']['value'] = myLastPrice
         else:
             print("- No history of any SellOffers. Going to propose price")
-            # markup price by at least 10%
-            markupRatio = 2.0 + random.random() + 0.1
+            markupRatio = 2.0 + random.random()
+            if sentimentModule.getStrategy() == 'haggle':
+                markupRatio += 0.3
+            elif sentimentModule.getStrategy() == 'greedy':
+                if markupRatio - 0.3 < 2.0:
+                    markupRatio = 2.0
+                else:
+                    markupRatio -= 0.3
             print("- Going to markup price by", markupRatio)
             bid['type'] = 'SellOffer'
             bid['price'] = {
