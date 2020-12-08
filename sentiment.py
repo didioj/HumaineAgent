@@ -21,7 +21,7 @@ class Sentiment:
 		self.validTypes = ['haggle', 'dealAccept']
 
 	def updateHistory(self, newEvent):
-		if newEvent.type not in validTypes:
+		if newEvent.type not in self.validTypes:
 			raise KeyError('invalid type')
 		else:
 			self.history.append(newEvent)
