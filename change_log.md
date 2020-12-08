@@ -3,17 +3,42 @@ Features:
 * BundleReqest to form best deal
 * Better personality
 * Improved haggling intent
-
 * Be careful of what the other agent is offering
 
 To do:
-* Accept bulk discount
-	* Process bulkoffer as bulk offer. Filter out base offer and bulk offer.
-	* Edit bidHistory based on response.
 * Store old bulk deals so don't keep offering. reset at new buyrequest? 
 * Add bulk deal to reactToEnemy
 * Rejection offer with no addressee should be directed to us. Talking to me?
 * Clear bidHistory at StartRound
+
+## 12/6/2020
+To do:
+* Bugs:
+	* If accept/reject other seller on BulkOffer, then don't clear bidHistory
+* Bulk deal sometimes not better
+* Prioritize accepting bulk deals
+	* Save context of original offer to list so don't ask again for this context
+* Reminder that we can sell ingredients based on bundle
+* When responding, ignore BidHistory change by other agent unless it's an offer
+	* When addressing human message and other agent sends a message
+		check the type of message. 
+		If it's an offer, then check context and cancel current response if match
+		If it's not an offer, then continue with current response
+
+Completed:
+* Clear out bidHistory at startRound [agent-py.py - startRound]
+* Added acceptedBulkOfferMessage for when Buyer reacted with `AcceptOffer` 
+	right after we proposed a `BulkOffer` [agent-py.py - acceptedBulkOfferMessage, reactToBuyer]
+* Finish rejectedBulkOfferMessage [agent-py.py - rejectedBulkOfferMessage, reactToBuyer]
+* Tested accepting bulk offer with single agent
+* Tested rejecting bulk offer with single agent
+* Prioritize accepting bulk deals
+	* Are you interested in deal?
+	* Classify response as acceptOffer and rejectOffer
+	* Save both regular offer and bulk offer in BidHistory.
+		* If detect bulk offer,
+			* Determine whether the human accepted bulk offer
+			* Reiterate the offer the buyer chose
 
 ## 12/3/2020
 * Pull from personality branch 

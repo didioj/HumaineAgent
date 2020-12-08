@@ -9,6 +9,8 @@ import sys
 import time
 import math
 import random
+import traceback
+
 from copy import deepcopy
 app = Flask(__name__)
 
@@ -33,10 +35,13 @@ for i in range(len(sys.argv)):
         myPort = sys.argv[i + 1]
 
 # Offer types
-offerTypes = ["SellOffer", "MinOffer", "BulkOffer"]
+offerTypes = ["SellOffer", "MinOffer"]
 
 # bundle types
 bundleTypes = ['cake', 'pancake']
+
+# bid types
+bidTypes = ['NormalBid', 'BulkBid']
 
 # predefined responses
 offerMessages = [
@@ -53,7 +58,7 @@ rejectionMessages = [
   "No thanks. That offer is way too low for anyone. I have a family to feed.",
   "Forget it, I already gave you my best offer.",
   "Sorry. You're going to have to do a lot better than that!",
-  "That is daylight ROBBERY!",
+  "This is daylight ROBBERY!",
   "Come on, friend. I can't accept an offer like that."
 ]
 
@@ -88,10 +93,10 @@ acceptanceMessages = [
 ]
 
 confirmAcceptanceMessages = [
-  "Just to cofirm, I'm selling you ",
+  "Just to confirm, I'm selling you ",
   "I'm so glad to do business with you. I'll give you the ",
   "Perfect! To confirm, I'm giving you ",
-  "I'm so glad! This is to confirm that I'll give you",
+  "I'm so glad! This is to confirm that I'll give you ",
 ]
 
 # Asking Human to clarify a message we didn't understand
@@ -151,29 +156,35 @@ def reactToBuyer(interpretation, speaker, addressee, role):
     if interpretation['type'] in ["BuyRequest", "BuyOffer","BundleRequest"]:
         for good in interpretation['quantity']:
             if good not in utilityInfo['utility'] and good not in bundleTypes:
+                print("- Unknown good in message. Setting intent as NotUnderstood")
                 interpretation['type'] = "NotUnderstood"
-
+                
     if interpretation['type'] == 'AcceptOffer': # Buyer accepted my offer! Deal with it.
         print("- Buyer accepted offer")
         print("- Checking bidHistory:", bidHistory)
         if speaker in bidHistory and bidHistory[speaker]: # I actually did make an offer to this buyer;
                                                              # fetch details and confirm acceptance
             bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
-                                        if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
-            print("- Our SellOffers:", bidHistoryIndividual)
+                                        if (bid['metadata']['speaker'] == agentName and 
+                                        (bid['type'] in offerTypes or bid['type'] == 'BulkOffer'))]
+            print("- Our offers:", bidHistoryIndividual)
             if len(bidHistoryIndividual):
                 acceptedBid = bidHistoryIndividual[-1]
                 print("- acceptedBid:", acceptedBid)
-                bid = {
-                    'price': acceptedBid['price'],
-                    'quantity': acceptedBid['quantity'],
-                    'type': "Accept"
-                }
-                print("- Sending bid to translate:", bid)
-                messageResponse['text'] = translateBid(bid, True)
-                messageResponse['bid'] = bid
-                print("- Clearing bidHistory")
-                bidHistory[speaker] = None
+                if acceptedBid['type'] == 'BulkOffer':
+                    # return repeat of the BulkOffer and modify bidHistory
+                    messageResponse = acceptedBulkOfferMessage(messageResponse, speaker)
+                else:
+                    bid = {
+                        'price': acceptedBid['price'],
+                        'quantity': acceptedBid['quantity'],
+                        'type': "Accept"
+                    }
+                    print("- Sending bid to translate:", bid)
+                    messageResponse['text'] = translateBid(bid, True)
+                    messageResponse['bid'] = bid
+                    print("- Clearing bidHistory")
+                    bidHistory[speaker] = None
             else: # Didn't have any outstanding offers with this buyer
                 messageResponse['text'] = "I'm sorry, but I'm not aware of any outstanding offers."
         else: # Didn't have any outstanding offers with this buyer
@@ -184,20 +195,28 @@ def reactToBuyer(interpretation, speaker, addressee, role):
         print("- Buyer rejected offer")
         if speaker in bidHistory and bidHistory[speaker]: # Check whether I made an offer to this buyer
             bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
-                                    if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
+                                    if (bid['metadata']['speaker'] == agentName and 
+                                    (bid['type'] in offerTypes or bid['type'] == 'BulkOffer'))]
             print("- Our SellOffers:", bidHistoryIndividual)
+
             if len(bidHistoryIndividual):
-                bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
-                                                  # and the current state of negotiation with the buyer
-                bidResponse = {
-                    'text': translateBid(bid, False), # Translate the bid into English
-                    'speaker': agentName,
-                    'role': "seller",
-                    'addressee': speaker,
-                    'environmentUUID': interpretation['metadata']['environmentUUID'],
-                    'timestamp': (time.time() * 1000),
-                    'bid': bid
-                }
+                rejectedBid = bidHistoryIndividual[-1]
+                print("- rejectedBid:", rejectedBid)
+                if rejectedBid['type'] == 'BulkOffer':
+                    # return repeat of the BulkOffer and modify bidHistory
+                    bidResponse = rejectedBulkOfferMessage(messageResponse, speaker)
+                else:
+                    bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
+                                                      # and the current state of negotiation with the buyer
+                    bidResponse = {
+                        'text': translateBid(bid, False), # Translate the bid into English
+                        'speaker': agentName,
+                        'role': "seller",
+                        'addressee': speaker,
+                        'environmentUUID': interpretation['metadata']['environmentUUID'],
+                        'timestamp': (time.time() * 1000),
+                        'bid': bid
+                    }
                 # print("- Buyer didn't like our offer. Need to make another offer!")
                 print("- Returning bidResponse:", bidResponse)
                 return bidResponse
@@ -271,7 +290,7 @@ def reactToBuyer(interpretation, speaker, addressee, role):
             and mayIRespond(interpretation)): #The buyer evidently is making an offer or request; if permitted, generate a bid response
         # print("\n\n\n\n- Buyer is making an BuyRequest\n\n\n\n")
         # TODO: Offer bulk price if buying less than 5 items
-        text = bulkPriceMessage(interpretation)
+        text = bulkPriceMessage(interpretation, speaker)
         
         # bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
                                           # and the current state of negotiation with the buyer
@@ -328,7 +347,7 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
             print("- No change to bidHistory. Going to make offer")
                       
             # bid = generateBid(interpretation)
-            text = bulkPriceMessage(interpretation)
+            text = bulkPriceMessage(interpretation, speaker)
             
             bidResponse = {
                 # 'text': translateBid(bid, False), # Translate the bid into English
@@ -470,12 +489,14 @@ def setUtility():
 # API route that tells the agent that the round has started.
 @app.route('/startRound', methods=['POST'])
 def startRound():
+    global bidHistory
     print("- Entering startRound")
     bidHistory = {}
     if request.json:
         print("- Info received:", request.json)
         negotiationState['roundDuration'] = request.json['roundDuration'] or negotiationState['roundDuration']
         negotiationState['roundNumber'] = request.json['roundNumber'] or negotiationState['roundNumber']
+    bidHistory = {}
     negotiationState['active'] = True
     negotiationState['startTime'] = (time.time() * 1000)
     negotiationState['stopTime'] = negotiationState['startTime'] + (1000 * negotiationState['roundDuration'])
@@ -532,6 +553,7 @@ def receiveMessage():
             bidMessage = processMessage(message)
             print("- Bid message from processMessage:", bidMessage)
         except:
+            traceback.print_exc()
             print("- ERROR: caught an error. Going to ask to clarify")
             bidMessage = bidResponse = {
                 'text': selectMessage(clarifyMessages), 
@@ -1036,34 +1058,66 @@ def getSafe(p, o, d):
 #                                                    Messaging                                            #
 # ******************************************************************************************************* #
 
+bulkOffers = [] # track when we proposed bulk price
+
 # *** bulkPriceMessage()
 # Generate message for bulk price
-def bulkPriceMessage(interpretation):
+def bulkPriceMessage(interpretation, speaker):
     print("- Entering bulkPriceMessage")
     print("- received interpretation:", interpretation)
     # regular bid for requested items
     basic_bid = generateBid(interpretation)
     
+    # temporarily removing bulk pricing
     return translateBid(basic_bid, False)
+    bid_quantity = interpretation['quantity']
+    
+    if bid_quantity in bulkOffers:
+        return translateBid(basic_bid, False)
+    
+    # return bulk message if any quantity <= 2
+    return_bulk = False
+    for good in bid_quantity:
+        if bid_quantity[good] <= 2:
+            return_bulk = True
+            break;
+    
+    if not return_bulk: # return regular message
+        bulkOffers.append(deepcopy(bid_quantity))
+        return translateBid(basic_bid, False)
+
+    # add bid for the normal quantity of items the buyer wants to bidHistory
+    normal_bid = deepcopy(interpretation)
+    normal_bid['type'] = 'NormalBid'
+    normal_bid['price'] = deepcopy(basic_bid['price'])
+    print('- NormalBid:', normal_bid)
+    bidHistory[speaker].append(normal_bid)
+    print('- Added NormalBid to bidHistory:', bidHistory)
     
     # bulk bid for requested items
     bulk_interpretation = deepcopy(interpretation)
     bulk_interpretation['type'] = 'GoodPrice'
-    # scale up to 6 times the quantity of goods
-    scale = int((random.random() * 5) + 2)
+    # scale up to 5 times the quantity of goods
+    scale = int((random.random() * 4) + 2)
     print("- scale:", scale)
     for good in bulk_interpretation['quantity']:
         bulk_interpretation['quantity'][good] = bulk_interpretation['quantity'][good] * scale
         
     # Add normal price for bulk to bidHistory so discounted bulk price will be cheaper
     normal_bulk_bid = deepcopy(bulk_interpretation)
-    normal_bulk_bid['type'] = 'NormalBulkOffer'
+    normal_bulk_bid['type'] = 'NormalBulkBid'
     normal_bulk_bid['price'] = deepcopy(basic_bid['price'])
     normal_bulk_bid['price']['value'] = normal_bulk_bid['price']['value'] * scale
-    normal_bulk_bid['metadata'] = {'speaker':agentName, 'addressee':'Human', 'text':"Placeholder for bulkPriceMessage", 'role':'seller'}
-    bidHistory['Human'].append(normal_bulk_bid)    
+    normal_bulk_bid['metadata'] = {'speaker':agentName, 'addressee':speaker, 'text':"Placeholder for NormalBulkBid", 'role':'seller'}
+    bidHistory['Human'].append(normal_bulk_bid)
     bulk_bid = generateBid(bulk_interpretation)
     bulk_bid['type'] = "GoodPrice"
+    
+    # to be added to bidHistory for accepting
+    bulk_bid_copy = deepcopy(bulk_bid)
+    bulk_bid_copy['type'] = 'BulkBid'
+    bulk_bid_copy['metadata'] = {'speaker':agentName, 'addressee':speaker, 'text':"Placeholder for BulkBid", 'role':'seller'}
+    bidHistory[speaker].append(bulk_bid_copy)
     
     print("- interpretation:", interpretation)
     print("- bulk_interpretation:", bulk_interpretation)
@@ -1078,8 +1132,63 @@ def bulkPriceMessage(interpretation):
     message += " That is "
     message += str(savings) + " " + unit
     message += " off the normal price! "
-    message += " Are you interested in the bulk deal?"
-    # return message 
+    message += "Are you interested in the bulk deal?"
+    return message 
+
+# *** acceptedBulkOfferMessage()
+# Generate message after buyer accepts BulkOffer
+def acceptedBulkOfferMessage(messageResponse, speaker):
+    print("- Entering acceptedBulkOfferMessage")
+    print("- Received messageResponse:", messageResponse)
+    # return repeat of the BulkBid
+    bulk_bid = None
+    for bidBlock in bidHistory[speaker]:
+        if bidBlock['type'] == 'BulkBid':
+            bulk_bid = bidBlock
+    
+    if bulk_bid:
+        print("- Found the bulk_bid:", bulk_bid)
+        bulk_bid = deepcopy(bulk_bid)
+        bulk_bid['type'] = 'GoodPrice'
+        message = "I'm glad you are interested in the bulk deal! "
+        message += "I can sell you"
+        message += translateBid(bulk_bid, False)
+        bid = {
+            'price': bulk_bid['price'],
+            'quantity': bulk_bid['quantity']
+        }
+        messageResponse['text'] = message
+        messageResponse['bid'] = bid
+        return messageResponse
+    print("- ERROR: Can't find bulk deal")
+
+# *** rejectedBulkOfferMessage()
+# Generate message after buyer rejects BulkOffer
+def rejectedBulkOfferMessage(messageResponse, speaker):
+    print("- Entering rejectedBulkOfferMessage")
+    print("- Received messageResponse:", messageResponse)
+    # return repeat of the NormalBid
+    normal_bid = None
+    for bidBlock in bidHistory[speaker]:
+        if bidBlock['type'] == 'NormalBid':
+            normal_bid = bidBlock
+    
+    if normal_bid:
+        normal_bid = deepcopy(normal_bid)
+        print("- Found the normal_bid:", normal_bid)
+        normal_bid['type'] = 'GoodPrice'
+        message = "It sounds like you're not interested in the bulk deal. "
+        message += "Then the normal price is"
+        message += translateBid(normal_bid, False)
+        bid = {
+            'price': normal_bid['price'],
+            'quantity': normal_bid['quantity']
+        }
+        messageResponse['text'] = message
+        messageResponse['bid'] = bid
+        return messageResponse
+    print("- ERROR: Can't find normal deal")
+            
 
 def UnitsBid(good,good_quantity):
     if good == 'egg' and good_quantity > 1:
@@ -1182,7 +1291,8 @@ def translateBid(bid, confirm):
         text += " This is such a good deal for you!"
     elif bid['type'] == 'GoodPrice': # just the goods and the price
         for good in bid['quantity'].keys():
-            text += " " + str(bid['quantity'][good]) + " " + good
+            good_quantity = bid['quantity'][good]
+            text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
         text += " for " + str(bid['price']['value']) + " " + str(bid['price']['unit']) + "."
       
     print("- Returning response:", text)
