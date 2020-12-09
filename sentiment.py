@@ -1,5 +1,3 @@
-import math
-
 class Event:
 	def __init__(self, newSender=None, newRecipient=None, newType=None):
 		self.sender = newSender
@@ -43,7 +41,7 @@ class Sentiment:
 		hagglePercent = haggleCount/totalEvents
 		acceptPercent = accepts/totalEvents
 
-		percentDifference = math.abs(hagglePercent - acceptPercent)
+		percentDifference = abs(hagglePercent - acceptPercent)
 
 		if percentDifference > threshold:
 			if hagglePercent > acceptPercent:
