@@ -979,9 +979,12 @@ def generateBid(offer):
         else:
             print("- No history of any SellOffers. Going to propose price")
             markupRatio = 2.0 + random.random()
+            print("Original markup ratio:", markupRatio)
             if sentimentModule.getStrategy() == 'haggle':
+                print("We have determined the buyer is haggling.")
                 markupRatio += 0.3
             elif sentimentModule.getStrategy() == 'greedy':
+                print("We have determined the buyer is greedy.")
                 if markupRatio - 0.3 < 2.0:
                     markupRatio = 2.0
                 else:
