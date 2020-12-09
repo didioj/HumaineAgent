@@ -59,12 +59,15 @@ offerMessages = [
 
 greedyOfferMessages = [
     "You're someone who appreciates a good deal, how about",
-    "I know you like a fair price, what do you think about"
+    "I know you like a fair price, what do you think about",
+    "You seem like a person who likes a good price, I can sell you",
+    "I know you like a fair price, take"
 ]
 
 haggleOfferMessages = [
     "You drive a hard bargain, how about",
-    "I see you're well versed in negotiation, I can do"
+    "I see you're well versed in negotiation, I can do",
+    "You drive a hard bargain, take"
 ]
 
 rejectionMessages = [
@@ -337,9 +340,13 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
         if speaker in bidHistory and bidHistory[speaker]: # Check whether I made an offer to this buyer
             bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
                                 if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
-        if(len(bidHistoryIndividual) > 1):
-            haggleEvent = Event('buyer', 'seller', 'haggle')
-            sentimentModule.updateHistory(haggleEvent)
+        if len(bidHistoryIndividual):
+            if(len(bidHistoryIndividual) > 1):
+                haggleEvent = Event('buyer', 'seller', 'haggle')
+                sentimentModule.updateHistory(haggleEvent)
+            else:
+                acceptEvent = Event('buyer', 'seller', 'dealAccept')
+                sentimentModule.updateHistory(acceptEvent)
         else:
             acceptEvent = Event('buyer', 'seller', 'dealAccept')
             sentimentModule.updateHistory(acceptEvent)
@@ -1267,11 +1274,11 @@ def translateBid(bid, confirm):
     text = ""
     if bid['type'] == 'SellOffer':
         print("- bid is a SellOffer")
-        randEvent = ['special'] * 10 + ['normal'] * 90
+        randEvent = ['special'] * 99 + ['normal'] * 1
         eventChoice = random.choice(randEvent) 
-        if(sentimentModule.computeStrategy() == 'haggle' & eventChoice == 'special') :
+        if(sentimentModule.computeStrategy() == 'haggle' and eventChoice == 'special') :
             text = selectMessage(haggleOfferMessages)
-        elif(sentimentModule.computeStrategy() == 'event' & eventChoice == 'special') :
+        elif(sentimentModule.computeStrategy() == 'greedy' and eventChoice == 'special') :
             text = selectMessage(greedyOfferMessages)
         else :
             text = selectMessage(offerMessages)
