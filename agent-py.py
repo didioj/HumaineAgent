@@ -193,6 +193,9 @@ def reactToBuyer(interpretation, speaker, addressee, role):
                         'quantity': acceptedBid['quantity'],
                         'type': "Accept"
                     }
+                    bid['BundleIndicator'] = 0
+                    if acceptedBid['type'] == 'BundleRequest' or len(acceptedBid['quantity']) >1:
+                        bid['BundleIndicator'] = 1
                     print("- Sending bid to translate:", bid)
                     messageResponse['text'] = translateBid(bid, True)
                     messageResponse['bid'] = bid

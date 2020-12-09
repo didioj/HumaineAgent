@@ -1,14 +1,21 @@
 Features:
 * NotUnderstood intent for human errors
+* Improved haggling intent
 * BundleReqest to form best deal
 * Bulk deal
 * Better personality
-* Improved haggling intent
 * Greedy and 
 * Be careful of what the other agent is offering
 
 To do:
-* Bugs: Modify other agent's sellOffer price with ours
+suggest- number of additional messages, screen shot of possible messages
+
+* Mod-agent is same with bulkPrice out
+* Bugs: Modify other agent's sellOffer price with ours. 
+	Other agent's offer being set to our lastPrice
+	* need unit for additives
+	* Bulk price better
+	* React to other agent's bulk price
 * Store old bulk deals so don't keep offering. reset at new buyrequest? 
 * Add bulk deal to reactToEnemy
 * Rejection offer with no addressee should be directed to us. Talking to me?
