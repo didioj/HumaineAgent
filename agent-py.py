@@ -57,6 +57,16 @@ offerMessages = [
   "I can sell you"
 ]
 
+greedyOfferMessages = [
+    "You're someone who appreciates a good deal, how about",
+    "I know you like a fair price, what do you think about"
+]
+
+haggleOfferMessages = [
+    "You drive a hard bargain, how about",
+    "I see you're well versed in negotiation, I can do"
+]
+
 rejectionMessages = [
   "No thanks. That offer is way too low for anyone. I have a family to feed.",
   "Forget it, I already gave you my best offer.",
@@ -1254,7 +1264,14 @@ def translateBid(bid, confirm):
     text = ""
     if bid['type'] == 'SellOffer':
         print("- bid is a SellOffer")
-        text = selectMessage(offerMessages)
+        randEvent = ['special'] * 10 + ['normal'] * 90
+        eventChoice = random.choice(randEvent) 
+        if(sentimentModule.computeStrategy() == 'haggle' & eventChoice == 'special') :
+            text = selectMessage(haggleOfferMessages)
+        elif(sentimentModule.computeStrategy() == 'event' & eventChoice == 'special') :
+            text = selectMessage(greedyOfferMessages)
+        else :
+            text = selectMessage(offerMessages)
         for good in bid['quantity'].keys():
             good_quantity = bid['quantity'][good]
             text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
