@@ -1,11 +1,14 @@
 Features:
 * NotUnderstood intent for human errors
 * BundleReqest to form best deal
+* Bulk deal
 * Better personality
 * Improved haggling intent
+* Greedy and 
 * Be careful of what the other agent is offering
 
 To do:
+* Bugs: Modify other agent's sellOffer price with ours
 * Store old bulk deals so don't keep offering. reset at new buyrequest? 
 * Add bulk deal to reactToEnemy
 * Rejection offer with no addressee should be directed to us. Talking to me?
