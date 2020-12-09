@@ -1,25 +1,29 @@
 Features:
-* NotUnderstood intent for human errors
-* Improved haggling intent
-* BundleReqest to form best deal
-* Bulk deal
+* Improvement: Unknown requests, NotUnderstood intent for human errors
+* BundleReqest to form best deal 
+* Improved haggling intent (Better deal)
+* Bulk deal (Ask Celia)
 * Better personality
-* Greedy and 
+* Greedy and Haggle Strategy
+	* * Haggle, greedy, greedy
+	* "You drive a hard bargain" - Haggle
+	* "You like a good deal" - Greedy
 * Be careful of what the other agent is offering
 
-To do:
-suggest- number of additional messages, screen shot of possible messages
-
-* Mod-agent is same with bulkPrice out
 * Bugs: Modify other agent's sellOffer price with ours. 
 	Other agent's offer being set to our lastPrice
 	* need unit for additives
-	* Bulk price better
 	* React to other agent's bulk price
 * Store old bulk deals so don't keep offering. reset at new buyrequest? 
 * Add bulk deal to reactToEnemy
 * Rejection offer with no addressee should be directed to us. Talking to me?
 * Clear bidHistory at StartRound
+
+## 12/9/2020
+Completed:
+* Include 'Bid' types in relevantOffers 
+* Fixed Bulk price
+* Mod-agent is same with bulkPrice out and shorter sleep
 
 ## 12/6/2020
 To do:

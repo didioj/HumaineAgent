@@ -1,188 +1,642 @@
-# imports
-import time
-import json
-import importlib
-conversation = importlib.import_module('conversation')
+given: [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1, 'index': 0}]
+- Returning price: None
+- Received price: None
+- Returning offer: {'quantity': {'egg': 1}, 'price': None}
+- cmd leaving interpretMessage: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- Received interpretation: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- Message from buyer to me
+- Added to bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}]}
+- Entering mayIRespond
+- Need to make it so can't respond if just responded and human hasn't responded. Check history to see if human responded?
+- Returning reponse: True
+- Entering bulkPriceMessage
+- received interpretation: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- Entering generateBid
+- Received offer: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- humanName: Human
+- bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}]}
+- BidBlock: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- BidBlock['type']: BuyRequest
+- Recent offers: []
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.46}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.68}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.65}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.25}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.25}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.39}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.31}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- no currency units provided
+- Returning utility: -0.46
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.46}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.68}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.65}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.25}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.25}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.39}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.31}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- no currency units provided
+- Returning utility: -0.46
+- Total items: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- Total cost of items (should be negative): -0.46
+- Utility received: -0.46
+Relevant Offers: []
+- Last price: None
+- Last offer: None
+- Remaining time: 293.1391591796875
+BuyRequest
+- Buyer did not propose price or other agent made an offer. Going to generate price
+- No history of any SellOffers. Going to propose price
+Original markup ratio: 2.2558051182728596
+- Going to markup price by 2.2558051182728596
+- Entering quantize
+- Received quantity: 0.5776703544055154
+- Received decimals: 2
+- Returning value: 0.58
+- Returning bid: {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.58}}
+- NormalBid: {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}, 'price': {'unit': 'USD', 'value': 0.58}}
+- Added NormalBid to bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}, {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}, 'price': {'unit': 'USD', 'value': 0.58}}]}
+- scale: 3
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.46}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.68}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.65}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.25}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.25}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.39}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.31}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 3}}
+- no currency units provided
+- Returning utility: -1.3800000000000001
+- Entering quantize
+- Received quantity: 1.7199999999999998
+- Received decimals: 2
+- Returning value: 1.72
+- Entering generateBid
+- Received offer: {'quantity': {'egg': 3}, 'type': 'GoodPrice', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- humanName: Human
+- bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}, {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}, 'price': {'unit': 'USD', 'value': 0.58}}, {'quantity': {'egg': 3}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.72}}]}
+- BidBlock: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- BidBlock['type']: BuyRequest
+- BidBlock: {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}, 'price': {'unit': 'USD', 'value': 0.58}}
+- BidBlock['type']: NormalBid
+- BidBlock: {'quantity': {'egg': 3}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.72}}
+- BidBlock['type']: NormalBulkBid
+- Recent offers: []
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.46}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.68}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.65}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.25}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.25}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.39}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.31}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 3}, 'type': 'GoodPrice', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- no currency units provided
+- Returning utility: -1.3800000000000001
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.46}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.68}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.65}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.25}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.25}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.39}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.31}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 3}, 'type': 'GoodPrice', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- no currency units provided
+- Returning utility: -1.3800000000000001
+- Total items: {'quantity': {'egg': 3}, 'type': 'GoodPrice', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- Total cost of items (should be negative): -1.3800000000000001
+- Utility received: -1.3800000000000001
+Relevant Offers: [{'quantity': {'egg': 3}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.72}}]
+- Last price: 1.72
+- Last offer: {'quantity': {'egg': 3}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.72}}
+- Remaining time: 293.13018115234377
+GoodPrice
+- Buyer did not propose price or other agent made an offer. Going to generate price
+- A SellOffer has been made before
+- My recent offers: [{'quantity': {'egg': 3}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.72}}]
+- We've made a SellOffer before!
+- myLastPrice: 1.72
+- Reached minMarkupRatio: 1.2463768115942029
+- detected a NormalBulkBid. going to reduce bulk price
+- Returning bid: {'quantity': {'egg': 3}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'MinMarkupExcuse', 'price': {'unit': 'USD', 'value': 1.72}, 'speaker': 'Celia'}
+- interpretation: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- bulk_interpretation: {'quantity': {'egg': 3}, 'type': 'GoodPrice', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- basic_bid: {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.58}}
+- normal_bulk_bid: {'quantity': {'egg': 3}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.72}}
+- bulk_bid: {'quantity': {'egg': 3}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'GoodPrice', 'price': {'unit': 'USD', 'value': 1.72}, 'speaker': 'Celia'}
+- Entering quantize
+- Received quantity: 0.019999999999999796
+- Received decimals: 2
+- Returning value: 0.02
+- Entering translateBid
+- Received bid: {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.58}}
+- Received confirm: False
+- bid is a SellOffer
+- Returning random messge: I got you
+- Returning response: I got you 1 egg for 0.58 USD.
+- Entering translateBid
+- Received bid: {'quantity': {'egg': 3}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'GoodPrice', 'price': {'unit': 'USD', 'value': 1.72}, 'speaker': 'Celia'}
+- Received confirm: False
+- Returning response:  3 eggs for 1.72 USD.
+- Returning bidResponse: {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}
+- Bid message from processMessage: {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}
+- Sending message: {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}
+- Sending message to orchestrator: {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}
+- Entering receiveMessage
+- Remaining Time: 293.1102353515625
+- Info received: {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}
+- This message is from me!
+- Entering processMessage
+- Received message: {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}
+- Entering classifyMessage
+- Passsing params into WatsonAssistant: {'assistantId': 'fccf0c80-4760-4ddd-9f89-46319fc5a195', 'input': {'message_type': 'text', 'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'options': {'alternate_intents': True, 'return_context': True}}, 'sessionId': None}
+- Response from WatsonAssistant [except]: {'output': {'intents': [{'intent': 'BulkOffer', 'confidence': 0.9882654666900634}], 'entities': [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.58', 'confidence': 1, 'metadata': {'numeric_value': 0.58, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.58, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [53, 60], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [61, 71], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [72, 76], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [77, 81], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [85, 86], 'value': '3', 'confidence': 1, 'metadata': {'numeric_value': 3}, 'interpretation': {'numeric_value': 3, 'subtype': 'integer'}}, {'entity': 'good', 'location': [87, 91], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [96, 104], 'value': '1.72', 'confidence': 1, 'metadata': {'numeric_value': 1.72, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.72, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [114, 122], 'value': '0.02', 'confidence': 1, 'metadata': {'numeric_value': 0.02, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.02, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [171, 175], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [176, 180], 'value': 'deal', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}]}}
+- Entering translateWatsonResponse
+- Received response: {'output': {'intents': [{'intent': 'BulkOffer', 'confidence': 0.9882654666900634}], 'entities': [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.58', 'confidence': 1, 'metadata': {'numeric_value': 0.58, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.58, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [53, 60], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [61, 71], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [72, 76], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [77, 81], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [85, 86], 'value': '3', 'confidence': 1, 'metadata': {'numeric_value': 3}, 'interpretation': {'numeric_value': 3, 'subtype': 'integer'}}, {'entity': 'good', 'location': [87, 91], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [96, 104], 'value': '1.72', 'confidence': 1, 'metadata': {'numeric_value': 1.72, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.72, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [114, 122], 'value': '0.02', 'confidence': 1, 'metadata': {'numeric_value': 0.02, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.02, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [171, 175], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [176, 180], 'value': 'deal', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}]}}
+- Received input_: {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}
+- Returning Watson response: {'intents': [{'intent': 'BulkOffer', 'confidence': 0.9882654666900634}], 'entities': [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.58', 'confidence': 1, 'metadata': {'numeric_value': 0.58, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.58, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [53, 60], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [61, 71], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [72, 76], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [77, 81], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [85, 86], 'value': '3', 'confidence': 1, 'metadata': {'numeric_value': 3}, 'interpretation': {'numeric_value': 3, 'subtype': 'integer'}}, {'entity': 'good', 'location': [87, 91], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [96, 104], 'value': '1.72', 'confidence': 1, 'metadata': {'numeric_value': 1.72, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.72, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [114, 122], 'value': '0.02', 'confidence': 1, 'metadata': {'numeric_value': 0.02, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.02, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [171, 175], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [176, 180], 'value': 'deal', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}, 'addressee': 'Human', 'speaker': 'Celia'}
+- Received message classification: {'intents': [{'intent': 'BulkOffer', 'confidence': 0.9882654666900634}], 'entities': [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.58', 'confidence': 1, 'metadata': {'numeric_value': 0.58, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.58, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [53, 60], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [61, 71], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [72, 76], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [77, 81], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [85, 86], 'value': '3', 'confidence': 1, 'metadata': {'numeric_value': 3}, 'interpretation': {'numeric_value': 3, 'subtype': 'integer'}}, {'entity': 'good', 'location': [87, 91], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [96, 104], 'value': '1.72', 'confidence': 1, 'metadata': {'numeric_value': 1.72, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.72, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [114, 122], 'value': '0.02', 'confidence': 1, 'metadata': {'numeric_value': 0.02, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.02, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [171, 175], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [176, 180], 'value': 'deal', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}, 'addressee': 'Human', 'speaker': 'Celia'}
+- entered interpretMessage
+- Received watsonResponse: {'intents': [{'intent': 'BulkOffer', 'confidence': 0.9882654666900634}], 'entities': [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.58', 'confidence': 1, 'metadata': {'numeric_value': 0.58, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.58, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [53, 60], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [61, 71], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [72, 76], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [77, 81], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [85, 86], 'value': '3', 'confidence': 1, 'metadata': {'numeric_value': 3}, 'interpretation': {'numeric_value': 3, 'subtype': 'integer'}}, {'entity': 'good', 'location': [87, 91], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [96, 104], 'value': '1.72', 'confidence': 1, 'metadata': {'numeric_value': 1.72, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.72, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [114, 122], 'value': '0.02', 'confidence': 1, 'metadata': {'numeric_value': 0.02, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.02, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [171, 175], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [176, 180], 'value': 'deal', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}, 'addressee': 'Human', 'speaker': 'Celia', 'environmentUUID': 'abcdefg'}
+- intents from watsonResponse: [{'intent': 'BulkOffer', 'confidence': 0.9882654666900634}]
+- entities from watsonResponse: [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.58', 'confidence': 1, 'metadata': {'numeric_value': 0.58, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.58, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [53, 60], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [61, 71], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [72, 76], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [77, 81], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [85, 86], 'value': '3', 'confidence': 1, 'metadata': {'numeric_value': 3}, 'interpretation': {'numeric_value': 3, 'subtype': 'integer'}}, {'entity': 'good', 'location': [87, 91], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [96, 104], 'value': '1.72', 'confidence': 1, 'metadata': {'numeric_value': 1.72, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.72, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [114, 122], 'value': '0.02', 'confidence': 1, 'metadata': {'numeric_value': 0.02, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.02, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [171, 175], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [176, 180], 'value': 'deal', 'confidence': 1}]
+- input from watsonResponse: {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None}
+- intents:  [{'intent': 'BulkOffer', 'confidence': 0.9882654666900634}]
+- entities:  [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.58', 'confidence': 1, 'metadata': {'numeric_value': 0.58, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.58, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [53, 60], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [61, 71], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [72, 76], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [77, 81], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [85, 86], 'value': '3', 'confidence': 1, 'metadata': {'numeric_value': 3}, 'interpretation': {'numeric_value': 3, 'subtype': 'integer'}}, {'entity': 'good', 'location': [87, 91], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [96, 104], 'value': '1.72', 'confidence': 1, 'metadata': {'numeric_value': 1.72, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.72, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [114, 122], 'value': '0.02', 'confidence': 1, 'metadata': {'numeric_value': 0.02, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.02, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [171, 175], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [176, 180], 'value': 'deal', 'confidence': 1}]
+- keywords: ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']
+- entered extractOfferFromEntities
+- Received entityList: [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.58', 'confidence': 1, 'metadata': {'numeric_value': 0.58, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.58, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [53, 60], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [61, 71], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [72, 76], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [77, 81], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [85, 86], 'value': '3', 'confidence': 1, 'metadata': {'numeric_value': 3}, 'interpretation': {'numeric_value': 3, 'subtype': 'integer'}}, {'entity': 'good', 'location': [87, 91], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [96, 104], 'value': '1.72', 'confidence': 1, 'metadata': {'numeric_value': 1.72, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.72, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [114, 122], 'value': '0.02', 'confidence': 1, 'metadata': {'numeric_value': 0.02, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.02, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [171, 175], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [176, 180], 'value': 'deal', 'confidence': 1}]
+- Found entities: [{'entity': 'sys-currency', 'location': [20, 28], 'value': '0.58', 'confidence': 1, 'metadata': {'numeric_value': 0.58, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.58, 'unit': 'USD'}, 'index': 2}, {'entity': 'keyword', 'location': [53, 60], 'value': 'special', 'confidence': 1, 'index': 3}, {'entity': 'keyword', 'location': [61, 71], 'value': 'discounted', 'confidence': 1, 'index': 4}, {'entity': 'keyword', 'location': [72, 76], 'value': 'bulk', 'confidence': 1, 'index': 5}, {'entity': 'keyword', 'location': [77, 81], 'value': 'deal', 'confidence': 1, 'index': 6}, {'entity': 'sys-currency', 'location': [96, 104], 'value': '1.72', 'confidence': 1, 'metadata': {'numeric_value': 1.72, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.72, 'unit': 'USD'}, 'index': 9}, {'entity': 'sys-currency', 'location': [114, 122], 'value': '0.02', 'confidence': 1, 'metadata': {'numeric_value': 0.02, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.02, 'unit': 'USD'}, 'index': 10}, {'entity': 'keyword', 'location': [171, 175], 'value': 'bulk', 'confidence': 1, 'index': 11}, {'entity': 'keyword', 'location': [176, 180], 'value': 'deal', 'confidence': 1, 'index': 12}]
+- entered extractPrice
+- entities given: [{'entity': 'sys-currency', 'location': [20, 28], 'value': '0.58', 'confidence': 1, 'metadata': {'numeric_value': 0.58, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.58, 'unit': 'USD'}, 'index': 2}, {'entity': 'keyword', 'location': [53, 60], 'value': 'special', 'confidence': 1, 'index': 3}, {'entity': 'keyword', 'location': [61, 71], 'value': 'discounted', 'confidence': 1, 'index': 4}, {'entity': 'keyword', 'location': [72, 76], 'value': 'bulk', 'confidence': 1, 'index': 5}, {'entity': 'keyword', 'location': [77, 81], 'value': 'deal', 'confidence': 1, 'index': 6}, {'entity': 'sys-currency', 'location': [96, 104], 'value': '1.72', 'confidence': 1, 'metadata': {'numeric_value': 1.72, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.72, 'unit': 'USD'}, 'index': 9}, {'entity': 'sys-currency', 'location': [114, 122], 'value': '0.02', 'confidence': 1, 'metadata': {'numeric_value': 0.02, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.02, 'unit': 'USD'}, 'index': 10}, {'entity': 'keyword', 'location': [171, 175], 'value': 'bulk', 'confidence': 1, 'index': 11}, {'entity': 'keyword', 'location': [176, 180], 'value': 'deal', 'confidence': 1, 'index': 12}]
+- Returning price: {'value': 0.02, 'unit': 'USD'}
+- Received price: {'value': 0.02, 'unit': 'USD'}
+- Returning offer: {'quantity': {'egg': 3}, 'price': {'value': 0.02, 'unit': 'USD'}}
+- cmd leaving interpretMessage: {'type': 'BulkOffer', 'metadata': {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None, 'timeStamp': 1607531972.1365335}, 'keywords': ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']}
+- Received interpretation: {'type': 'BulkOffer', 'metadata': {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None, 'timeStamp': 1607531972.1365335}, 'keywords': ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']}
+- Received own message
+- Adding message to bidHistory
+- bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}, {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}, 'price': {'unit': 'USD', 'value': 0.58}}, {'quantity': {'egg': 3}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.72}}, {'quantity': {'egg': 3}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'BulkBid', 'price': {'unit': 'USD', 'value': 1.72}, 'speaker': 'Celia', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for BulkBid', 'role': 'seller'}}, {'type': 'BulkOffer', 'metadata': {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None, 'timeStamp': 1607531972.1365335}, 'keywords': ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']}]}
+- Bid message from processMessage: None
+- Returning response: {'status': 'Acknowledged', 'interpretation': {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None, 'timeStamp': 1607531972.1365335}}
+127.0.0.1 - - [09/Dec/2020 11:39:32] "[37mPOST /receiveMessage HTTP/1.1[0m" 200 -
+- Entering receiveMessage
+- Remaining Time: 292.33913012695314
+- Info received: {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None}
+- Entering processMessage
+- Received message: {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None}
+- Entering classifyMessage
+- Passsing params into WatsonAssistant: {'assistantId': 'fccf0c80-4760-4ddd-9f89-46319fc5a195', 'input': {'message_type': 'text', 'text': 'I got you 1 egg for 0.71 USD.', 'options': {'alternate_intents': True, 'return_context': True}}, 'sessionId': None}
+- Response from WatsonAssistant [except]: {'output': {'intents': [{'intent': 'Offer', 'confidence': 0.9938159942626954}], 'entities': [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.71', 'confidence': 1, 'metadata': {'numeric_value': 0.71, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.71, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}]}}
+- Entering translateWatsonResponse
+- Received response: {'output': {'intents': [{'intent': 'Offer', 'confidence': 0.9938159942626954}], 'entities': [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.71', 'confidence': 1, 'metadata': {'numeric_value': 0.71, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.71, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}]}}
+- Received input_: {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None}
+- Returning Watson response: {'intents': [{'intent': 'Offer', 'confidence': 0.9938159942626954}], 'entities': [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.71', 'confidence': 1, 'metadata': {'numeric_value': 0.71, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.71, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None}, 'addressee': 'Human', 'speaker': 'Watson'}
+- Received message classification: {'intents': [{'intent': 'Offer', 'confidence': 0.9938159942626954}], 'entities': [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.71', 'confidence': 1, 'metadata': {'numeric_value': 0.71, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.71, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None}, 'addressee': 'Human', 'speaker': 'Watson'}
+- entered interpretMessage
+- Received watsonResponse: {'intents': [{'intent': 'Offer', 'confidence': 0.9938159942626954}], 'entities': [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.71', 'confidence': 1, 'metadata': {'numeric_value': 0.71, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.71, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None}, 'addressee': 'Human', 'speaker': 'Watson', 'environmentUUID': 'abcdefg'}
+- intents from watsonResponse: [{'intent': 'Offer', 'confidence': 0.9938159942626954}]
+- entities from watsonResponse: [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.71', 'confidence': 1, 'metadata': {'numeric_value': 0.71, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.71, 'unit': 'USD'}}]
+- input from watsonResponse: {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None}
+- intents:  [{'intent': 'Offer', 'confidence': 0.9938159942626954}]
+- entities:  [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.71', 'confidence': 1, 'metadata': {'numeric_value': 0.71, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.71, 'unit': 'USD'}}]
+- keywords: []
+- entered extractOfferFromEntities
+- Received entityList: [{'entity': 'sys-number', 'location': [10, 11], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [12, 15], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [20, 28], 'value': '0.71', 'confidence': 1, 'metadata': {'numeric_value': 0.71, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.71, 'unit': 'USD'}}]
+- Found entities: [{'entity': 'sys-currency', 'location': [20, 28], 'value': '0.71', 'confidence': 1, 'metadata': {'numeric_value': 0.71, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.71, 'unit': 'USD'}, 'index': 2}]
+- entered extractPrice
+- entities given: [{'entity': 'sys-currency', 'location': [20, 28], 'value': '0.71', 'confidence': 1, 'metadata': {'numeric_value': 0.71, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.71, 'unit': 'USD'}, 'index': 2}]
+- Returning price: {'value': 0.71, 'unit': 'USD'}
+- Received price: {'value': 0.71, 'unit': 'USD'}
+- Returning offer: {'quantity': {'egg': 1}, 'price': {'value': 0.71, 'unit': 'USD'}}
+- cmd leaving interpretMessage: {'quantity': {'egg': 1}, 'price': {'value': 0.71, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}
+- Received interpretation: {'quantity': {'egg': 1}, 'price': {'value': 0.71, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}
+- Message from another seller. Need to make an offer!
+- Message type: SellOffer
+- Returning response: {'status': 'Acknowledged', 'interpretation': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+127.0.0.1 - - [09/Dec/2020 11:39:34] "[37mPOST /receiveMessage HTTP/1.1[0m" 200 -
+- Other agent made a sell offer!
+- Entering generateBid
+- Received offer: {'quantity': {'egg': 1}, 'price': {'value': 0.71, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}
+- humanName: Human
+- bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}, {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}, 'price': {'unit': 'USD', 'value': 0.58}}, {'quantity': {'egg': 3}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.72}}, {'quantity': {'egg': 3}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'BulkBid', 'price': {'unit': 'USD', 'value': 1.72}, 'speaker': 'Celia', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for BulkBid', 'role': 'seller'}}, {'type': 'BulkOffer', 'metadata': {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None, 'timeStamp': 1607531972.1365335}, 'keywords': ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']}, {'quantity': {'egg': 1}, 'price': {'value': 0.71, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}]}
+- BidBlock: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}}
+- BidBlock['type']: BuyRequest
+- BidBlock: {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}, 'price': {'unit': 'USD', 'value': 0.58}}
+- BidBlock['type']: NormalBid
+- BidBlock: {'quantity': {'egg': 3}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.72}}
+- BidBlock['type']: NormalBulkBid
+- BidBlock: {'quantity': {'egg': 3}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'BulkBid', 'price': {'unit': 'USD', 'value': 1.72}, 'speaker': 'Celia', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for BulkBid', 'role': 'seller'}}
+- BidBlock['type']: BulkBid
+- BidBlock: {'type': 'BulkOffer', 'metadata': {'text': 'I got you 1 egg for 0.58 USD. I can also offer you a special discounted bulk deal of 3 eggs for 1.72 USD. That is 0.02 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531971672.2766, 'bid': None, 'timeStamp': 1607531972.1365335}, 'keywords': ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']}
+- BidBlock['type']: BulkOffer
+- BidBlock: {'quantity': {'egg': 1}, 'price': {'value': 0.71, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}
+- BidBlock['type']: SellOffer
+- Recent offers: [{'quantity': {'egg': 1}, 'price': {'value': 0.71, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}]
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.46}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.68}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.65}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.25}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.25}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.39}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.31}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 1}, 'price': {'value': 0.71, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}
+- Currency units match
+- Returning utility: -0.46
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.46}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.68}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.65}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.25}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.25}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.39}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.31}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 1}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}
+- no currency units provided
+- Returning utility: -0.46
+- Total items: {'quantity': {'egg': 1}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}
+- Total cost of items (should be negative): -0.46
+- Utility received: -0.46
+Relevant Offers: [{'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607531970003, 'timeStamp': 1607531971.657317}, 'price': {'unit': 'USD', 'value': 0.58}}, {'quantity': {'egg': 1}, 'price': {'value': 0.71, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}]
+- Last price: 0.71
+- Last offer: {'quantity': {'egg': 1}, 'price': {'value': 0.71, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'I got you 1 egg for 0.71 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531972447.3706, 'bid': None, 'timeStamp': 1607531972.8909647}}
+- Remaining time: 289.90193359375
+SellOffer
+- Buyer did not propose price or other agent made an offer. Going to generate price
+- A SellOffer has been made before
+- My recent offers: []
+- lastPrice can still be reduced
+- This is the lowest offer so far. Going to reduce
+- Calcuated last markupRatio: 0.543478260869565
+- Going to markup price by 2.4385698513471907
+- Entering quantize
+- Received quantity: 0.6617421316197077
+- Received decimals: 2
+- Returning value: 0.66
+- Returning bid: {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.66}}
+- Entering translateBid
+- Received bid: {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.66}}
+- Received confirm: False
+- bid is a SellOffer
+- Returning random messge: I can do
+- Returning response: I can do 1 egg for 0.66 USD.
+- Returning bidResponse: {'text': 'I can do 1 egg for 0.66 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531974898.5305, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.66}}}
+- Bid message from processMessage: {'text': 'I can do 1 egg for 0.66 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531974898.5305, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.66}}}
+- Sending message: {'text': 'I can do 1 egg for 0.66 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531974898.5305, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.66}}}
+- Sending message to orchestrator: {'text': 'I can do 1 egg for 0.66 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531974898.5305, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.66}}}
+- Entering receiveRejection
+- Remaining Time: 289.89196044921874
+- Info received: {'text': 'I can do 1 egg for 0.66 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531974898.5305, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.66}}, 'rationale': 'Addressee message delayed, Quantity of agents messages exceeded'}
+- Received message: {'text': 'I can do 1 egg for 0.66 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531974898.5305, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.66}}, 'rationale': 'Addressee message delayed, Quantity of agents messages exceeded'}
+- Returning response: {'status': 'Acknowledged', 'message': {'text': 'I can do 1 egg for 0.66 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607531974898.5305, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.66}}, 'rationale': 'Addressee message delayed, Quantity of agents messages exceeded'}}
+127.0.0.1 - - [09/Dec/2020 11:39:34] "[37mPOST /receiveRejection HTTP/1.1[0m" 200 -
+[2020-12-09 11:41:34,902] ERROR in app: Exception on /receiveMessage [POST]
+Traceback (most recent call last):
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\urllib3\connectionpool.py", line 670, in urlopen
+    httplib_response = self._make_request(
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\urllib3\connectionpool.py", line 426, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\urllib3\connectionpool.py", line 421, in _make_request
+    httplib_response = conn.getresponse()
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\http\client.py", line 1347, in getresponse
+    response.begin()
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\http\client.py", line 307, in begin
+    version, status, reason = self._read_status()
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\http\client.py", line 276, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
 
-# Methods
-# From the intents and entities obtained from Watson Assistant, extract a structured representation
-# of the message
-def interpretMessage(watsonResponse):
-    print("- entered interpretMessage")
-    print("- Received watsonResponse:", watsonResponse)
+During handling of the above exception, another exception occurred:
 
-    print("- intents from watsonResponse:", watsonResponse['intents'])
-    print("- entities from watsonResponse:", watsonResponse['entities'])
-    print("- input from watsonResponse:", watsonResponse['input'])
-    intents = watsonResponse['intents']
-    entities = watsonResponse['entities']
-    # look for keywords
-    keywords = []
-    for entity in entities:
-        if entity['entity'] == 'keyword':
-            keywords.append(entity['value'])
-    print("- intents: ", intents)
-    print("- entities: ", entities)
-    print("- keywords:", keywords)
-    cmd = {}
+Traceback (most recent call last):
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\requests\adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\urllib3\connectionpool.py", line 726, in urlopen
+    retries = retries.increment(
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\urllib3\util\retry.py", line 410, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\urllib3\packages\six.py", line 734, in reraise
+    raise value.with_traceback(tb)
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\urllib3\connectionpool.py", line 670, in urlopen
+    httplib_response = self._make_request(
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\urllib3\connectionpool.py", line 426, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\urllib3\connectionpool.py", line 421, in _make_request
+    httplib_response = conn.getresponse()
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\http\client.py", line 1347, in getresponse
+    response.begin()
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\http\client.py", line 307, in begin
+    version, status, reason = self._read_status()
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\http\client.py", line 276, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+urllib3.exceptions.ProtocolError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
 
-    if intents and intents[0]['intent'] == "Offer" and intents[0]['confidence'] > 0.2:
-        extractedOffer = extractOfferFromEntities(entities)
-        cmd = {
-            'quantity': extractedOffer['quantity']
-        }
-        if extractedOffer['price']:
-            cmd['price'] = extractedOffer['price']
-            if watsonResponse['input']['role'] == 'buyer':
-                cmd['type'] = "BuyOffer"
-            elif watsonResponse['input']['role'] == 'seller':
-                cmd['type'] = "SellOffer"
-        else:
-            if watsonResponse['input']['role'] == 'buyer':
-                if 'cake' in cmd['quantity'] or 'pancake' in cmd['quantity']:
-                    cmd['type'] = "BundleRequest"
-                else:
-                    cmd['type'] = "BuyRequest"
-            elif watsonResponse['input']['role'] == 'seller':
-                cmd['type'] = "SellRequest"
-    elif intents and intents[0]['intent'] == "AcceptOffer" and intents[0]['confidence'] > 0.2:
-        cmd = {'type': "AcceptOffer"}
-    elif intents and intents[0]['intent'] == "RejectOffer" and intents[0]['confidence'] > 0.2:
-        cmd = {'type': "RejectOffer"}
-    elif intents and intents[0]['intent'] == "MinOffer" and intents[0]['confidence'] > 0.2:
-        extractedOffer = extractOfferFromEntities(entities)
-        cmd = {
-            'quantity': extractedOffer['quantity']
-        }
-        if extractedOffer['price']:
-            cmd['price'] = extractedOffer['price']
-        cmd['type'] = "MinOffer"
-    elif intents and intents[0]['intent'] == "BundleRequest" and intents[0]['confidence'] > 0.2:
-        extractedOffer = extractOfferFromEntities(entities)
-        cmd = {
-            'quantity': extractedOffer['quantity'],
-            'type': "BundleRequest"
-        }
-    elif intents and intents[0]['intent'] == 'Information' and intents[0]['confidence'] > 0.2:
-        cmd = {'type': "Information"}
-    else:
-        cmd = {'type': "NotUnderstood"}
+During handling of the above exception, another exception occurred:
 
-    if cmd:
-        cmd['metadata'] = watsonResponse['input']
-        cmd['metadata']['addressee'] = watsonResponse['input']['addressee'] or extractAddressee(entities) # Expect the addressee to be provided, but extract it if necessary
-        cmd['metadata']['timeStamp'] = time.time()
-        if len(keywords):
-            cmd['keywords'] = keywords
-    print("- cmd leaving interpretMessage:", cmd)
-    return cmd
+Traceback (most recent call last):
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\lingc\OneDrive\Documents\RPI\Fall_2020\CognitiveComputing\HumaineAgent\agent-py.py", line 610, in receiveMessage
+    sendMessage(bidMessage)
+  File "C:\Users\lingc\OneDrive\Documents\RPI\Fall_2020\CognitiveComputing\HumaineAgent\agent-py.py", line 1442, in sendMessage
+    return postDataToServiceType(message, 'environment-orchestrator', '/relayMessage')
+  File "C:\Users\lingc\OneDrive\Documents\RPI\Fall_2020\CognitiveComputing\HumaineAgent\agent-py.py", line 1454, in postDataToServiceType
+    response = requests.post(url, json=json)
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\requests\api.py", line 119, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\requests\api.py", line 61, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\requests\sessions.py", line 530, in request
+    resp = self.send(prep, **send_kwargs)
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\requests\sessions.py", line 643, in send
+    r = adapter.send(request, **kwargs)
+  File "c:\users\lingc\appdata\local\programs\python\python38\lib\site-packages\requests\adapters.py", line 498, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+127.0.0.1 - - [09/Dec/2020 11:42:47] "[35m[1mPOST /receiveMessage HTTP/1.1[0m" 500 -
+^CTerminate batch job (Y/N)?
+^C
+C:\Users\lingc\OneDrive\Documents\RPI\Fall_2020\CognitiveComputing\HumaineAgent>
 
+C:\Users\lingc\OneDrive\Documents\RPI\Fall_2020\CognitiveComputing\HumaineAgent>run_agent002.cmd
 
-# Extract the addressee from entities (in case addressee is not already supplied with the input message)
-def extractAddressee(entities):
-    print("- entered extractAddressee")
-    print("- Received entities:", entities)
-    addressees = {}
-    addressee = None
-    for eBlock in entities:
-        if eBlock['entity'] == "avatarName":
-            addressee = eBlock['value']
-            print("- Found an avatarName:", addressee)
-            return addressee
-            # addressees.append(eBlock['value'])
-    """
-    if 'agentName' in addressees:
-        addressee = addressees['agentName']
-    else:
-        addressee = None
-    print("- Returning addressee:", addressee)
-    return addressee
-    """
+C:\Users\lingc\OneDrive\Documents\RPI\Fall_2020\CognitiveComputing\HumaineAgent>set FLASK_APP=agent-py.py
 
-# Extract goods and their amounts from the entities extracted by Watson Assistant
-def extractOfferFromEntities(entityList):
-    print("- entered extractOfferFromEntities")
-    print("- Received entityList:", entityList)
-    entities = json.loads(json.dumps(entityList))
-    removedIndices = []
-    quantity = {}
-    state = None
-    amount = None
-    foundGood = False
-    nameFoundGood = None
-
-    for i, eBlock in enumerate(entities):
-        entities[i]['index'] = i
-        if eBlock['entity'] == 'sys-number':
-            amount = float(eBlock['value'])
-            state = 'amount'
-        elif (eBlock['entity'] == 'good' or eBlock['entity'] == 'bundle') and state == 'amount':    
-            if(amount % 1 == 0):
-                quantity[eBlock['value']] = int(amount)
-            else:
-                quantity[eBlock['value']] = amount
-            state = None
-            removedIndices.append(i - 1)
-            removedIndices.append(i)
-        elif eBlock['entity'] == 'bundle' and not state:
-            # bundle quantity not specified so default to 1
-            quantity[eBlock['value']] = 1
-            removedIndices.append(i - 1)
-            removedIndices.append(i)
-            
-        # this below block is intended to address the issue where a buyer
-        # can issue a generic request for a type of product
-        # could cause issues with
-        if eBlock['entity'] == 'good':
-            foundGood = True
-            nameFoundGood = eBlock['value']
-    
-    entities = [entity for entity in entities if entity['index'] not in removedIndices]
-    print("- Found entities:", entities)
-    price = extractPrice(entities)
-    print("- Received price:", price)
-    print("- Returning offer:", {'quantity': quantity, 'price': price})
-    # we haven't isolated a quantity from the offer, so it must be an open request for offers
-    if not quantity:
-            quantity = {nameFoundGood: 'indef'}
-    return {'quantity': quantity, 'price': price}
-
-
-# Extract price from entities extracted by Watson Assistant
-def extractPrice(entities):
-    print("- entered extractPrice")
-    print("- entities given:", entities)
-    price = None
-
-    for eBlock in entities:
-        if eBlock['entity'] == 'sys-currency':
-            price = {
-                'value': eBlock['metadata']['numeric_value'],
-                'unit': eBlock['metadata']['unit']
-            }
-        elif eBlock['entity'] == 'sys-number' and not price:
-            price = {
-                'value': eBlock['metadata']['numeric_value'],
-                'unit': 'USD'
-            }
-    print("- Returning price:", price)
-    return price
-
-
-# Extract bid from message sent by another agent, a human, or myself
-def extractBidFromMessage(message):
-    print("- entered extractBidFromMessage")
-    print("- Received message:", message)
-    response = conversation.classifyMessage(message)
-    print("- Received response:", response)
-    response['environmentUUID'] = message['environmentUUID']
-
-    receivedOffer = interpretMessage(response)
-    print("- Received offer:", receivedOffer)
-    extractedBid = {
-        'type': receivedOffer['type'],
-        'price': receivedOffer['price'],
-        'quantity': receivedOffer['quantity']
-    }
-    print("- Returning extractedBid:", extractedBid)
-    return extractedBid
+C:\Users\lingc\OneDrive\Documents\RPI\Fall_2020\CognitiveComputing\HumaineAgent>flask run --port 14008
+ * Serving Flask app "agent-py.py"
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://127.0.0.1:14008/ (Press CTRL+C to quit)
+- Entering setUtility
+- Info received: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.36}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.7}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.66}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.21}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.26}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.44}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.28}}}, 'name': 'Celia'}
+- Message sending: {'status': 'Acknowledged', 'utility': {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.36}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.7}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.66}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.21}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.26}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.44}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.28}}}, 'name': 'Celia'}}
+127.0.0.1 - - [09/Dec/2020 11:42:57] "[37mPOST /setUtility HTTP/1.1[0m" 200 -
+- Entering startRound
+- Info received: {'roundDuration': 300, 'roundNumber': 1, 'timestamp': '2020-12-09T16:42:59.461Z'}
+- Returning message: {'status': 'Acknowledged'}
+127.0.0.1 - - [09/Dec/2020 11:42:59] "[37mPOST /startRound HTTP/1.1[0m" 200 -
+- Entering receiveMessage
+- Remaining Time: 294.4630280761719
+- Info received: {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991}
+- Entering processMessage
+- Received message: {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991}
+- Entering classifyMessage
+- Passsing params into WatsonAssistant: {'assistantId': 'fccf0c80-4760-4ddd-9f89-46319fc5a195', 'input': {'message_type': 'text', 'text': 'Celia I want to buy 1 egg', 'options': {'alternate_intents': True, 'return_context': True}}, 'sessionId': None}
+- Response from WatsonAssistant [except]: {'output': {'intents': [{'intent': 'Offer', 'confidence': 0.4748523527103998}], 'entities': [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1}, {'entity': 'sys-number', 'location': [20, 21], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [22, 25], 'value': 'egg', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}]}}
+- Entering translateWatsonResponse
+- Received response: {'output': {'intents': [{'intent': 'Offer', 'confidence': 0.4748523527103998}], 'entities': [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1}, {'entity': 'sys-number', 'location': [20, 21], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [22, 25], 'value': 'egg', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}]}}
+- Received input_: {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991}
+- Returning Watson response: {'intents': [{'intent': 'Offer', 'confidence': 0.4748523527103998}], 'entities': [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1}, {'entity': 'sys-number', 'location': [20, 21], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [22, 25], 'value': 'egg', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991}, 'addressee': 'Celia', 'speaker': 'Human'}
+- Received message classification: {'intents': [{'intent': 'Offer', 'confidence': 0.4748523527103998}], 'entities': [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1}, {'entity': 'sys-number', 'location': [20, 21], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [22, 25], 'value': 'egg', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991}, 'addressee': 'Celia', 'speaker': 'Human'}
+- entered interpretMessage
+- Received watsonResponse: {'intents': [{'intent': 'Offer', 'confidence': 0.4748523527103998}], 'entities': [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1}, {'entity': 'sys-number', 'location': [20, 21], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [22, 25], 'value': 'egg', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991}, 'addressee': 'Celia', 'speaker': 'Human', 'environmentUUID': 'abcdefg'}
+- intents from watsonResponse: [{'intent': 'Offer', 'confidence': 0.4748523527103998}]
+- entities from watsonResponse: [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1}, {'entity': 'sys-number', 'location': [20, 21], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [22, 25], 'value': 'egg', 'confidence': 1}]
+- input from watsonResponse: {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991}
+- intents:  [{'intent': 'Offer', 'confidence': 0.4748523527103998}]
+- entities:  [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1}, {'entity': 'sys-number', 'location': [20, 21], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [22, 25], 'value': 'egg', 'confidence': 1}]
+- keywords: []
+- entered extractOfferFromEntities
+- Received entityList: [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1}, {'entity': 'sys-number', 'location': [20, 21], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [22, 25], 'value': 'egg', 'confidence': 1}]
+- Found entities: [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1, 'index': 0}]
+- entered extractPrice
+- entities given: [{'entity': 'avatarName', 'location': [0, 5], 'value': 'Celia', 'confidence': 1, 'index': 0}]
+- Returning price: None
+- Received price: None
+- Returning offer: {'quantity': {'egg': 1}, 'price': None}
+- cmd leaving interpretMessage: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- Received interpretation: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- Message from buyer to me
+- Added to bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}]}
+- Entering mayIRespond
+- Need to make it so can't respond if just responded and human hasn't responded. Check history to see if human responded?
+- Returning reponse: True
+- Entering bulkPriceMessage
+- received interpretation: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- Entering generateBid
+- Received offer: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- humanName: Human
+- bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}]}
+- BidBlock: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- BidBlock['type']: BuyRequest
+- Recent offers: []
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.36}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.7}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.66}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.21}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.26}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.44}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.28}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- no currency units provided
+- Returning utility: -0.36
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.36}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.7}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.66}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.21}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.26}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.44}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.28}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- no currency units provided
+- Returning utility: -0.36
+- Total items: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- Total cost of items (should be negative): -0.36
+- Utility received: -0.36
+Relevant Offers: []
+- Last price: None
+- Last offer: None
+- Remaining time: 293.1927648925781
+BuyRequest
+- Buyer did not propose price or other agent made an offer. Going to generate price
+- No history of any SellOffers. Going to propose price
+Original markup ratio: 2.392826945158138
+- Going to markup price by 2.392826945158138
+- Entering quantize
+- Received quantity: 0.5014177002569297
+- Received decimals: 2
+- Returning value: 0.5
+- Returning bid: {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.5}}
+- NormalBid: {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}, 'price': {'unit': 'USD', 'value': 0.5}}
+- Added NormalBid to bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}, {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}, 'price': {'unit': 'USD', 'value': 0.5}}]}
+- scale: 4
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.36}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.7}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.66}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.21}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.26}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.44}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.28}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 4}}
+- no currency units provided
+- Returning utility: -1.44
+- Entering quantize
+- Received quantity: 1.98
+- Received decimals: 2
+- Returning value: 1.98
+- Entering generateBid
+- Received offer: {'quantity': {'egg': 4}, 'type': 'GoodPrice', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- humanName: Human
+- bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}, {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}, 'price': {'unit': 'USD', 'value': 0.5}}, {'quantity': {'egg': 4}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.98}}]}
+- BidBlock: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- BidBlock['type']: BuyRequest
+- BidBlock: {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}, 'price': {'unit': 'USD', 'value': 0.5}}
+- BidBlock['type']: NormalBid
+- BidBlock: {'quantity': {'egg': 4}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.98}}
+- BidBlock['type']: NormalBulkBid
+- Recent offers: []
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.36}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.7}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.66}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.21}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.26}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.44}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.28}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 4}, 'type': 'GoodPrice', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- no currency units provided
+- Returning utility: -1.44
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.36}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.7}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.66}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.21}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.26}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.44}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.28}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 4}, 'type': 'GoodPrice', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- no currency units provided
+- Returning utility: -1.44
+- Total items: {'quantity': {'egg': 4}, 'type': 'GoodPrice', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- Total cost of items (should be negative): -1.44
+- Utility received: -1.44
+Relevant Offers: [{'quantity': {'egg': 4}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.98}}]
+- Last price: 1.98
+- Last offer: {'quantity': {'egg': 4}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.98}}
+- Remaining time: 293.1827912597656
+GoodPrice
+- Buyer did not propose price or other agent made an offer. Going to generate price
+- A SellOffer has been made before
+- My recent offers: [{'quantity': {'egg': 4}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.98}}]
+- We've made a SellOffer before!
+- myLastPrice: 1.98
+- lastPrice can still be reduced
+- This is the lowest offer so far. Going to reduce
+- Calcuated last markupRatio: 0.375
+- Going to markup price by 2.3246095616799476
+- Entering quantize
+- Received quantity: 1.9074377688191244
+- Received decimals: 2
+- Returning value: 1.91
+- Returning bid: {'quantity': {'egg': 4}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 1.91}}
+- interpretation: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- bulk_interpretation: {'quantity': {'egg': 4}, 'type': 'GoodPrice', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- basic_bid: {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.5}}
+- normal_bulk_bid: {'quantity': {'egg': 4}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.98}}
+- bulk_bid: {'quantity': {'egg': 4}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'GoodPrice', 'price': {'unit': 'USD', 'value': 1.91}}
+- Entering quantize
+- Received quantity: 0.09000000000000008
+- Received decimals: 2
+- Returning value: 0.09
+- Entering translateBid
+- Received bid: {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.5}}
+- Received confirm: False
+- bid is a SellOffer
+- Returning random messge: I can sell you
+- Returning response: I can sell you 1 egg for 0.5 USD.
+- Entering translateBid
+- Received bid: {'quantity': {'egg': 4}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'GoodPrice', 'price': {'unit': 'USD', 'value': 1.91}}
+- Received confirm: False
+- Returning response:  4 eggs for 1.91 USD.
+- Returning bidResponse: {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}
+- Bid message from processMessage: {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}
+- Sending message: {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}
+- Sending message to orchestrator: {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}
+- Entering receiveMessage
+- Remaining Time: 293.1668332519531
+- Info received: {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}
+- This message is from me!
+- Entering processMessage
+- Received message: {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}
+- Entering classifyMessage
+- Passsing params into WatsonAssistant: {'assistantId': 'fccf0c80-4760-4ddd-9f89-46319fc5a195', 'input': {'message_type': 'text', 'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'options': {'alternate_intents': True, 'return_context': True}}, 'sessionId': None}
+- Response from WatsonAssistant [except]: {'output': {'intents': [{'intent': 'BulkOffer', 'confidence': 0.9914815902709961}], 'entities': [{'entity': 'sys-number', 'location': [15, 16], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [17, 20], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [25, 32], 'value': '0.5', 'confidence': 1, 'metadata': {'numeric_value': 0.5, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.5, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [57, 64], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [65, 75], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [76, 80], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [81, 85], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [89, 90], 'value': '4', 'confidence': 1, 'metadata': {'numeric_value': 4}, 'interpretation': {'numeric_value': 4, 'subtype': 'integer'}}, {'entity': 'good', 'location': [91, 95], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [100, 108], 'value': '1.91', 'confidence': 1, 'metadata': {'numeric_value': 1.91, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.91, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [118, 126], 'value': '0.09', 'confidence': 1, 'metadata': {'numeric_value': 0.09, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.09, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [175, 179], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [180, 184], 'value': 'deal', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}]}}
+- Entering translateWatsonResponse
+- Received response: {'output': {'intents': [{'intent': 'BulkOffer', 'confidence': 0.9914815902709961}], 'entities': [{'entity': 'sys-number', 'location': [15, 16], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [17, 20], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [25, 32], 'value': '0.5', 'confidence': 1, 'metadata': {'numeric_value': 0.5, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.5, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [57, 64], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [65, 75], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [76, 80], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [81, 85], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [89, 90], 'value': '4', 'confidence': 1, 'metadata': {'numeric_value': 4}, 'interpretation': {'numeric_value': 4, 'subtype': 'integer'}}, {'entity': 'good', 'location': [91, 95], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [100, 108], 'value': '1.91', 'confidence': 1, 'metadata': {'numeric_value': 1.91, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.91, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [118, 126], 'value': '0.09', 'confidence': 1, 'metadata': {'numeric_value': 0.09, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.09, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [175, 179], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [180, 184], 'value': 'deal', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}]}}
+- Received input_: {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}
+- Returning Watson response: {'intents': [{'intent': 'BulkOffer', 'confidence': 0.9914815902709961}], 'entities': [{'entity': 'sys-number', 'location': [15, 16], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [17, 20], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [25, 32], 'value': '0.5', 'confidence': 1, 'metadata': {'numeric_value': 0.5, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.5, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [57, 64], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [65, 75], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [76, 80], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [81, 85], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [89, 90], 'value': '4', 'confidence': 1, 'metadata': {'numeric_value': 4}, 'interpretation': {'numeric_value': 4, 'subtype': 'integer'}}, {'entity': 'good', 'location': [91, 95], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [100, 108], 'value': '1.91', 'confidence': 1, 'metadata': {'numeric_value': 1.91, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.91, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [118, 126], 'value': '0.09', 'confidence': 1, 'metadata': {'numeric_value': 0.09, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.09, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [175, 179], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [180, 184], 'value': 'deal', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}, 'addressee': 'Human', 'speaker': 'Celia'}
+- Received message classification: {'intents': [{'intent': 'BulkOffer', 'confidence': 0.9914815902709961}], 'entities': [{'entity': 'sys-number', 'location': [15, 16], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [17, 20], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [25, 32], 'value': '0.5', 'confidence': 1, 'metadata': {'numeric_value': 0.5, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.5, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [57, 64], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [65, 75], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [76, 80], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [81, 85], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [89, 90], 'value': '4', 'confidence': 1, 'metadata': {'numeric_value': 4}, 'interpretation': {'numeric_value': 4, 'subtype': 'integer'}}, {'entity': 'good', 'location': [91, 95], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [100, 108], 'value': '1.91', 'confidence': 1, 'metadata': {'numeric_value': 1.91, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.91, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [118, 126], 'value': '0.09', 'confidence': 1, 'metadata': {'numeric_value': 0.09, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.09, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [175, 179], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [180, 184], 'value': 'deal', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}, 'addressee': 'Human', 'speaker': 'Celia'}
+- entered interpretMessage
+- Received watsonResponse: {'intents': [{'intent': 'BulkOffer', 'confidence': 0.9914815902709961}], 'entities': [{'entity': 'sys-number', 'location': [15, 16], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [17, 20], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [25, 32], 'value': '0.5', 'confidence': 1, 'metadata': {'numeric_value': 0.5, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.5, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [57, 64], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [65, 75], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [76, 80], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [81, 85], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [89, 90], 'value': '4', 'confidence': 1, 'metadata': {'numeric_value': 4}, 'interpretation': {'numeric_value': 4, 'subtype': 'integer'}}, {'entity': 'good', 'location': [91, 95], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [100, 108], 'value': '1.91', 'confidence': 1, 'metadata': {'numeric_value': 1.91, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.91, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [118, 126], 'value': '0.09', 'confidence': 1, 'metadata': {'numeric_value': 0.09, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.09, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [175, 179], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [180, 184], 'value': 'deal', 'confidence': 1}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}, 'addressee': 'Human', 'speaker': 'Celia', 'environmentUUID': 'abcdefg'}
+- intents from watsonResponse: [{'intent': 'BulkOffer', 'confidence': 0.9914815902709961}]
+- entities from watsonResponse: [{'entity': 'sys-number', 'location': [15, 16], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [17, 20], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [25, 32], 'value': '0.5', 'confidence': 1, 'metadata': {'numeric_value': 0.5, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.5, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [57, 64], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [65, 75], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [76, 80], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [81, 85], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [89, 90], 'value': '4', 'confidence': 1, 'metadata': {'numeric_value': 4}, 'interpretation': {'numeric_value': 4, 'subtype': 'integer'}}, {'entity': 'good', 'location': [91, 95], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [100, 108], 'value': '1.91', 'confidence': 1, 'metadata': {'numeric_value': 1.91, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.91, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [118, 126], 'value': '0.09', 'confidence': 1, 'metadata': {'numeric_value': 0.09, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.09, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [175, 179], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [180, 184], 'value': 'deal', 'confidence': 1}]
+- input from watsonResponse: {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None}
+- intents:  [{'intent': 'BulkOffer', 'confidence': 0.9914815902709961}]
+- entities:  [{'entity': 'sys-number', 'location': [15, 16], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [17, 20], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [25, 32], 'value': '0.5', 'confidence': 1, 'metadata': {'numeric_value': 0.5, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.5, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [57, 64], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [65, 75], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [76, 80], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [81, 85], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [89, 90], 'value': '4', 'confidence': 1, 'metadata': {'numeric_value': 4}, 'interpretation': {'numeric_value': 4, 'subtype': 'integer'}}, {'entity': 'good', 'location': [91, 95], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [100, 108], 'value': '1.91', 'confidence': 1, 'metadata': {'numeric_value': 1.91, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.91, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [118, 126], 'value': '0.09', 'confidence': 1, 'metadata': {'numeric_value': 0.09, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.09, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [175, 179], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [180, 184], 'value': 'deal', 'confidence': 1}]
+- keywords: ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']
+- entered extractOfferFromEntities
+- Received entityList: [{'entity': 'sys-number', 'location': [15, 16], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [17, 20], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [25, 32], 'value': '0.5', 'confidence': 1, 'metadata': {'numeric_value': 0.5, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.5, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [57, 64], 'value': 'special', 'confidence': 1}, {'entity': 'keyword', 'location': [65, 75], 'value': 'discounted', 'confidence': 1}, {'entity': 'keyword', 'location': [76, 80], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [81, 85], 'value': 'deal', 'confidence': 1}, {'entity': 'sys-number', 'location': [89, 90], 'value': '4', 'confidence': 1, 'metadata': {'numeric_value': 4}, 'interpretation': {'numeric_value': 4, 'subtype': 'integer'}}, {'entity': 'good', 'location': [91, 95], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [100, 108], 'value': '1.91', 'confidence': 1, 'metadata': {'numeric_value': 1.91, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.91, 'unit': 'USD'}}, {'entity': 'sys-currency', 'location': [118, 126], 'value': '0.09', 'confidence': 1, 'metadata': {'numeric_value': 0.09, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.09, 'unit': 'USD'}}, {'entity': 'keyword', 'location': [175, 179], 'value': 'bulk', 'confidence': 1}, {'entity': 'keyword', 'location': [180, 184], 'value': 'deal', 'confidence': 1}]
+- Found entities: [{'entity': 'sys-currency', 'location': [25, 32], 'value': '0.5', 'confidence': 1, 'metadata': {'numeric_value': 0.5, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.5, 'unit': 'USD'}, 'index': 2}, {'entity': 'keyword', 'location': [57, 64], 'value': 'special', 'confidence': 1, 'index': 3}, {'entity': 'keyword', 'location': [65, 75], 'value': 'discounted', 'confidence': 1, 'index': 4}, {'entity': 'keyword', 'location': [76, 80], 'value': 'bulk', 'confidence': 1, 'index': 5}, {'entity': 'keyword', 'location': [81, 85], 'value': 'deal', 'confidence': 1, 'index': 6}, {'entity': 'sys-currency', 'location': [100, 108], 'value': '1.91', 'confidence': 1, 'metadata': {'numeric_value': 1.91, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.91, 'unit': 'USD'}, 'index': 9}, {'entity': 'sys-currency', 'location': [118, 126], 'value': '0.09', 'confidence': 1, 'metadata': {'numeric_value': 0.09, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.09, 'unit': 'USD'}, 'index': 10}, {'entity': 'keyword', 'location': [175, 179], 'value': 'bulk', 'confidence': 1, 'index': 11}, {'entity': 'keyword', 'location': [180, 184], 'value': 'deal', 'confidence': 1, 'index': 12}]
+- entered extractPrice
+- entities given: [{'entity': 'sys-currency', 'location': [25, 32], 'value': '0.5', 'confidence': 1, 'metadata': {'numeric_value': 0.5, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.5, 'unit': 'USD'}, 'index': 2}, {'entity': 'keyword', 'location': [57, 64], 'value': 'special', 'confidence': 1, 'index': 3}, {'entity': 'keyword', 'location': [65, 75], 'value': 'discounted', 'confidence': 1, 'index': 4}, {'entity': 'keyword', 'location': [76, 80], 'value': 'bulk', 'confidence': 1, 'index': 5}, {'entity': 'keyword', 'location': [81, 85], 'value': 'deal', 'confidence': 1, 'index': 6}, {'entity': 'sys-currency', 'location': [100, 108], 'value': '1.91', 'confidence': 1, 'metadata': {'numeric_value': 1.91, 'unit': 'USD'}, 'interpretation': {'numeric_value': 1.91, 'unit': 'USD'}, 'index': 9}, {'entity': 'sys-currency', 'location': [118, 126], 'value': '0.09', 'confidence': 1, 'metadata': {'numeric_value': 0.09, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.09, 'unit': 'USD'}, 'index': 10}, {'entity': 'keyword', 'location': [175, 179], 'value': 'bulk', 'confidence': 1, 'index': 11}, {'entity': 'keyword', 'location': [180, 184], 'value': 'deal', 'confidence': 1, 'index': 12}]
+- Returning price: {'value': 0.09, 'unit': 'USD'}
+- Received price: {'value': 0.09, 'unit': 'USD'}
+- Returning offer: {'quantity': {'egg': 4}, 'price': {'value': 0.09, 'unit': 'USD'}}
+- cmd leaving interpretMessage: {'type': 'BulkOffer', 'metadata': {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None, 'timeStamp': 1607532186.7793841}, 'keywords': ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']}
+- Received interpretation: {'type': 'BulkOffer', 'metadata': {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None, 'timeStamp': 1607532186.7793841}, 'keywords': ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']}
+- Received own message
+- Adding message to bidHistory
+- bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}, {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}, 'price': {'unit': 'USD', 'value': 0.5}}, {'quantity': {'egg': 4}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.98}}, {'quantity': {'egg': 4}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'BulkBid', 'price': {'unit': 'USD', 'value': 1.91}, 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for BulkBid', 'role': 'seller'}}, {'type': 'BulkOffer', 'metadata': {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None, 'timeStamp': 1607532186.7793841}, 'keywords': ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']}]}
+- Bid message from processMessage: None
+- Returning response: {'status': 'Acknowledged', 'interpretation': {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None, 'timeStamp': 1607532186.7793841}}
+127.0.0.1 - - [09/Dec/2020 11:43:06] "[37mPOST /receiveMessage HTTP/1.1[0m" 200 -
+- Entering receiveMessage
+- Remaining Time: 292.1273283691406
+- Info received: {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None}
+- Entering processMessage
+- Received message: {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None}
+- Entering classifyMessage
+- Passsing params into WatsonAssistant: {'assistantId': 'fccf0c80-4760-4ddd-9f89-46319fc5a195', 'input': {'message_type': 'text', 'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'options': {'alternate_intents': True, 'return_context': True}}, 'sessionId': None}
+- Response from WatsonAssistant [except]: {'output': {'intents': [{'intent': 'Offer', 'confidence': 0.4847062912556112}], 'entities': [{'entity': 'sys-number', 'location': [44, 45], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [46, 49], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [54, 62], 'value': '0.74', 'confidence': 1, 'metadata': {'numeric_value': 0.74, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.74, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}]}}
+- Entering translateWatsonResponse
+- Received response: {'output': {'intents': [{'intent': 'Offer', 'confidence': 0.4847062912556112}], 'entities': [{'entity': 'sys-number', 'location': [44, 45], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [46, 49], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [54, 62], 'value': '0.74', 'confidence': 1, 'metadata': {'numeric_value': 0.74, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.74, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}]}}
+- Received input_: {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None}
+- Returning Watson response: {'intents': [{'intent': 'Offer', 'confidence': 0.4847062912556112}], 'entities': [{'entity': 'sys-number', 'location': [44, 45], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [46, 49], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [54, 62], 'value': '0.74', 'confidence': 1, 'metadata': {'numeric_value': 0.74, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.74, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None}, 'addressee': 'Human', 'speaker': 'Watson'}
+- Received message classification: {'intents': [{'intent': 'Offer', 'confidence': 0.4847062912556112}], 'entities': [{'entity': 'sys-number', 'location': [44, 45], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [46, 49], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [54, 62], 'value': '0.74', 'confidence': 1, 'metadata': {'numeric_value': 0.74, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.74, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None}, 'addressee': 'Human', 'speaker': 'Watson'}
+- entered interpretMessage
+- Received watsonResponse: {'intents': [{'intent': 'Offer', 'confidence': 0.4847062912556112}], 'entities': [{'entity': 'sys-number', 'location': [44, 45], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [46, 49], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [54, 62], 'value': '0.74', 'confidence': 1, 'metadata': {'numeric_value': 0.74, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.74, 'unit': 'USD'}}], 'generic': [{'response_type': 'text', 'text': "I didn't understand. You can try rephrasing."}], 'input': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None}, 'addressee': 'Human', 'speaker': 'Watson', 'environmentUUID': 'abcdefg'}
+- intents from watsonResponse: [{'intent': 'Offer', 'confidence': 0.4847062912556112}]
+- entities from watsonResponse: [{'entity': 'sys-number', 'location': [44, 45], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [46, 49], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [54, 62], 'value': '0.74', 'confidence': 1, 'metadata': {'numeric_value': 0.74, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.74, 'unit': 'USD'}}]
+- input from watsonResponse: {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None}
+- intents:  [{'intent': 'Offer', 'confidence': 0.4847062912556112}]
+- entities:  [{'entity': 'sys-number', 'location': [44, 45], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [46, 49], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [54, 62], 'value': '0.74', 'confidence': 1, 'metadata': {'numeric_value': 0.74, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.74, 'unit': 'USD'}}]
+- keywords: []
+- entered extractOfferFromEntities
+- Received entityList: [{'entity': 'sys-number', 'location': [44, 45], 'value': '1', 'confidence': 1, 'metadata': {'numeric_value': 1}, 'interpretation': {'numeric_value': 1, 'subtype': 'integer'}}, {'entity': 'good', 'location': [46, 49], 'value': 'egg', 'confidence': 1}, {'entity': 'sys-currency', 'location': [54, 62], 'value': '0.74', 'confidence': 1, 'metadata': {'numeric_value': 0.74, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.74, 'unit': 'USD'}}]
+- Found entities: [{'entity': 'sys-currency', 'location': [54, 62], 'value': '0.74', 'confidence': 1, 'metadata': {'numeric_value': 0.74, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.74, 'unit': 'USD'}, 'index': 2}]
+- entered extractPrice
+- entities given: [{'entity': 'sys-currency', 'location': [54, 62], 'value': '0.74', 'confidence': 1, 'metadata': {'numeric_value': 0.74, 'unit': 'USD'}, 'interpretation': {'numeric_value': 0.74, 'unit': 'USD'}, 'index': 2}]
+- Returning price: {'value': 0.74, 'unit': 'USD'}
+- Received price: {'value': 0.74, 'unit': 'USD'}
+- Returning offer: {'quantity': {'egg': 1}, 'price': {'value': 0.74, 'unit': 'USD'}}
+- cmd leaving interpretMessage: {'quantity': {'egg': 1}, 'price': {'value': 0.74, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}
+- Received interpretation: {'quantity': {'egg': 1}, 'price': {'value': 0.74, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}
+- Message from another seller. Need to make an offer!
+- Message type: SellOffer
+- Returning response: {'status': 'Acknowledged', 'interpretation': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+127.0.0.1 - - [09/Dec/2020 11:43:09] "[37mPOST /receiveMessage HTTP/1.1[0m" 200 -
+- Other agent made a sell offer!
+- Entering generateBid
+- Received offer: {'quantity': {'egg': 1}, 'price': {'value': 0.74, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}
+- humanName: Human
+- bidHistory: {'Human': [{'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}, {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}, 'price': {'unit': 'USD', 'value': 0.5}}, {'quantity': {'egg': 4}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.98}}, {'quantity': {'egg': 4}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'BulkBid', 'price': {'unit': 'USD', 'value': 1.91}, 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for BulkBid', 'role': 'seller'}}, {'type': 'BulkOffer', 'metadata': {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None, 'timeStamp': 1607532186.7793841}, 'keywords': ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']}, {'quantity': {'egg': 1}, 'price': {'value': 0.74, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}]}
+- BidBlock: {'quantity': {'egg': 1}, 'type': 'BuyRequest', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}}
+- BidBlock['type']: BuyRequest
+- BidBlock: {'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}, 'price': {'unit': 'USD', 'value': 0.5}}
+- BidBlock['type']: NormalBid
+- BidBlock: {'quantity': {'egg': 4}, 'type': 'NormalBulkBid', 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for NormalBulkBid', 'role': 'seller'}, 'price': {'unit': 'USD', 'value': 1.98}}
+- BidBlock['type']: NormalBulkBid
+- BidBlock: {'quantity': {'egg': 4}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'BulkBid', 'price': {'unit': 'USD', 'value': 1.91}, 'metadata': {'speaker': 'Celia', 'addressee': 'Human', 'text': 'Placeholder for BulkBid', 'role': 'seller'}}
+- BidBlock['type']: BulkBid
+- BidBlock: {'type': 'BulkOffer', 'metadata': {'text': 'I can sell you 1 egg for 0.5 USD. I can also offer you a special discounted bulk deal of 4 eggs for 1.91 USD. That is 0.09 USD off the normal price! Are you interested in the bulk deal?', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532186285.3008, 'bid': None, 'timeStamp': 1607532186.7793841}, 'keywords': ['special', 'discounted', 'bulk', 'deal', 'bulk', 'deal']}
+- BidBlock['type']: BulkOffer
+- BidBlock: {'quantity': {'egg': 1}, 'price': {'value': 0.74, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}
+- BidBlock['type']: SellOffer
+- Recent offers: [{'quantity': {'egg': 1}, 'price': {'value': 0.74, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}]
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.36}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.7}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.66}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.21}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.26}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.44}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.28}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 1}, 'price': {'value': 0.74, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}
+- Currency units match
+- Returning utility: -0.36
+- Entering calculateUtilityAgent
+- Received utilityInfo: {'currencyUnit': 'USD', 'utility': {'egg': {'type': 'unitcost', 'unit': 'each', 'parameters': {'unitcost': 0.36}}, 'flour': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.7}}, 'sugar': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.66}}, 'milk': {'type': 'unitcost', 'unit': 'cup', 'parameters': {'unitcost': 0.21}}, 'chocolate': {'type': 'unitcost', 'unit': 'ounce', 'parameters': {'unitcost': 0.26}}, 'blueberry': {'type': 'unitcost', 'unit': 'packet', 'parameters': {'unitcost': 0.44}}, 'vanilla': {'type': 'unitcost', 'unit': 'teaspoon', 'parameters': {'unitcost': 0.28}}}, 'name': 'Celia'}
+- Received bundle: {'quantity': {'egg': 1}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}
+- no currency units provided
+- Returning utility: -0.36
+- Total items: {'quantity': {'egg': 1}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}
+- Total cost of items (should be negative): -0.36
+- Utility received: -0.36
+Relevant Offers: [{'quantity': {'egg': 1}, 'type': 'NormalBid', 'metadata': {'speaker': 'Human', 'addressee': 'Celia', 'text': 'Celia I want to buy 1 egg', 'role': 'buyer', 'environmentUUID': 'abcdefg', 'timestamp': 1607532184991, 'timeStamp': 1607532186.2703068}, 'price': {'unit': 'USD', 'value': 0.5}}, {'quantity': {'egg': 1}, 'price': {'value': 0.74, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}]
+- Last price: 0.74
+- Last offer: {'quantity': {'egg': 1}, 'price': {'value': 0.74, 'unit': 'USD'}, 'type': 'SellOffer', 'metadata': {'text': 'You look like a nice person. I can give you 1 egg for 0.74 USD.', 'speaker': 'Watson', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532187330.7559, 'bid': None, 'timeStamp': 1607532187.8385017}}
+- Remaining time: 289.6196240234375
+SellOffer
+- Buyer did not propose price or other agent made an offer. Going to generate price
+- A SellOffer has been made before
+- My recent offers: []
+- lastPrice can still be reduced
+- This is the lowest offer so far. Going to reduce
+- Calcuated last markupRatio: 1.0555555555555558
+- Going to markup price by 2.7998476552507396
+- Entering quantize
+- Received quantity: 0.6479451558902662
+- Received decimals: 2
+- Returning value: 0.65
+- Returning bid: {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.65}}
+- Entering translateBid
+- Received bid: {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.65}}
+- Received confirm: False
+- bid is a SellOffer
+- Returning random messge: I got you
+- Returning response: I got you 1 egg for 0.65 USD.
+- Returning bidResponse: {'text': 'I got you 1 egg for 0.65 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532189846.4392, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.65}}}
+- Bid message from processMessage: {'text': 'I got you 1 egg for 0.65 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532189846.4392, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.65}}}
+- Sending message: {'text': 'I got you 1 egg for 0.65 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532189846.4392, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.65}}}
+- Sending message to orchestrator: {'text': 'I got you 1 egg for 0.65 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532189846.4392, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.65}}}
+- Entering receiveRejection
+- Remaining Time: 289.61061328125
+- Info received: {'text': 'I got you 1 egg for 0.65 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532189846.4392, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.65}}, 'rationale': 'Addressee message delayed, Quantity of agents messages exceeded'}
+- Received message: {'text': 'I got you 1 egg for 0.65 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532189846.4392, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.65}}, 'rationale': 'Addressee message delayed, Quantity of agents messages exceeded'}
+- Returning response: {'status': 'Acknowledged', 'message': {'text': 'I got you 1 egg for 0.65 USD.', 'speaker': 'Celia', 'role': 'seller', 'addressee': 'Human', 'environmentUUID': 'abcdefg', 'timestamp': 1607532189846.4392, 'bid': {'quantity': {'egg': 1}, 'markupRatio': 0, 'BundleIndicator': 0, 'type': 'SellOffer', 'price': {'unit': 'USD', 'value': 0.65}}, 'rationale': 'Addressee message delayed, Quantity of agents messages exceeded'}}
+127.0.0.1 - - [09/Dec/2020 11:43:09] "[37mPOST /receiveRejection HTTP/1.1[0m" 200 -

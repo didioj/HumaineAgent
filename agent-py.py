@@ -11,7 +11,6 @@ import time
 import math
 import random
 import traceback
-
 from copy import deepcopy
 import sentiment
 app = Flask(__name__)
@@ -20,6 +19,7 @@ conversation = importlib.import_module('conversation')
 extract_bid = importlib.import_module('extract-bid')
 
 # Global variables / settings
+MODAGENT = 0
 appSettings = None
 with open('./appSettings.json') as f:
     appSettings = json.load(f)
@@ -154,6 +154,7 @@ def reactOwnAgent(interpretation, speaker, addressee, role):
         print("- bidHistory:", bidHistory)
 
 def reactToBuyer(interpretation, speaker, addressee, role):
+    global bidHistory
     print("- Message from buyer to me")
     if speaker not in bidHistory or not bidHistory[speaker]:
         bidHistory[speaker] = []
@@ -171,8 +172,8 @@ def reactToBuyer(interpretation, speaker, addressee, role):
     
     if interpretation['type'] in ["BuyRequest", "BuyOffer","BundleRequest"]:
         for good in interpretation['quantity']:
-            if good not in utilityInfo['utility'] and good not in bundleTypes:
-                print("- Unknown good in message. Setting intent as NotUnderstood")
+            if not good or (good not in utilityInfo['utility'] and good not in bundleTypes):
+                print("We don't sell the requested item!")
                 interpretation['type'] = "NotUnderstood"
                 
     if interpretation['type'] == 'AcceptOffer': # Buyer accepted my offer! Deal with it.
@@ -336,6 +337,7 @@ def reactToBuyer(interpretation, speaker, addressee, role):
         return None
 
 def reactToEnemyBuyer(interpretation, speaker, addressee, role):
+    global bidHistory
     print("- Message from buyer not addressed to me. Need to wait for other agent to respond")
     if interpretation['type'] == 'AcceptOffer':
         bidHistory[speaker] = None
@@ -343,7 +345,7 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
         if speaker in bidHistory and bidHistory[speaker]: # Check whether I made an offer to this buyer
             bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
                                 if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
-        if len(bidHistoryIndividual):
+        if bidHistoryIndividual and len(bidHistoryIndividual):
             if(len(bidHistoryIndividual) > 1):
                 haggleEvent = Event('buyer', 'seller', 'haggle')
                 sentimentModule.updateHistory(haggleEvent)
@@ -360,18 +362,17 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
         print("- Added to bidHistory:", bidHistory)
     
         # Ok, let's first wait and see if the other agent has responded
-        time.sleep(3)
-        
-        """
-        # This might prevent the NotUnderstood condition from running
-        if speaker not in bidHistory:
-            print("- Can't find speaker in bidHistory. Do nothing")
-            return None"""
-        
+        if MODAGENT:
+            time.sleep(1)
+        else:
+            time.sleep(3)
+                
         if interpretation['type'] in ["BuyRequest", "BuyOffer","BundleRequest"]:
             for good in interpretation['quantity']:
-                if good not in utilityInfo['utility'] and good not in bundleTypes:
+                if not good or (good not in utilityInfo['utility'] and good not in bundleTypes):
+                    print("We don't sell the requested item!")
                     interpretation['type'] = "NotUnderstood"
+                    
         
         humanHistory = [bidBlock for bidBlock in bidHistory[speaker]]
         print("- Human's history:", humanHistory)
@@ -460,6 +461,7 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
             return None
 
 def reactToOtherSeller(interpretation, speaker, addressee, role):
+    global bidHistory
     print("- Message from another seller. Need to make an offer!")
     print("- Message type:", interpretation['type'])
     time.sleep(2)
@@ -472,7 +474,7 @@ def reactToOtherSeller(interpretation, speaker, addressee, role):
 
     if interpretation['type'] == 'SellOffer' or interpretation['type'] == 'MinOffer':
         print("- Other agent made a sell offer!")
-        if addressee not in bidHistory:
+        if addressee not in bidHistory or not bidHistory[addressee]:
             bidHistory[addressee] = []
         bidHistory[addressee].append(interpretation)
         bid = generateBid(interpretation) # Generate bid based on message interpretation, utility,
@@ -810,6 +812,8 @@ def generateBid(offer):
     else:
         humanName = offer['metadata']['addressee']
     
+    print("- humanName:", humanName)
+    print("- bidHistory:", bidHistory)
     for bidBlock in bidHistory[humanName]:
         print("- BidBlock:", bidBlock)
         print("- BidBlock['type']:", bidBlock['type'])
@@ -836,7 +840,8 @@ def generateBid(offer):
     
     # find all offers relevant to the current one
     relevantOffers = [bidBlock for bidBlock in bidHistory[humanName] 
-                if (bidBlock['type'] in offerTypes and bidBlock['quantity'] == offer['quantity'])]
+                if ((bidBlock['type'] in offerTypes or 'Bid' in bidBlock['type'])
+                and bidBlock['quantity'] == offer['quantity'])]
     print("Relevant Offers:", relevantOffers)
 
     lastPrice = None # last price made to human 
@@ -896,12 +901,6 @@ def generateBid(offer):
     # handles other agent's SellOffer
         print("- Buyer did not propose price or other agent made an offer. Going to generate price")
         # if lowering last offer, then reduce last markupRatio
-        
-        """ print("\n\n\n\n\n\n\n\n", lastOffer, "\n", lastPrice, "\n")
-        if lastOffer!=None:
-            print(lastOffer['quantity']==bid['quantity'])
-        print("\n\n\n\n\n\n\n\n", bid, "\n\n\n\n\n\n\n\n")
-        """
         
         if lastPrice: #and lastOffer['quantity']==bid['quantity'] and lastOffer['metadata']['speaker']==agentName:
             print("- A SellOffer has been made before")
@@ -966,12 +965,15 @@ def generateBid(offer):
                     bid['price'] = lastOffer['price']
                     bid['type'] = "MinMarkupExcuse"
                     bid['speaker'] = agentName
-                    if lastOffer['type'] == 'NormalBulkOffer' and (lastPrice+0.02 > totalCosts*-1):
-                        print("- detected a NormalBulkOffer. going to reduce bulk price")
+                    if lastOffer['type'] == 'NormalBulkBid' and (lastPrice+0.02 > totalCosts*-1):
+                        print("- detected a NormalBulkBid. going to reduce bulk price")
                         # lastOffer was the normal bulk price. need to make better offer
                         profit = lastPrice + totalCosts # totalcost is negative
+                        print("- Profit:", profit)
                         # bulk price reduce profit by up to 50%, at least 1 cent off
                         bulk_price = (-1*totalCosts) + (random.random() * 0.5 * profit) - 0.01
+                        print("- New Bulk Price:", bulk_price)
+                        bid['price']['value'] = quantize(bulk_price,2)
                     elif lastOffer['metadata']['speaker'] == agentName:
                         print("- We made the last offer. Say it's the lowest")
                         bid['type'] = "MinMarkup"
@@ -981,21 +983,25 @@ def generateBid(offer):
                         bid['price']['value'] = quantize(lastPrice-0.01,2)
                     else:
                         print("- Can't reduce price anymore. Going negative")
-                        bid['speaker'] = speaker
+                        otherAgent = lastOffer['metadata']['speaker']
+                        bid['speaker'] = otherAgent
                         bid['type'] = "MinMarkup"
                         bid['action'] = 'reject' # negative profit. Going to taunt
                         # propose the minMarkupPrice
                         markupRatio = 2.0 + minMarkupRatio
                         minMarkupPrice = quantize((1.0 - markupRatio) * totalCosts, 2)
                         if not myLastPrice or myLastPrice > minMarkupPrice:
-                            print("- minMarkupPrice is lower")
+                            print("- minMarkupPrice is lower than myLastPrice")
                             bid['price']['value'] = minMarkupPrice
                         else:
-                            print("- myLastPrice is lower")
+                            print("- myLastPrice is lower than minMarkupPrice")
                             bid['price']['value'] = myLastPrice
         else:
             print("- No history of any SellOffers. Going to propose price")
-            markupRatio = 2.0 + random.random()
+            if MODAGENT:
+               markupRatio = 2.0 + (random.random()*0.9) + 0.1
+            else:
+                markupRatio = 2.0 + (random.random() * 0.5)
             print("Original markup ratio:", markupRatio)
             if sentimentModule.getStrategy() == 'haggle':
                 print("We have determined the buyer is haggling.")
@@ -1119,8 +1125,9 @@ def bulkPriceMessage(interpretation, speaker):
     # regular bid for requested items
     basic_bid = generateBid(interpretation)
     
-    # temporarily removing bulk pricing
-    return translateBid(basic_bid, False)
+    if MODAGENT:
+        # temporarily removing bulk pricing
+        return translateBid(basic_bid, False)
     bid_quantity = interpretation['quantity']
     
     if bid_quantity in bulkOffers:
@@ -1158,7 +1165,14 @@ def bulkPriceMessage(interpretation, speaker):
     normal_bulk_bid = deepcopy(bulk_interpretation)
     normal_bulk_bid['type'] = 'NormalBulkBid'
     normal_bulk_bid['price'] = deepcopy(basic_bid['price'])
-    normal_bulk_bid['price']['value'] = normal_bulk_bid['price']['value'] * scale
+    bulk_quantity = {}
+    bulk_quantity['quantity'] = normal_bulk_bid['quantity']
+    totalBulkCosts = calculateUtilityAgent(utilityInfo, bulk_quantity)
+    scaled_price = normal_bulk_bid['price']['value'] * scale
+    # if we can't afford 0.02 USD off bulk price, then just return normal price message
+    if (scaled_price - 0.02 < totalBulkCosts):
+        return translateBid(basic_bid, False)
+    normal_bulk_bid['price']['value'] = quantize(scaled_price - 0.02, 2)
     normal_bulk_bid['metadata'] = {'speaker':agentName, 'addressee':speaker, 'text':"Placeholder for NormalBulkBid", 'role':'seller'}
     bidHistory['Human'].append(normal_bulk_bid)
     bulk_bid = generateBid(bulk_interpretation)
@@ -1293,7 +1307,7 @@ def translateBid(bid, confirm):
         good_index = 0
         for good in bid['quantity'].keys():
             good_quantity = bid['quantity'][good]
-            if bid['BundleIndicator'] == 0: #if this is not a bundle
+            if not 'BundleIndicator' in bid or bid['BundleIndicator'] == 0: #if this is not a bundle
                 text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
             else:# if it is a bundle add commas + and if its the last good  
                 if good_index == (overall_goods-1):
@@ -1317,7 +1331,7 @@ def translateBid(bid, confirm):
         good_index = 0
         for good in bid['quantity'].keys():
             good_quantity = bid['quantity'][good]
-            if bid['BundleIndicator'] == 0: #if this is not a bundle
+            if 'BundleIndicator' not in bid or bid['BundleIndicator'] == 0: #if this is not a bundle
                 text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
             else:# if it is a bundle add commas + and if its the last good  
                 if good_index == (overall_goods-1):
@@ -1338,7 +1352,7 @@ def translateBid(bid, confirm):
             good_index = 0
             for good in bid['quantity'].keys():
                 good_quantity = bid['quantity'][good]
-                if bid['BundleIndicator'] == 0: #if this is not a bundle
+                if 'BundleIndicator' not in bid or bid['BundleIndicator'] == 0: #if this is not a bundle
                     text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
                 else:# if it is a bundle add commas + and if its the last good  
                     if good_index == (overall_goods-1):
@@ -1358,7 +1372,7 @@ def translateBid(bid, confirm):
                 good_index = 0
                 for good in bid['quantity'].keys():
                     good_quantity = bid['quantity'][good]
-                    if bid['BundleIndicator'] == 0: #if this is not a bundle
+                    if 'BundleIndicator' not in bid or bid['BundleIndicator'] == 0: #if this is not a bundle
                         text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
                     else:# if it is a bundle add commas + and if its the last good  
                         if good_index == (overall_goods-1):
@@ -1376,7 +1390,6 @@ def translateBid(bid, confirm):
                     text += str(bid['quantity'][good]) + " " +  UnitsBid(good,good_quantity) + " "
                 text += "is my best offer. "
                 text += selectMessage(tauntMessages)
-
     elif bid['type'] == 'Accept':
         print("- bid is a Accept")
         if confirm:
@@ -1387,7 +1400,7 @@ def translateBid(bid, confirm):
         good_index = 0     
         for good in bid['quantity'].keys():
             good_quantity = bid['quantity'][good]
-            if bid['BundleIndicator'] == 0: #if this is not a bundle
+            if 'BundleIndicator' not in bid or bid['BundleIndicator'] == 0: #if this is not a bundle
                 text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
             else:# if it is a bundle add commas + and if its the last good  
                 if good_index == (overall_goods-1):
@@ -1402,7 +1415,7 @@ def translateBid(bid, confirm):
         good_index = 0
         for good in bid['quantity'].keys():
             good_quantity = bid['quantity'][good]
-            if bid['BundleIndicator'] == 0: #if this is not a bundle
+            if 'BundleIndicator' not in bid or bid['BundleIndicator'] == 0: #if this is not a bundle
                 text += " " + str(bid['quantity'][good]) + " " + UnitsBid(good,good_quantity)
             else:# if it is a bundle add commas + and if its the last good  
                 if good_index == (overall_goods-1):

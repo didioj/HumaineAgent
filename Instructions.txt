@@ -13,7 +13,7 @@ The agent is based is based on agent-py. You need to install Flask to run it:
 * For 2 agents, run `run_agent002.sh` in a second terminal
 
 # Demo
-* For the class demo, run `run_mod` and `run_agent002`. 
+* For the class demo, run `run_mod.cmd` and `run_agent002.cmd`. 
 	The template code is too simple and has a lot of bugs, so we made a 
 	another version of our agent (mod) to complete against. The mod will
 	be Watson and our agent will be Celia
