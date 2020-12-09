@@ -1002,10 +1002,7 @@ def generateBid(offer):
                 markupRatio += 0.3
             elif sentimentModule.getStrategy() == 'greedy':
                 print("We have determined the buyer is greedy.")
-                if markupRatio - 0.3 < 2.0:
-                    markupRatio = 2.0
-                else:
-                    markupRatio -= 0.3
+                markupRatio = 2.3
             print("- Going to markup price by", markupRatio)
             bid['type'] = 'SellOffer'
             bid['price'] = {
