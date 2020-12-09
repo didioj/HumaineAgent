@@ -67,7 +67,7 @@ greedyOfferMessages = [
 haggleOfferMessages = [
     "You drive a hard bargain, how about",
     "I see you're well versed in negotiation, I can do",
-    "You drive a hard bargain, take",
+    "You drive a hard bargain, take"
 ]
 
 rejectionMessages = [
