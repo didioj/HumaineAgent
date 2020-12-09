@@ -59,12 +59,15 @@ offerMessages = [
 
 greedyOfferMessages = [
     "You're someone who appreciates a good deal, how about",
-    "I know you like a fair price, what do you think about"
+    "I know you like a fair price, what do you think about",
+    "You seem like a person who likes a good price, I can sell you",
+    "I know you like a fair price, take"
 ]
 
 haggleOfferMessages = [
     "You drive a hard bargain, how about",
-    "I see you're well versed in negotiation, I can do"
+    "I see you're well versed in negotiation, I can do",
+    "You drive a hard bargain, take"
 ]
 
 rejectionMessages = [
@@ -993,9 +996,12 @@ def generateBid(offer):
         else:
             print("- No history of any SellOffers. Going to propose price")
             markupRatio = 2.0 + random.random()
+            print("Original markup ratio:", markupRatio)
             if sentimentModule.getStrategy() == 'haggle':
+                print("We have determined the buyer is haggling.")
                 markupRatio += 0.3
             elif sentimentModule.getStrategy() == 'greedy':
+                print("We have determined the buyer is greedy.")
                 if markupRatio - 0.3 < 2.0:
                     markupRatio = 2.0
                 else:
@@ -1278,11 +1284,11 @@ def translateBid(bid, confirm):
     text = ""
     if bid['type'] == 'SellOffer':
         print("- bid is a SellOffer")
-        randEvent = ['special'] * 10 + ['normal'] * 90
+        randEvent = ['special'] * 99 + ['normal'] * 1
         eventChoice = random.choice(randEvent) 
         if(sentimentModule.computeStrategy() == 'haggle' and eventChoice == 'special') :
             text = selectMessage(haggleOfferMessages)
-        elif(sentimentModule.computeStrategy() == 'event' and eventChoice == 'special') :
+        elif(sentimentModule.computeStrategy() == 'greedy' and eventChoice == 'special') :
             text = selectMessage(greedyOfferMessages)
         else :
             text = selectMessage(offerMessages)
