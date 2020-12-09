@@ -1266,9 +1266,9 @@ def translateBid(bid, confirm):
         print("- bid is a SellOffer")
         randEvent = ['special'] * 10 + ['normal'] * 90
         eventChoice = random.choice(randEvent) 
-        if(sentimentModule.computeStrategy() == 'haggle' & eventChoice == 'special') :
+        if(sentimentModule.computeStrategy() == 'haggle' and eventChoice == 'special') :
             text = selectMessage(haggleOfferMessages)
-        elif(sentimentModule.computeStrategy() == 'event' & eventChoice == 'special') :
+        elif(sentimentModule.computeStrategy() == 'event' and eventChoice == 'special') :
             text = selectMessage(greedyOfferMessages)
         else :
             text = selectMessage(offerMessages)
