@@ -337,9 +337,13 @@ def reactToEnemyBuyer(interpretation, speaker, addressee, role):
         if speaker in bidHistory and bidHistory[speaker]: # Check whether I made an offer to this buyer
             bidHistoryIndividual = [bid for bid in bidHistory[speaker] 
                                 if (bid['metadata']['speaker'] == agentName and  bid['type'] in offerTypes )]
-        if(len(bidHistoryIndividual) > 1):
-            haggleEvent = Event('buyer', 'seller', 'haggle')
-            sentimentModule.updateHistory(haggleEvent)
+        if len(bidHistoryIndividual):
+            if(len(bidHistoryIndividual) > 1):
+                haggleEvent = Event('buyer', 'seller', 'haggle')
+                sentimentModule.updateHistory(haggleEvent)
+            else:
+                acceptEvent = Event('buyer', 'seller', 'dealAccept')
+                sentimentModule.updateHistory(acceptEvent)
         else:
             acceptEvent = Event('buyer', 'seller', 'dealAccept')
             sentimentModule.updateHistory(acceptEvent)
